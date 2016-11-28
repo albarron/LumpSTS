@@ -22,6 +22,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>eus.ixa</groupId>
+      <artifactId>ixa-pipe-pos</artifactId>
+      <version>1.5.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>eus.ixa</groupId>
+      <artifactId>ixa-pipe-tok</artifactId>
+      <version>1.8.5</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>	
       <groupId>cat.lump</groupId>
       <artifactId>WikiTailor</artifactId>
       <version>1.0-SNAPSHOT</version>
