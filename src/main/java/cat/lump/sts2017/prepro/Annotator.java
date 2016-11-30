@@ -30,13 +30,11 @@ public class Annotator {
 	/** Layer of annotation */
 	private String layer;
 	
-
-	/** Input file/sentence */
-	private File input;
-	private String sentence;
-
 	/** Configuration file */
 	private static Properties p;
+
+	/** Annotation object*/
+	private AnnotatorFactory annFactory;
 	
 	/** Logger */
 	private static LumpLogger logger = 
@@ -50,39 +48,18 @@ public class Annotator {
 		CHK.CHECK_NOT_NULL(iniFile);
 		this.lang = language;
 		this.layer = layer;
-        p = lumpConfig.getProperties(iniFile); 
+		p = lumpConfig.getProperties(iniFile); 
 		logger = new LumpLogger(this.getClass().getCanonicalName());
-
-	}
-	
-	public Annotator (String language, String layer, String iniFile, File input) {
-		this(language, layer, iniFile);
-		this.input = input;
-		launchAnnFile();
+		annFactory = new AnnotatorFactory();		
 	}
 
-	public Annotator (String language, String layer, String iniFile, String sentence) {
-		this(language, layer, iniFile);
-		this.sentence = sentence;
-		launchAnnSentence();
-	}
-	
-	private void launchAnnFile() {
-
-		if (layer.equalsIgnoreCase("tok")){
-			Tokeniser tok = new Tokeniser(lang, input);
-		}
-		
-	}
-	
-	private void launchAnnSentence() {
-
-		if (layer.equalsIgnoreCase("tok")){
-			Tokeniser tok = new Tokeniser(lang, sentence);
-		}
-		
-	}
-	
+	/**
+	 * Parses the command line arguments
+	 * 	
+	 * @param args
+	 * 			Command line arguments 
+	 * @return
+	 */
 	private static CommandLine parseArguments(String[] args)
 	{	
 		HelpFormatter formatter = new HelpFormatter();
@@ -95,11 +72,10 @@ public class Annotator {
 		options.addOption("a", "annotation", true, 
 					"Annotation layer (tok, lem)");		
 		options.addOption("i", "input", true, 
-				"Input file to annotate -one sentence per line-");		
+					"Input file to annotate -one sentence per line-");		
 		options.addOption("h", "help", false, "This help");
 		options.addOption("c", "config", true,
 		        	"Configuration file for the lumpSTS project");
-
 
 		try {			
 		    cLine = parser.parse( options, args );
@@ -107,7 +83,6 @@ public class Annotator {
 			logger.error( "Unexpected exception :" + exp.getMessage() );			
 		}	
 		
-
 		if (cLine == null || !(cLine.hasOption("l")) ) {
 			logger.error("Please, set the language\n");
 			System.exit(1);
@@ -124,12 +99,14 @@ public class Annotator {
 		return cLine;		
 	}
 
-	/*
+	
+	/**
 	 * Main function to run the class, serves as example
 	 * 
 	 * @param args
 	 * 		-l Language of the input text (Arabic, English, Spanish)
 	 * 		-a Annotation layer (tokens, lemmas)
+	 *      -i Input text/file
 	 * 		-c Configuration file
 	 */
 	public static void main(String[] args){
@@ -152,11 +129,39 @@ public class Annotator {
 			confFile = System.getProperty("user.dir")+FileIO.separator+conf;
 		}
 
-		Annotator ann = new Annotator (language, layer, confFile, input);
+		// Run
+		Annotator ann = new Annotator (language, layer, confFile);
+		ann.annotate(input);
+
+
+	}
+
+	/**
+	 * Does the actual annotation of the input file at the corresponding layer
+	 * of annotation
+	 * 
+	 * @param input
+	 * 			input file to annotate
+	 * 
+	 */
+	private void annotate(File input) {
+
+		// Tokenisation
+		if(layer.equalsIgnoreCase("tok")){
+			File output = new File(input+".tok");
+			String exe = getPropertyStr("ixaTok");
+			Tokeniser tok = annFactory.getTokeniser(lang);
+			tok.execute(exe, input, lang, output);
+		// Lemmatisation	
+		} else if (layer.equalsIgnoreCase("lem")){
+			File output = new File(input+".lem");
+			String exe = getPropertyStr("ixaLem");
+			//Lemmatiser lem = ann.annFactory.getLemmatiser(language);
+		}
 	}
 
 
-	/* 
+	/** 
 	 * Getters 
 	 */
 	public int getPropertyInt(String key){

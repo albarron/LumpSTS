@@ -3,20 +3,15 @@ package cat.lump.sts2017.prepro;
 import java.io.File;
 
 /**
- * A class to tokenise raw text
+ * Interface to tokenise raw text
  *   
  * @author cristina
- * @since Nov 28, 2016
+ * @since Nov 29, 2016
  */
 
-public class Tokeniser {
+public interface Tokeniser {
 
-	public Tokeniser(String lang, File input) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Tokeniser(String lang, String sentence) {
-		// TODO Auto-generated constructor stub
-	}
+	public void execute(String exe, File input, String lang, File output);
+	public void execute(String exe, String input, String lang, File output);
 
 }
