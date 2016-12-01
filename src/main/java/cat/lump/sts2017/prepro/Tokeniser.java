@@ -11,7 +11,34 @@ import java.io.File;
 
 public interface Tokeniser {
 
+	/** 
+	 * Runs the tokeniser on an input file.
+	 * 
+	 * @param exe
+	 * 			Location of the tokeniser executable
+	 * @param input
+	 * 			Input file
+	 * @param lang
+	 * 			Language of the input text
+	 * @param output
+	 * 			File where to store the tokenisation
+	 */
 	public void execute(String exe, File input, String lang, File output);
-	public void execute(String exe, String input, String lang, File output);
+
+	
+	/** 
+	 * Runs the tokeniser on an input string. Returns the tokenised string.
+	 * 
+	 * @param exe
+	 * 			Location of the tokeniser executable
+	 * @param input
+	 * 			Input string text
+	 * @param lang
+	 * 			Language of the input text
+	 * 
+	 * @return 
+	 * 			Tokenised string
+	 */
+	public String execute(String exe, String input, String lang);
 
 }

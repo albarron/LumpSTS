@@ -132,7 +132,10 @@ public class Annotator {
 		// Run
 		Annotator ann = new Annotator (language, layer, confFile);
 		ann.annotate(input);
-
+		
+		// String to string version
+		// String out = ann.annotateString("¿Cómo se tokeniza esto? Bien!");
+		//System.out.println(out);
 
 	}
 
@@ -154,13 +157,41 @@ public class Annotator {
 			tok.execute(exe, input, lang, output);
 		// Lemmatisation	
 		} else if (layer.equalsIgnoreCase("lem")){
-			File output = new File(input+".lem");
-			String exe = getPropertyStr("ixaLem");
-			//Lemmatiser lem = ann.annFactory.getLemmatiser(language);
+			File output = new File(input+".wpl");
+			Lemmatiser lem = annFactory.getLemmatiser(lang);
+			lem.execute(p, input, lang, output);
 		}
 	}
 
 
+
+	/**
+	 * Does the actual annotation of an input string at the corresponding layer
+	 * of annotation. Returns the annotated string
+	 * 
+	 * @param input
+	 * 			input string to annotate
+	 * 
+	 * @return annOutput
+	 */
+	private String annotateString(String input) {
+
+		String annOutput = "NOT ANNOTATED";
+		// Tokenisation
+		if(layer.equalsIgnoreCase("tok")){
+			String exe = getPropertyStr("ixaTok");
+			Tokeniser tok = annFactory.getTokeniser(lang);
+			annOutput = tok.execute(exe, input, lang);
+		// Lemmatisation	
+		} else if (layer.equalsIgnoreCase("lem")){
+			Lemmatiser lem = annFactory.getLemmatiser(lang);
+			annOutput = lem.execute(p, input, lang);
+		}
+		return annOutput;
+	}
+
+	
+	
 	/** 
 	 * Getters 
 	 */

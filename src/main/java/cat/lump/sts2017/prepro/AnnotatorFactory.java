@@ -27,4 +27,20 @@ public class AnnotatorFactory {
 		return null;
 	}
 
+	/**
+	 * Returns the correct lemmatiser acoording to the input language
+	 * 
+	 * @param language
+	 * @return
+	 */
+	public Lemmatiser getLemmatiser(String language) {
+		if (language.equalsIgnoreCase("en")) {
+			return new IXALemmatiser();
+		} else if (language.equalsIgnoreCase("es")) {
+			return new IXALemmatiser();
+		} else if (language.equalsIgnoreCase("ar")) {
+			//return new MADALemmatiser();
+		} 
+		return null;
+	}
 }
