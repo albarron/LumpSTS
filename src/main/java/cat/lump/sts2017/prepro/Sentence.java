@@ -1,11 +1,19 @@
 package cat.lump.sts2017.prepro;
 
+/**
+ * Sentence object. Currently contains word/pos/lemma as used by the MADAlemmatisier class.
+ * Can be extended for more general representations.
+ *   
+ * @author cristina
+ * @since Dec 3, 2016
+ *
+ */
 public class Sentence {
 
 		//private String id;
 	    private String word;
 	    private String pos;
-	    private String lema;
+	    private String lemma;
 	    
 	    /*public String getId() {
 	        return id;
@@ -25,17 +33,16 @@ public class Sentence {
 	    public void setPos(String pos) {
 	        this.pos = pos;
 	    }
-	    public String getLema() {
-	        return lema;
+	    public String getLemma() {
+	        return lemma;
 	    }
-	    public void setLema(String lema) {
-	        this.lema = lema;
+	    public void setLemma(String lemma) {
+	        this.lemma = lemma;
 	    }
+	    
 	    
 	    @Override
 	    public String toString() {
-	        return this.word+"|"+this.pos+"|" + this.lema + " ";
+	        return this.word;
 	    }
-
-
 }

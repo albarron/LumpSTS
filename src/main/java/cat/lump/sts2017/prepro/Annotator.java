@@ -85,10 +85,12 @@ public class Annotator {
 		
 		if (cLine == null || !(cLine.hasOption("l")) ) {
 			logger.error("Please, set the language\n");
+			formatter.printHelp(Annotator.class.getSimpleName(),options );
 			System.exit(1);
 		}		
 		if (!(cLine.hasOption("a")) ) {
 			logger.error("Please, set the desired annotation layer\n");
+			formatter.printHelp(Annotator.class.getSimpleName(),options );
 			System.exit(1);
 		}		
 		if (cLine.hasOption("h")) {
@@ -152,9 +154,8 @@ public class Annotator {
 		// Tokenisation
 		if(layer.equalsIgnoreCase("tok")){
 			File output = new File(input+".tok");
-			String exe = getPropertyStr("ixaTok");
 			Tokeniser tok = annFactory.getTokeniser(lang);
-			tok.execute(exe, input, lang, output);
+			tok.execute(p, input, lang, output);
 		// Lemmatisation	
 		} else if (layer.equalsIgnoreCase("lem")){
 			File output = new File(input+".wpl");
@@ -179,9 +180,8 @@ public class Annotator {
 		String annOutput = "NOT ANNOTATED";
 		// Tokenisation
 		if(layer.equalsIgnoreCase("tok")){
-			String exe = getPropertyStr("ixaTok");
 			Tokeniser tok = annFactory.getTokeniser(lang);
-			annOutput = tok.execute(exe, input, lang);
+			annOutput = tok.execute(p, input, lang);
 		// Lemmatisation	
 		} else if (layer.equalsIgnoreCase("lem")){
 			Lemmatiser lem = annFactory.getLemmatiser(lang);

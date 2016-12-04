@@ -22,7 +22,7 @@ public class AnnotatorFactory {
 		} else if (language.equalsIgnoreCase("es")) {
 			return new IXATokeniser();
 		} else if (language.equalsIgnoreCase("ar")) {
-			//return new MADATokeniser();
+			return new MADATokeniser();
 		} 
 		return null;
 	}

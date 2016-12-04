@@ -17,7 +17,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 import cat.lump.aq.basics.io.files.FileIO;
-import cat.lump.aq.basics.log.LumpLogger;
 
 /**
  * Set of methods to convert among different annotation's formats
@@ -26,17 +25,10 @@ import cat.lump.aq.basics.log.LumpLogger;
  * @since Dec 1, 2016
  *
  */
-
-
 public class FormatConverter {
 	
 
-
 	public final static String lineSeparator = System.lineSeparator();
-
-	/** Logger */
-	private static LumpLogger logger = 
-			new LumpLogger (Annotator.class.getSimpleName());
 
 	/**
 	 * Converts a file in the conll format (tokens separated by tabs) into a file
@@ -178,9 +170,19 @@ public class FormatConverter {
 	}
 
 
-	public static void raw2mada(File inputRaw, File outputMada) {
-
-		String config = ConfigConstants.MADACONFIG4LEM;
+	/**
+	 * Converts a file with raw text, a sentence per line into an xml file ready to
+	 * be used by MADAMIRA
+	 * 
+	 * @param inputRaw
+	 * 			Input file
+	 * @param outputMada
+	 * 			Output file
+	 * @param config
+	 * 			Constant string in ConfigConstants.java with the configuration needed 
+	 * 			for the task
+	 */
+	public static void raw2mada(File inputRaw, File outputMada, String config) {
 
 		// Initilise the writer
 		FileIO.deleteFile(outputMada);
@@ -255,22 +257,64 @@ public class FormatConverter {
 		
 	}	
 
-	
 
-	public static void mada2raw(File inputMada, File outputRaw) {
-	    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+	/**
+	 * Converts an xml file in the output format given by MADAMIRA, into raw text, a sentence per line
+	 * file where different annotation layers for a token are separated by pipes. 
+	 * 
+	 * @param outputMada
+	 * 			Input file
+	 * @param outputRaw
+	 * 			Output file
+	 * @param ann
+	 * 			Layer of annotation. Currently supports tokenisation (tok) and lemmatisation (lem)
+	 */
+	public static void mada2raw(File outputMada, File outputRaw, String ann) {
+
+		// Initilise the writer
+		FileIO.deleteFile(outputRaw);
+	    FileWriter fw = null;
+	    BufferedWriter bw = null;
+		try {
+			fw = new FileWriter(outputRaw, true);
+			bw = new BufferedWriter(fw);
+			bw.write("");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Initialise the xml parser
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 	    try {
 	        SAXParser saxParser = saxParserFactory.newSAXParser();
-	        FormatConverterMADAhandler handler = new FormatConverterMADAhandler();
-	        saxParser.parse(inputMada, handler);
-	        //Get Employees list
-	        List<Sentence> sentList = handler.getSentenceList();
-	        //print employee information
-	        for(Sentence sent : sentList)
-	            System.out.println(sent);
+	        List<Sentence> sentList = null;
+	        if (ann.equalsIgnoreCase("tok"))  {
+	        	MADATokeniserHandler handler = new MADATokeniserHandler();
+		        saxParser.parse(outputMada, handler);
+		        sentList = handler.getSentenceList();
+	        } else if (ann.equalsIgnoreCase("lem"))  {
+	        	MADALemmatiserHandler handler = new MADALemmatiserHandler();
+		        saxParser.parse(outputMada, handler);
+		        sentList = handler.getSentenceList();
+	        } 
+	
+	        // Write the requested annotations
+	        for(Sentence sent : sentList){
+		        bw.append(sent.toString());
+	        	bw.newLine();
+	        }
+
 	    } catch (ParserConfigurationException | SAXException | IOException e) {
 	        e.printStackTrace();
 	    }
+	    
+		try {
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 	}
 	

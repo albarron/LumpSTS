@@ -1,6 +1,7 @@
 package cat.lump.sts2017.prepro;
 
 import java.io.File;
+import java.util.Properties;
 
 /**
  * Interface to tokenise raw text
@@ -14,8 +15,8 @@ public interface Tokeniser {
 	/** 
 	 * Runs the tokeniser on an input file.
 	 * 
-	 * @param exe
-	 * 			Location of the tokeniser executable
+	 * @param p
+	 * 			Properties object with the config file loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
@@ -23,14 +24,14 @@ public interface Tokeniser {
 	 * @param output
 	 * 			File where to store the tokenisation
 	 */
-	public void execute(String exe, File input, String lang, File output);
+	public void execute(Properties p, File input, String lang, File output);
 
 	
 	/** 
 	 * Runs the tokeniser on an input string. Returns the tokenised string.
 	 * 
-	 * @param exe
-	 * 			Location of the tokeniser executable
+	 * @param p
+	 * 			Properties object with the config file loaded
 	 * @param input
 	 * 			Input string text
 	 * @param lang
@@ -39,6 +40,6 @@ public interface Tokeniser {
 	 * @return 
 	 * 			Tokenised string
 	 */
-	public String execute(String exe, String input, String lang);
+	public String execute(Properties p, String input, String lang);
 
 }

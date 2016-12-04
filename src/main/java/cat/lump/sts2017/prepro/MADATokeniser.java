@@ -13,12 +13,12 @@ import javax.xml.bind.Unmarshaller;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Implements the Lemmatiser class using MADAMIRA
+ * Implements the Tokeniser class using MADAMIRA
   * 
  * @author cristinae
- * @since Dec 2, 2016
+ * @since Dec 4, 2016
  */
-public class MADALemmatiser implements Lemmatiser {
+public class MADATokeniser implements Tokeniser {
 
 	/** Logger */
 	private static LumpLogger logger = 
@@ -29,7 +29,7 @@ public class MADALemmatiser implements Lemmatiser {
 
     
 	/** 
-	 * Runs the lemmatiser on an input file.
+	 * Runs the tokeniser on an input file.
 	 * 
 	 * @param p
 	 * 			Properties object with the config file loaded
@@ -45,7 +45,7 @@ public class MADALemmatiser implements Lemmatiser {
 	public void execute(Properties p, File inputRaw, String lang, File outputF) {
 		
 		
-		logger.info("Lemmatising input text with MADAMIRA...");
+		logger.info("Tokenising input text with MADAMIRA...");
 
 		String nameTMP = "madaIN"+Math.random()+".tmp";
 		File inputF = new File(nameTMP);
@@ -53,7 +53,7 @@ public class MADALemmatiser implements Lemmatiser {
 		String nameTMP2 = "madaIN"+Math.random()+".tmp";
 		File outputMADA = new File(nameTMP2);
 
-		String config = ConfigConstants.MADACONFIG4LEM;
+		String config = ConfigConstants.MADACONFIG4TOK;
 		FormatConverter.raw2mada(inputRaw, inputF, config);
 		logger.info("Input raw text converted into MADA format.");
 
@@ -77,8 +77,6 @@ public class MADALemmatiser implements Lemmatiser {
                 //        getOverallVars().getOutputEncoding();
 
                 logger.info("Processing " + numSents + " sentences for analysis...");
-//                        " sentences for analysis type = " + outputAnalysis +
-//                        " and output encoding = " + outputEncoding);
             }
 
             // The structure of the MadamiraOutput object is exactly similar to the
@@ -107,7 +105,7 @@ public class MADALemmatiser implements Lemmatiser {
         wrapper.shutdown();
         inputF.delete();
 		logger.info("Converting output into raw format...");
-        FormatConverter.mada2raw(outputMADA, outputF, "lem");
+        FormatConverter.mada2raw(outputMADA, outputF, "tok");
         outputMADA.delete();
 		logger.info("Done.");
     }		
@@ -133,8 +131,10 @@ public class MADALemmatiser implements Lemmatiser {
 
 		// Default output
 		String lemOutput = "NON ANNOTATED";
-		logger.error("Lemmatisation for strings with MADAMIRA not implemented. Use an input file.");
+		logger.error("Tokenisation for strings with MADAMIRA not implemented. Use an input file.");		
 		return lemOutput;		
 	}
+
+	
 
 }

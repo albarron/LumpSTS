@@ -8,7 +8,13 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 
-public class FormatConverterMADAhandler  extends DefaultHandler {
+/**
+ * Class to define the behaviour of the SAX parser when extracting information on lemmas.
+ *    
+ * @author cristina
+ * @since Dec 3, 2016
+ */
+public class MADALemmatiserHandler  extends DefaultHandler {
 
 	    //List to hold the object with all the sentences
 	    private List<Sentence> sentList = null;
@@ -20,6 +26,7 @@ public class FormatConverterMADAhandler  extends DefaultHandler {
 
 	    boolean out_seg = false;
 	    boolean word = false;
+	    boolean analysis = false;
 	    boolean morph_feature_set = false;
 
 	    @Override
@@ -28,18 +35,36 @@ public class FormatConverterMADAhandler  extends DefaultHandler {
 
 	        if (qName.equalsIgnoreCase("out_seg")) {
 	            //create a new Sentence and put it in Map
-	            String id = attributes.getValue("id");
 	            sent = new Sentence();
-	            //sent.setId(id);
 	            //initialize list
 	            if (sentList == null)
 	                sentList = new ArrayList<>();
 	        } else if (qName.equalsIgnoreCase("word")) {
 	            String w = attributes.getValue("word");
+	        	String previous = sent.getWord();
+	        	// Concatenating a new word in left-to-right order. 
+	        	// We mark bidi regions using unicode format control codepoints:
+	        	// Left-to-right embedding (U+202A); Pop directional formatting (U+202C);
+	        	if (previous !=null){
+	        		sent.setWord(previous + " \u202A" + w + "\u202C");
+	        		//System.out.println(previous);
+	            } else {
+	        		sent.setWord("\u202A" + w + "\u202C");	            	
+	            }
 	        	word = true;
-	        } else if (qName.equalsIgnoreCase("morph_feature_set")) {
+	        	analysis = false;
+	        	morph_feature_set = false;
+	        } else if (qName.equalsIgnoreCase("analysis")) {
+	        	analysis = true;
+	        } else if (qName.equalsIgnoreCase("morph_feature_set") && analysis) {
 	            String p = attributes.getValue("pos");
-	            String l = attributes.getValue("lema");
+	            String l = attributes.getValue("lemma");
+	        	String previous = sent.getWord();	        	
+	        	if (previous !=null){
+	        		sent.setWord(previous + "|"+ p + "|\u202A"+ l + "\u202C");	        		
+//	        		sent.setWord( l + "|"+ p + "|" + previous);	        		
+	        	} else {
+	        	}
 	        	morph_feature_set = true;
 	        } 
 	    }
@@ -54,20 +79,17 @@ public class FormatConverterMADAhandler  extends DefaultHandler {
 
 	    @Override
 	    public void characters(char ch[], int start, int length) throws SAXException {
-
+/*
+	    	System.out.println(""+word+" " + morph_feature_set + " 0" + analysis);
 	        if (word) {
-	        	String previous = sent.getWord();
-	        	if (previous.contains(" ")){
-	        		sent.setWord(previous+new String(ch, start, length));
-	        	} else {
-		            sent.setWord(new String(ch, start, length));
-	        	}
+	        	sent.setWord(new String(ch, start, length));
 	      	    word = false;
-	        } else if (morph_feature_set) {
+	        } else if (morph_feature_set && !analysis) {
 	            sent.setPos(new String(ch, start, length));
-	            sent.setLema(new String(ch, start, length));
+	            sent.setLemma(new String(ch, start, length));
 	            morph_feature_set = false;
-	        } 
-	    }
+	            analysis = false;
+	        }*/ 
+	    } 
 	}
 	

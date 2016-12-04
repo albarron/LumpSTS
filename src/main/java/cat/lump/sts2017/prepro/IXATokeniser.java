@@ -3,6 +3,7 @@ package cat.lump.sts2017.prepro;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 
@@ -25,8 +26,8 @@ public class IXATokeniser implements Tokeniser {
 	/** 
 	 * Runs the tokeniser on an input file.
 	 * 
-	 * @param jar
-	 * 			Location of the tokeniser executable
+	 * @param p
+	 * 			Properties object with the config file loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
@@ -34,7 +35,8 @@ public class IXATokeniser implements Tokeniser {
 	 * @param output
 	 * 			File where to store the tokenisation
 	 */
-	public void execute(String jar, File input, String lang, File output) {
+	public void execute(Properties p, File input, String lang, File output) {
+
 
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
@@ -42,6 +44,7 @@ public class IXATokeniser implements Tokeniser {
 		if (lang.equalsIgnoreCase("es")) {
 			normalisation = "-nancora";
 		}
+		String jar = p.getProperty("ixaTok");
 		String[] commandIxa = { "java", "-jar", jar, "tok", language, "-ooneline", normalisation};
 
 		// Run  in a separate system process
@@ -74,7 +77,7 @@ public class IXATokeniser implements Tokeniser {
 	 * @return tokOutput
 	 * 			Tokenised string
 	 */
-	public String execute(String jar, String input, String lang) {
+	public String execute(Properties p, String input, String lang) {
 		// Default output
 		String tokOutput = "NON TOKENISED";
 
@@ -84,6 +87,7 @@ public class IXATokeniser implements Tokeniser {
 		if (lang.equalsIgnoreCase("es")) {
 			normalisation = "-nancora";
 		}
+	    String jar = p.getProperty("ixaTok");
 		String[] commandIxa = { "java", "-jar", jar, "tok", language, "-ooneline", normalisation};
 
 		// Convert the input string into a file
