@@ -1,23 +1,31 @@
 # LumpSTS
-##### Lump participation at SemEval 2017 STS
+#### Lump participation at SemEval 2017 STS
 ___
 ### Set-up and installation
 
 1. Download and install WikiTailor source
+
 `git clone https://github.com/cristinae/WikiTailor.git`
+
 `mvn -DskipTests clean compile assembly:single install`
 
 2. Download and install MADAMIRA jar
+
 [License for downloading](http://innovation.columbia.edu/technologies/cu14012_arabic-language-disambiguation-for-natural-language-processing-applications)
+
 `mvn install:install-file -Dfile={$PATH}/MADAMIRA-release-20160516-2.1/MADAMIRA-release-20160516-2.1.jar -DgroupId=edu.columbia.ccls.madamira  -DartifactId=MADAMIRA-release -Dversion=20160516-2.1 -Dpackaging=jar`
 
 3. Download and install this repository
+
 `git clone https://github.com/albarron/LumpSTS.git`
 
 ### External resources
 1. Download the IXA pipes for tokenisation and lemmatisation. They are used as an external executable, no need for installation.
+
 [Download page](http://ixa2.si.ehu.es/ixa-pipes/download.html)
+
 Include their path in the configuration file lumpSTS.ini
+
 ```
 ### External software and models
 # IXA pipe
