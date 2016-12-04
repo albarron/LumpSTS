@@ -39,7 +39,7 @@ public class AnnotatorFactory {
 		} else if (language.equalsIgnoreCase("es")) {
 			return new IXALemmatiser();
 		} else if (language.equalsIgnoreCase("ar")) {
-			//return new MADALemmatiser();
+			return new MADALemmatiser();
 		} 
 		return null;
 	}

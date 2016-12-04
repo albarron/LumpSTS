@@ -22,14 +22,14 @@ public class IXALemmatiser implements Lemmatiser {
 	/** 
 	 * Runs the lemmatiser on an input file.
 	 * 
-	 * @param jar
-	 * 			Location of the lemmatiser executable
+	 * @param p
+	 * 			Properties object with the config file loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
 	 * 			Language of the input text
 	 * @param output
-	 * 			File where to store the sentences lemmatised
+	 * 			File where to store the annotated source
 	 */
 	public void execute(Properties p, File input, String lang, File output) {
 
@@ -122,18 +122,17 @@ public class IXALemmatiser implements Lemmatiser {
 
 	
 	/** 
-	 * Runs the tokeniser on an input string. Returns the tokenised string.
+	 * Runs the lemmatiser on an input string. Returns the string with the lemmas.
 	 * 
-	 * 
-	 * @param jar
-	 * 			Location of the tokeniser executable
+	 * @param p
+	 * 			Properties object with the config file loaded
 	 * @param input
 	 * 			Input string text
 	 * @param lang
 	 * 			Language of the input text
 	 * 
-	 * @return tokOutput
-	 * 			Tokenised string
+	 * @return 
+	 * 			String with the lemmas
 	 */
 	public String execute(Properties p, String input, String lang) {
 		// Default output
