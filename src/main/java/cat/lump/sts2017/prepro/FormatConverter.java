@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -16,7 +17,12 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
+
+import com.google.common.io.CharStreams;
+
 import cat.lump.aq.basics.io.files.FileIO;
+import ixa.kaflib.KAFDocument;
+import ixa.kaflib.WF;
 
 /**
  * Set of methods to convert among different annotation's formats
@@ -318,5 +324,92 @@ public class FormatConverter {
 	
 	}
 	
-    
+	/**
+	 * 
+	 * Adds a final dot to sentences without a final punctuation mark [.!?] within
+	 * a file.
+	 * 
+	 * @param fIn
+	 * 			Input file
+	 * @param fOut
+	 * 			Output file
+	 */
+	public static void raw2punct(File fIn, File fOut){
+		
+		// Initilise the writer
+		FileIO.deleteFile(fOut);
+	    FileWriter fw = null;
+	    BufferedWriter bw = null;
+		try {
+			fw = new FileWriter(fOut, true);
+			bw = new BufferedWriter(fw);
+			bw.write("");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Read the input
+		FileInputStream inputStream = null;
+		Scanner sc = null;
+		try {
+		    inputStream = new FileInputStream(fIn);
+		    sc = new Scanner(inputStream, "UTF-8");
+		    int i = 0;
+		    while (sc.hasNext()) {
+		        String line = sc.nextLine();
+		        bw.append(line+" ");
+				if (!line.matches(".*[.!?]$")){
+			        bw.append(".");
+				}
+	        	bw.newLine();
+		        // Write every 10000 lines
+		        if (i%10000==0){
+		        	bw.flush();
+		        }
+		        i++;
+		    }
+		    if (sc.ioException() != null) {
+		        throw sc.ioException();
+		    }
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			// Close everything
+		    if (inputStream != null) {
+		        try {
+					inputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		    if (sc != null) {
+		        sc.close();
+		        try {
+		        	bw.newLine();
+					bw.close();
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}
+		
+	}
+
+    public static void tokensToKAF(final Reader breader, final KAFDocument kaf)
+		     throws IOException {
+		int noSents = 0;
+		int noParas = 1;
+	    final List<String> sentences = CharStreams.readLines(breader);
+	    for (final String sentence : sentences) {		      
+	    	noSents = noSents + 1;
+		    final String[] tokens = sentence.split(" ");
+		    for (final String token : tokens) {
+		        final WF wf = kaf.newWF(0, token, noSents);
+		        wf.setPara(noParas);
+		    }
+		}
+	 }
 }

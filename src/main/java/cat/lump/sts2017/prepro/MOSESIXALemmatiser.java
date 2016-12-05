@@ -1,19 +1,29 @@
 package cat.lump.sts2017.prepro;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.Properties;
+
+import org.apache.commons.io.IOUtils;
+
 import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
+import ixa.kaflib.KAFDocument;
 
 /**
- * Implements the Lemmatiser class with the functionalities of the ixa-pipe
- * TODO Now it is executed as a call to the binary. Try to use as an API
+ * Implements the Lemmatiser class that uses IXA pipes for lemmatising
+ * and moses scripts for tokenisation
  * 
  * @author cristina
- * @since Nov 29, 2016
+ * @since Dec 5, 2016
  */
-public class IXALemmatiser implements Lemmatiser {
+public class MOSESIXALemmatiser implements Lemmatiser {
 
 	/** Logger */
 	private static LumpLogger logger = 
@@ -34,8 +44,6 @@ public class IXALemmatiser implements Lemmatiser {
 	public void execute(Properties p, File input, String lang, File output) {
 
 		// Loading paths from the config file
-		String jarTok = p.getProperty("ixaTok");
-		Annotator.checkExists(jarTok, "The IXA tokeniser cannot be found at ");
 		String jarLem = p.getProperty("ixaLem");
 		Annotator.checkExists(jarLem, "The IXA lemmatiser cannot be found at ");
 
@@ -52,36 +60,34 @@ public class IXALemmatiser implements Lemmatiser {
 			lemM = p.getProperty("lemEn");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else {
-			
 			logger.error("Your language " + lang + 
 					"has not been detected and PoS and lemmatisation models cannot be loaded.");
 		}
 
-		//cat guardian.txt | java -jar ixa-pipe-tok-1.8.4.jar tok -l en | 
-		//java -jar ixa-pipe-pos-1.5.0.jar tag -m en-pos-perceptron-autodict01-conll09.bin -lm en-lemma-perceptron-conll09.bin
-        
-		// Parameters needed to tokenise raw text into NAF format needed for lemmatisation
-		String normalisation = "-nptb";
-		if (lang.equalsIgnoreCase("es")) {
-			normalisation = "-nancora";
-		}
-		String[] commandIxa = { "java", "-jar", jarTok, "tok", "-l", lang, normalisation};
-		String nameTMP = "output"+Math.random()+".tmp";
+		// Previous normalisation
+		logger.warn("Text is being normalised.");
+		String nameTMP = "norm"+Math.random()+".tmp";
 		File fileTMP = new File(nameTMP);
-
-		// IXA only recognises a sentence if it ends with a punctuation token
-		String nameTMPixa = "input4IXA"+Math.random()+".tmp";
-		File input4IXA = new File(nameTMPixa);
-		FormatConverter.raw2punct(input, input4IXA);
-
-		// Run tokenisation
-		ProcessBuilder builder = new ProcessBuilder(commandIxa);
-		builder.redirectInput(input4IXA);
-		builder.redirectOutput(fileTMP);
-		logger.info("Starting preliminary tokenisation...");
+		Normaliser.normalise(input, fileTMP, lang);
+		
+        // Parameters needed to tokenise raw text into raw text for the languages in STS
+		String language = "-l"+lang;
+		String exe = p.getProperty("mosesTok");
+		Annotator.checkExists(exe, "The moses tokenisation script cannot be found at ");
+		
+		String[] commandTok = {"perl", exe, language};
+		//perl mosesdecoder/scripts/tokenizer/tokenizerNO2html.perl -l de < in > out
+			
+		// Run the tokeniser in a separate system process
+		ProcessBuilder builder = new ProcessBuilder(commandTok);	
+		builder.redirectInput(fileTMP);
+		logger.info("Starting tokenisation with moses scripts...");
 		int waitFlag = 1;
+		String tokOutput = "";
 		try {
 			Process process = builder.start();
+			InputStream outputTok = process.getInputStream();
+			tokOutput = IOUtils.toString(outputTok, "UTF-8");
 			try {
 				waitFlag = process.waitFor();
 			} catch (InterruptedException e) {
@@ -90,30 +96,53 @@ public class IXALemmatiser implements Lemmatiser {
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("Some error occurred when starting the ProcessBuilder for tokenisation "+
-			"of file "+input.toString()+" with IXA pipe.");
+			"of file "+input.toString()+" with moses tokenizer.");
 		} 
-		
-		// Temporary file (conll format) with the lemmatisation
-		String nameTMP2 = "lem"+Math.random()+".tmp";
-		File fileTMP2 = new File(nameTMP2);
+
 
 		if (waitFlag == 0) {
 			logger.info("Tokenisation done.");
-			input4IXA.delete();
-	
+			//fileTMP.delete();
+			
+            // Convert to KAF format, needed for lemmatisation
+			logger.info("Converting output to KAF format...");
+			String kafVersion = "home-made";
+			String kafString = "";
+		    BufferedReader noTokReader = null;
+			try {
+				noTokReader = new BufferedReader(new StringReader(tokOutput));
+			    KAFDocument kaf = new KAFDocument(lang, kafVersion);
+				FormatConverter.tokensToKAF(noTokReader, kaf);
+			    kafString = kaf.toString();
+				noTokReader.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+			// Temporary file (conll format) with the lemmatisation
+			String nameTMP2 = "lem"+Math.random()+".tmp";
+			File fileTMP2 = new File(nameTMP2);
+
 			//java -jar ixa-pipe-pos-1.5.0.jar tag -m en-pos-perceptron-autodict01-conll09.bin -lm en-lemma-perceptron-conll09.bin
 			String modelPos = "-m"+posM;
 			//String[] commandIxaLem = {"java", "-jar", jarLem, "tag", modelPos, modelLem};
 			String[] commandIxaLem = {"java", "-jar", jarLem, "tag", modelPos, "--lemmatizerModel", lemM, "-oconll"};
 	
 			ProcessBuilder builderLem = new ProcessBuilder(commandIxaLem);
-			builderLem.redirectInput(fileTMP);
+			//builderLem.redirectInput(output);
 			builderLem.redirectOutput(fileTMP2);
 			//builderLem.redirectError(new File("er.txt"));
 			logger.info("Starting lemmatisation...");
+
 			int waitFlagL =1;
 			try {
 				Process process = builderLem.start();
+				OutputStream stdin = process.getOutputStream();
+			    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+			    writer.write(kafString);
+		        writer.close();
+
 				try {
 					waitFlagL = process.waitFor();
 				} catch (InterruptedException e) {
@@ -153,8 +182,6 @@ public class IXALemmatiser implements Lemmatiser {
 		String lemOutput = "NON ANNOTATED";
 
 		// Loading paths from the config file
-		String jarTok = p.getProperty("ixaTok");
-		Annotator.checkExists(jarTok, "The IXA tokeniser cannot be found at ");
 		String jarLem = p.getProperty("ixaLem");
 		Annotator.checkExists(jarLem, "The IXA lemmatiser cannot be found at ");
 
@@ -175,37 +202,31 @@ public class IXALemmatiser implements Lemmatiser {
 					"has not been detected and PoS and lemmatisation models cannot be loaded.");
 		}
 		
-		// Parameters needed to tokenise raw text into NAF format needed for lemmatisation
-		String normalisation = "-nptb";
-		if (lang.equalsIgnoreCase("es")) {
-			normalisation = "-nancora";
-		}
-		String[] commandIxa = { "java", "-jar", jarTok, "tok", "-l", lang, normalisation};
-		String nameTMPtok = "output"+Math.random()+".tmp";
-		File fileTMPtok = new File(nameTMPtok);
-
-		String nameTMPin = "input"+Math.random()+".tmp";
-		File fileTMPin = new File(nameTMPin);
-		// IXA only recognises a sentence if it ends with a punctuation token
-		if (!input.matches(".*[.!?]$")){
-			input=input+".";
-		}
-		try {
-			FileIO.stringToFile(fileTMPin, input, false);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			logger.error("File "+nameTMPin+" could not be created.");
-		}
+		// Previous normalisation
+		logger.warn("Text is being normalised.");
+		String normalised = Normaliser.replacements(input, lang);
 		
-		// Run the preliminary tokenisation
-		ProcessBuilder builder = new ProcessBuilder(commandIxa);
-		builder.redirectInput(fileTMPin);
-		builder.redirectOutput(fileTMPtok);
-
-		logger.info("Starting preliminary tokenisation...");
+        // Parameters needed to tokenise raw text into raw text for the languages in STS
+		String language = "-l"+lang;
+		String exe = p.getProperty("mosesTok");
+		Annotator.checkExists(exe, "The moses tokenisation script cannot be found at ");
+		
+		String[] commandTok = {"perl", exe, language};
+		//perl mosesdecoder/scripts/tokenizer/tokenizerNO2html.perl -l de < in > out
+			
+		// Run the tokeniser in a separate system process
+		ProcessBuilder builder = new ProcessBuilder(commandTok);	
+		logger.info("Starting tokenisation with moses scripts...");
 		int waitFlag = 1;
+		String tokOutput = "";
 		try {
 			Process process = builder.start();
+			OutputStream stdin = process.getOutputStream();
+		    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+		    writer.write(normalised);
+	        writer.close();
+			InputStream outputTok = process.getInputStream();
+			tokOutput = IOUtils.toString(outputTok, "UTF-8");
 			try {
 				waitFlag = process.waitFor();
 			} catch (InterruptedException e) {
@@ -214,29 +235,50 @@ public class IXALemmatiser implements Lemmatiser {
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("Some error occurred when starting the ProcessBuilder for tokenisation "+
-			"of file "+input.toString()+" with IXA pipe.");
+			"of file "+input.toString()+" with moses tokenizer.");
 		} 
-		
-		// Temporary file (conll format) with the lemmatisation
-		String nameTMP2 = "lem"+Math.random()+".tmp";
-		File fileTMP2 = new File(nameTMP2);
 
 		if (waitFlag == 0) {
 			logger.info("Tokenisation done.");
-	
+			//fileTMP.delete();
+			
+            // Convert to KAF format, needed for lemmatisation
+			logger.info("Converting output to KAF format...");
+			String kafVersion = "home-made";
+			String kafString = "";
+		    BufferedReader noTokReader = null;
+			try {
+				noTokReader = new BufferedReader(new StringReader(tokOutput));
+			    KAFDocument kaf = new KAFDocument(lang, kafVersion);
+				FormatConverter.tokensToKAF(noTokReader, kaf);
+			    kafString = kaf.toString();
+				noTokReader.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+			// Temporary file (conll format) with the lemmatisation
+			String nameTMP2 = "lem"+Math.random()+".tmp";
+			File fileTMP2 = new File(nameTMP2);
+
 			//java -jar ixa-pipe-pos-1.5.0.jar tag -m en-pos-perceptron-autodict01-conll09.bin -lm en-lemma-perceptron-conll09.bin
 			String modelPos = "-m"+posM;
 			//String[] commandIxaLem = {"java", "-jar", jarLem, "tag", modelPos, modelLem};
 			String[] commandIxaLem = {"java", "-jar", jarLem, "tag", modelPos, "--lemmatizerModel", lemM, "-oconll"};
 	
 			ProcessBuilder builderLem = new ProcessBuilder(commandIxaLem);
-			builderLem.redirectInput(fileTMPtok);
 			builderLem.redirectOutput(fileTMP2);
-			//builderLem.redirectError(new File("er.txt"));
 			logger.info("Starting lemmatisation...");
+
 			int waitFlagL =1;
 			try {
 				Process process = builderLem.start();
+				OutputStream stdin = process.getOutputStream();
+			    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
+			    writer.write(kafString);
+		        writer.close();
+
 				try {
 					waitFlagL = process.waitFor();
 				} catch (InterruptedException e) {
@@ -246,10 +288,8 @@ public class IXALemmatiser implements Lemmatiser {
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("Some error occurred when starting the ProcessBuilder for lemmatisation "+
-				"of file "+fileTMPtok.toString()+" with IXA pipe.");
+				"with IXA pipe.");
 			} 
-			fileTMPin.delete();
-			fileTMPtok.delete();
 			if (waitFlagL == 0) {
 				lemOutput = FormatConverter.conllLema2Factors(fileTMP2);
 				fileTMP2.delete();

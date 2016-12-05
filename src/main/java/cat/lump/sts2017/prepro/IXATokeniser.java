@@ -14,7 +14,7 @@ import cat.lump.aq.basics.log.LumpLogger;
  * Implements the Tokeniser class with the functionalities of the ixa-pipe
  * TODO Now it is executed as a call to the binary. Try to use as an API
  * 
- * @author cristinae
+ * @author cristina
  * @since Nov 29, 2016
  */
 public class IXATokeniser implements Tokeniser {
@@ -37,7 +37,6 @@ public class IXATokeniser implements Tokeniser {
 	 */
 	public void execute(Properties p, File input, String lang, File output) {
 
-
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
 		String normalisation = "-nptb";
@@ -47,9 +46,14 @@ public class IXATokeniser implements Tokeniser {
 		String jar = p.getProperty("ixaTok");
 		String[] commandIxa = { "java", "-jar", jar, "tok", language, "-ooneline", normalisation};
 
+		// IXA only recognises a sentence if it ends with a punctuation token
+		String nameTMP = "input4IXA"+Math.random()+".tmp";
+		File input4IXA = new File(nameTMP);
+		FormatConverter.raw2punct(input, input4IXA);
+		
 		// Run  in a separate system process
 		ProcessBuilder builder = new ProcessBuilder(commandIxa);
-		builder.redirectInput(input);
+		builder.redirectInput(input4IXA);
 		builder.redirectOutput(output);
 		logger.info("Starting tokenisation...");
 		try {
@@ -60,15 +64,14 @@ public class IXATokeniser implements Tokeniser {
 			"of file "+input.toString()+" with IXA pipe.");
 		} 
 		logger.info("Tokenisation done.");
+		input4IXA.delete();
 		
 	}
 
 	/** 
 	 * Runs the tokeniser on an input string. Returns the tokenised string.
-	 * TODO: It is also splitting the sentences. Remove.
+	 * TODO: It is also splitting the sentences. Remove (HOW?!).
 	 * 
-	 * @param jar
-	 * 			Location of the tokeniser executable
 	 * @param input
 	 * 			Input string text
 	 * @param lang
@@ -90,6 +93,10 @@ public class IXATokeniser implements Tokeniser {
 	    String jar = p.getProperty("ixaTok");
 		String[] commandIxa = { "java", "-jar", jar, "tok", language, "-ooneline", normalisation};
 
+		// IXA only recognises a sentence if it ends with a punctuation token
+		if (!input.matches(".*[.!?]$")){
+			input=input+".";
+		}
 		// Convert the input string into a file
 		// TODO there must be a better way to give the input
 		String nameTMP = "input"+Math.random()+".tmp";
