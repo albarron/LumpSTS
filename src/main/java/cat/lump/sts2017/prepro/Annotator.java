@@ -192,7 +192,9 @@ public class Annotator {
 
 	
 	/** 
-	 * Utils (This should be somewhere else)
+	 * Utils 
+	 * 
+	 * TODO This should be somewhere else
 	 */
 	public static void checkExists(String input, String errorMessage){
 		if (!new File(input).isFile()){

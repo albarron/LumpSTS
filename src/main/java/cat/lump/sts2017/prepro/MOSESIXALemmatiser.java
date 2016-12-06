@@ -12,7 +12,6 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 
-import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
 import ixa.kaflib.KAFDocument;
 
@@ -88,6 +87,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 			Process process = builder.start();
 			InputStream outputTok = process.getInputStream();
 			tokOutput = IOUtils.toString(outputTok, "UTF-8");
+			tokOutput = tokOutput.replaceAll("(?m)^\\s+$", ""); // deletes empty line at the end
 			try {
 				waitFlag = process.waitFor();
 			} catch (InterruptedException e) {

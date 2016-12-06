@@ -48,9 +48,10 @@ public class Normaliser {
 		try {
 		    inputStream = new FileInputStream(input);
 		    sc = new Scanner(inputStream, "UTF-8");
+		    sc.useDelimiter("[\r\n]+");
 		    int i = 0;
 		    while (sc.hasNext()) {
-		        String line = sc.nextLine();
+		        String line = sc.next();
 		        line = replacements(line, language);
 		        bw.append(line);
 		        bw.newLine();
@@ -79,8 +80,7 @@ public class Normaliser {
 		    if (sc != null) {
 		        sc.close();
 		        try {
-		        	bw.newLine();
-					bw.close();
+		        	bw.close();
 					fw.close();
 				} catch (IOException e) {
 					e.printStackTrace();

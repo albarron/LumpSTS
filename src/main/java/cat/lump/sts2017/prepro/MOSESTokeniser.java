@@ -58,7 +58,7 @@ public class MOSESTokeniser implements Tokeniser {
 		builder.redirectOutput(output);
 		logger.info("Starting tokenisation...");
 		try {
-			Process process = builder.start();
+			builder.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error("Some error occurred when starting the ProcessBuilder for tokenisation "+

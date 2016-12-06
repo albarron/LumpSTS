@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.xml.sax.SAXException;
 
 import com.google.common.io.CharStreams;
@@ -69,11 +70,11 @@ public class FormatConverter {
 		    while (sc.hasNext()) {
 		        String line = sc.nextLine();
 		        // This is the true conversion
-		        Matcher m = Pattern.compile("(.+\t)+").matcher(line);
-		        String lineFactors = "";
+		        Matcher m = Pattern.compile("^(.+)\t(.+)\t(.+)").matcher(line);
 		        if (m.find()){
-			        lineFactors = line.replace("\t", "|");	
-			        bw.append(lineFactors+" ");
+			        //lineFactors = line.replace("\t", "|");	
+		        	//Inversion in conll format (reason: compatibility with Arabic)
+			        bw.append(m.group(1)+"|"+m.group(3)+"|"+m.group(2)+" ");
 		        } else {
 		        	bw.newLine();
 		        }
@@ -215,12 +216,14 @@ public class FormatConverter {
 			Integer i = 1;
 		    inputStream = new FileInputStream(inputRaw);
 		    sc = new Scanner(inputStream, "UTF-8");
+		    // scanning by nextLine splits more than necessary in some corpora
+		    sc.useDelimiter("[\r\n]+");
 		    while (sc.hasNext()) {
-		        String line = sc.nextLine();
+		        String line = sc.next();
 		        bw.append("\t<in_seg id=\"SENT");
 		        bw.append(i.toString());
 		        bw.append("\"> ");
-		        bw.append(line);
+		        bw.append(StringEscapeUtils.escapeXml(line));
 		        bw.append(" </in_seg>");
 	        	bw.newLine();
 		        // Write every 10000 lines
@@ -398,6 +401,13 @@ public class FormatConverter {
 		
 	}
 
+	/**
+	 * Method adapted from ixa-tok to generate a document in KAF format
+	 * 
+	 * @param breader
+	 * @param kaf
+	 * @throws IOException
+	 */
     public static void tokensToKAF(final Reader breader, final KAFDocument kaf)
 		     throws IOException {
 		int noSents = 0;
