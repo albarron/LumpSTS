@@ -48,7 +48,7 @@ public class Normaliser {
 		try {
 		    inputStream = new FileInputStream(input);
 		    sc = new Scanner(inputStream, "UTF-8");
-		    sc.useDelimiter("[\r\n]+");
+		    sc.useDelimiter("[\r\n]");
 		    int i = 0;
 		    while (sc.hasNext()) {
 		        String line = sc.next();

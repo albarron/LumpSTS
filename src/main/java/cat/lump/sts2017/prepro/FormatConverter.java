@@ -137,14 +137,15 @@ public class FormatConverter {
 		try {
 		    inputStream = new FileInputStream(fIn);
 		    sc = new Scanner(inputStream, "UTF-8");
+		    int i = 0;
 		    while (sc.hasNext()) {
 		        String line = sc.nextLine();
 		        // This is the true conversion
-		        Matcher m = Pattern.compile("(.+\t)+").matcher(line);
-		        String lineFactors = "";
+		        Matcher m = Pattern.compile("^(.+)\t(.+)\t(.+)").matcher(line);
 		        if (m.find()){
-			        lineFactors = line.replace("\t", "|");	
-			        sb.append(lineFactors+" ");
+			        //lineFactors = line.replace("\t", "|");	
+		        	//Inversion in conll format (reason: compatibility with Arabic)
+			        sb.append(m.group(1)+"|"+m.group(3)+"|"+m.group(2)+" ");
 		        } else {
 		        	sb.append(lineSeparator);
 		        }
@@ -217,7 +218,7 @@ public class FormatConverter {
 		    inputStream = new FileInputStream(inputRaw);
 		    sc = new Scanner(inputStream, "UTF-8");
 		    // scanning by nextLine splits more than necessary in some corpora
-		    sc.useDelimiter("[\r\n]+");
+		    sc.useDelimiter("[\r\n]");
 		    while (sc.hasNext()) {
 		        String line = sc.next();
 		        bw.append("\t<in_seg id=\"SENT");
