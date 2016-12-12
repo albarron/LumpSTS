@@ -133,7 +133,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 			//builderLem.redirectInput(output);
 			builderLem.redirectOutput(fileTMP2);
 			//builderLem.redirectError(new File("er.txt"));
-			logger.info("Starting lemmatisation...");
+			logger.info("Starting lemmatisation with IXA pipes...");
 
 			int waitFlagL =1;
 			try {
@@ -269,7 +269,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 	
 			ProcessBuilder builderLem = new ProcessBuilder(commandIxaLem);
 			builderLem.redirectOutput(fileTMP2);
-			logger.info("Starting lemmatisation...");
+			logger.info("Starting lemmatisation with IXA pipes...");
 
 			int waitFlagL =1;
 			try {
