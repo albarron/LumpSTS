@@ -7,11 +7,30 @@ ___
 `git clone https://github.com/cristinae/WikiTailor.git` <br />
 `mvn -DskipTests clean compile assembly:single install` <br />
 
+If you need to annotate corpora:
 2. Download and install MADAMIRA jar <br />
 [License for downloading](http://innovation.columbia.edu/technologies/cu14012_arabic-language-disambiguation-for-natural-language-processing-applications) <br />
 `mvn install:install-file -Dfile={$PATH}/MADAMIRA-release-20160516-2.1/MADAMIRA-release-20160516-2.1.jar -DgroupId=edu.columbia.ccls.madamira  -DartifactId=MADAMIRA-release -Dversion=20160516-2.1 -Dpackaging=jar` <br />
 
-3. Download and install this repository <br />
+If you need to work with BabelNet indices:
+
+3. Download and install BabelNet API and its dependencies
+
+[API download] (http://babelnet.org/data/3.7/BabelNet-API-3.7.zip)  `unzip BabelNet-API-3.7.zip` <br />
+`mvn install:install-file -Dfile=lib/jltutils-2.2.jar -DgroupId=it.uniroma1.lcl.jlt -DartifactId=jltutils -Dversion=2.2 -Dpackaging=jar` <br />
+`unzip -p babelnet-api-3.7.jar META-INF/maven/it.uniroma1.lcl.babelnet/babelnet-api/pom.xml | grep -vP '<(scope|systemPath)>' >babelnet-api-3.7.pom` <br />
+`mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />
+
+4. Download BabelNet indices and make the API aware of them
+
+[Indices download] (http://babelnet.org/login) `tar xjvf babelnet-3.7-index.tar.bz2` <br />
+
+In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the index:  <br />
+ `babelnet.dir=/home/usr/BabelNet-3.7` <br />
+In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  <br />
+ `jlt.wordnetPrefix=/usr/local/share/wordnet` <br />
+
+5. Download and install this repository <br />
 `git clone https://github.com/albarron/LumpSTS.git` <br />
 `mvn clean dependency:copy-dependencies package` <br />
 
