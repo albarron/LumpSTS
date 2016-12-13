@@ -14,13 +14,14 @@ If you need to annotate corpora: <br />
 
 If you need to work with BabelNet indices: <br />
 3. Download and install BabelNet API and its dependencies <br />
-[API download] (http://babelnet.org/data/3.7/BabelNet-API-3.7.zip)  `unzip BabelNet-API-3.7.zip` <br />
+[API download] (http://babelnet.org/data/3.7/BabelNet-API-3.7.zip) <br />
+`unzip BabelNet-API-3.7.zip` <br />
 `mvn install:install-file -Dfile=lib/jltutils-2.2.jar -DgroupId=it.uniroma1.lcl.jlt -DartifactId=jltutils -Dversion=2.2 -Dpackaging=jar` <br />
 `unzip -p babelnet-api-3.7.jar META-INF/maven/it.uniroma1.lcl.babelnet/babelnet-api/pom.xml | grep -vP '<(scope|systemPath)>' >babelnet-api-3.7.pom` <br />
-`mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />
-
+`mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />  <br />
 4. Download BabelNet indices and make the API aware of them <br />
-[Indices download] (http://babelnet.org/login) `tar xjvf babelnet-3.7-index.tar.bz2` <br />
+[Indices download] (http://babelnet.org/login) <br />
+`tar xjvf babelnet-3.7-index.tar.bz2` <br />
 In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the index:  <br />
  `babelnet.dir=/home/usr/BabelNet-3.7` <br />
 In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  <br />
@@ -35,6 +36,9 @@ In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  
 [Download page](http://ixa2.si.ehu.es/ixa-pipes/download.html)<br />
 Include their path in the configuration file lumpSTS.ini<br />
 
+2. Download Moses tokeniser (or better, ask me for a modified version)<br />
+
+
 ```
 ### External software and models
 # IXA pipe
@@ -44,5 +48,8 @@ posEs=/home/cristinae/soft/processors/ixa/morph-models-1.5.0/es/es-pos-perceptro
 lemEs=/home/cristinae/soft/processors/ixa/morph-models-1.5.0/es/es-lemma-perceptron-ancora-2.0.bin
 posEn=/home/cristinae/soft/processors/ixa/morph-models-1.5.0/en/en-pos-perceptron-autodict01-conll09.bin
 lemEn=/home/cristinae/soft/processors/ixa/morph-models-1.5.0/en/en-lemma-perceptron-conll09.bin
+
+# Moses
+mosesTok=/home/cristinae/soft/processors/moses/tokenizerNO2html.perl
 ```
 
