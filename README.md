@@ -20,7 +20,7 @@ If you need to work with BabelNet indices: <br />
 `unzip BabelNet-API-3.7.zip` <br />
 `mvn install:install-file -Dfile=lib/jltutils-2.2.jar -DgroupId=it.uniroma1.lcl.jlt -DartifactId=jltutils -Dversion=2.2 -Dpackaging=jar` <br />
 `unzip -p babelnet-api-3.7.jar META-INF/maven/it.uniroma1.lcl.babelnet/babelnet-api/pom.xml | grep -vP '<(scope|systemPath)>' >babelnet-api-3.7.pom` <br />
-`mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />  <br />
+`mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />
 
 4. Download BabelNet indices and make the API aware of them <br />
 [Indices download] (http://babelnet.org/login) <br />
@@ -29,6 +29,8 @@ In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the i
  `babelnet.dir=/home/usr/BabelNet-3.7` <br />
 In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  <br />
  `jlt.wordnetPrefix=/usr/local/share/wordnet` <br />
+
+Finally: <br />
 
 5. Download and install this repository <br />
 `git clone https://github.com/albarron/LumpSTS.git` <br />
@@ -40,7 +42,7 @@ In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  
 Include their path in the configuration file lumpSTS.ini<br />
 
 2. Download Moses tokeniser (or better, ask me for a modified version)<br />
-Include its path in the configuration file lumpSTS.ini<br />
+Include its path in the configuration file lumpSTS.ini<br /><br />
 
 
 ```
