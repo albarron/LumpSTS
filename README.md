@@ -25,10 +25,11 @@ If you need to work with BabelNet indices: <br />
 4. Download BabelNet indices and make the API aware of them <br />
 [Indices download] (http://babelnet.org/login) <br />
 `tar xjvf babelnet-3.7-index.tar.bz2` <br />
-In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the index:  <br />
+- In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the index:  <br />
  `babelnet.dir=/home/usr/BabelNet-3.7` <br />
-In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  <br />
+- In `./BabelNet-API-3.7/config/jlt.var.properties` include the path to WordNet:  <br />
  `jlt.wordnetPrefix=/usr/local/share/wordnet` <br />
+- Move the `./BabelNet-API-3.7/config` folder to your ${basedir}  <br />
 
 Finally: <br />
 
