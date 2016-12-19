@@ -137,7 +137,6 @@ public class FormatConverter {
 		try {
 		    inputStream = new FileInputStream(fIn);
 		    sc = new Scanner(inputStream, "UTF-8");
-		    int i = 0;
 		    while (sc.hasNext()) {
 		        String line = sc.nextLine();
 		        // This is the true conversion

@@ -177,7 +177,12 @@
     	<groupId>log4j</groupId>
     	<artifactId>log4j</artifactId>
     	<version>1.2.14</version>
-    </dependency>
+    </dependency> 
+    <dependency>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-core</artifactId>
+		<version>2.0-rc1</version>
+	</dependency>	
     <dependency>
     	<groupId>oro</groupId>
     	<artifactId>oro</artifactId>
@@ -254,6 +259,7 @@
         <artifactId>icu4j</artifactId>
         <version>56.1</version>
     </dependency>
+     -->
     <dependency>
         <groupId>it.uniroma1.lcl.babelnet</groupId>
         <artifactId>babelnet-api</artifactId>
@@ -264,7 +270,27 @@
         <artifactId>jltutils</artifactId>
         <version>2.2</version>
     </dependency>
- -->
+    <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.lucene</artifactId>
+        <version>4.1.0_2</version>
+	</dependency>
+	<dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>4.9.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.lucene</groupId>
+    	<artifactId>lucene-analyzers-common</artifactId>
+    	<version>4.9.0</version>
+    </dependency>
+    <dependency>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-queryparser</artifactId>
+		<version>4.9.0</version>
+	</dependency>
+	
   </dependencies>
 
   <build>
@@ -304,13 +330,13 @@
 				</descriptorRefs>
 			</configuration>
 			<executions>
-                		<execution>
-                    			<id>make-assembly</id>
-                    			<phase>package</phase>
-                    			<goals>
-                        			<goal>single</goal>
-                    			</goals>
-                		</execution>
+                <execution>
+                   	<id>make-assembly</id>
+                   	<phase>package</phase>
+                   	<goals>
+                       	<goal>single</goal>
+                    </goals>
+                </execution>
 			</executions>
 		</plugin>
 		<plugin>
