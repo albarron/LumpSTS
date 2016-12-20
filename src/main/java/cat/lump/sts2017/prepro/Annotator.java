@@ -191,6 +191,16 @@ public class Annotator {
 	}
 
 	
+	/** 
+	 * Utils 
+	 * 
+	 * TODO This should be somewhere else
+	 */
+	public static void checkExists(String input, String errorMessage){
+		if (!new File(input).isFile()){
+			logger.error(errorMessage + input);
+		}
+	}
 	
 	/** 
 	 * Getters 
@@ -201,5 +211,5 @@ public class Annotator {
 	
 	public String getPropertyStr(String key){
 		return p.getProperty(key);
-} 
+	} 
 }

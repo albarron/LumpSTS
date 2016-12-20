@@ -50,7 +50,7 @@ public class MADALemmatiser implements Lemmatiser {
 		String nameTMP = "madaIN"+Math.random()+".tmp";
 		File inputF = new File(nameTMP);
 
-		String nameTMP2 = "madaIN"+Math.random()+".tmp";
+		String nameTMP2 = "madaOUT"+Math.random()+".tmp";
 		File outputMADA = new File(nameTMP2);
 
 		String config = ConfigConstants.MADACONFIG4LEM;
@@ -65,7 +65,7 @@ public class MADALemmatiser implements Lemmatiser {
             jc = JAXBContext.newInstance(MADAMIRA_NS);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
 
-            // 1The structure of the MadamiraInput object is exactly similar to the
+            // The structure of the MadamiraInput object is exactly similar to the
             // madamira_input element in the XML
             final MadamiraInput input = (MadamiraInput)unmarshaller.unmarshal(inputF);
 

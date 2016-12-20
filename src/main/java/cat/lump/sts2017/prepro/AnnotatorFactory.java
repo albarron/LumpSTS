@@ -18,9 +18,9 @@ public class AnnotatorFactory {
 	 */
 	public Tokeniser getTokeniser(String language) {
 		if (language.equalsIgnoreCase("en")) {
-			return new IXATokeniser();
+			return new MOSESTokeniser();
 		} else if (language.equalsIgnoreCase("es")) {
-			return new IXATokeniser();
+			return new MOSESTokeniser();
 		} else if (language.equalsIgnoreCase("ar")) {
 			return new MADATokeniser();
 		} 
@@ -35,9 +35,9 @@ public class AnnotatorFactory {
 	 */
 	public Lemmatiser getLemmatiser(String language) {
 		if (language.equalsIgnoreCase("en")) {
-			return new IXALemmatiser();
+			return new MOSESIXALemmatiser();
 		} else if (language.equalsIgnoreCase("es")) {
-			return new IXALemmatiser();
+			return new MOSESIXALemmatiser();
 		} else if (language.equalsIgnoreCase("ar")) {
 			return new MADALemmatiser();
 		} 
