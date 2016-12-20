@@ -213,13 +213,13 @@
    	<resources>
 		<!-- Where do we put them? Asymetry between IXA and MIRA-->
      		<resource>
-       			<directory>/home/cristinae/soft/processors/MADAMIRA-release-20160516-2.1/resources</directory>
+       			<directory>~/software/processors/MADAMIRA-release-20160516-2.1/resources</directory>
      		</resource>
      		<resource>
-       			<directory>/home/cristinae/soft/processors/MADAMIRA-release-20160516-2.1/config</directory>
+       			<directory>~/software/processors/MADAMIRA-release-20160516-2.1/config</directory>
      		</resource>
      		<resource>
-       			<directory>/home/cristinae/soft/processors/MADAMIRA-release-20160516-2.1/resources/schema</directory>
+       			<directory>~/software/processors/MADAMIRA-release-20160516-2.1/resources/schema</directory>
      		</resource>
    	</resources>
  
