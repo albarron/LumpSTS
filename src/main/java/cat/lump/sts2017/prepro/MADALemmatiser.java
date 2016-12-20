@@ -1,15 +1,18 @@
 package cat.lump.sts2017.prepro;
 
 import java.io.File;
-import java.util.Properties;
-import cat.lump.aq.basics.log.LumpLogger;
 
+import cat.lump.aq.basics.log.LumpLogger;
 import edu.columbia.ccls.madamira.MADAMIRAWrapper;
 import edu.columbia.ccls.madamira.configuration.MadamiraInput;
 import edu.columbia.ccls.madamira.configuration.MadamiraOutput;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import org.ini4j.Profile.Section;
+
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -32,7 +35,7 @@ public class MADALemmatiser implements Lemmatiser {
 	 * Runs the lemmatiser on an input file.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 			Properties object with the config file's proper section loaded
 	 * 			(not needed for this software)
 	 * @param input
 	 * 			Input file
@@ -42,7 +45,7 @@ public class MADALemmatiser implements Lemmatiser {
 	 * @param output
 	 * 			File where to store the annotated source
 	 */
-	public void execute(Properties p, File inputRaw, String lang, File outputF) {
+	public void execute(Section p, File inputRaw, String lang, File outputF) {
 		
 		
 		logger.info("Lemmatising input text with MADAMIRA...");
@@ -118,7 +121,7 @@ public class MADALemmatiser implements Lemmatiser {
 	 * Runs the lemmatiser on an input string. Returns the string with the lemmas.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 			Properties object with the config file's proper section loaded
 	 * 			(not needed for this software)
 	 * @param input
 	 * 			Input string text
@@ -129,7 +132,7 @@ public class MADALemmatiser implements Lemmatiser {
 	 * @return 
 	 * 			String with the lemmas
 	 */
-	public String execute(Properties p, String input, String lang) {
+	public String execute(Section p, String input, String lang) {
 
 		// Default output
 		String lemOutput = "NON ANNOTATED";

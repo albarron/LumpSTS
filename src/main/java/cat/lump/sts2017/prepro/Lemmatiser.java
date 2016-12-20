@@ -1,7 +1,8 @@
 package cat.lump.sts2017.prepro;
 
 import java.io.File;
-import java.util.Properties;
+
+import org.ini4j.Profile.Section;
 
 /**
  * Interface to lemmatise raw text
@@ -15,7 +16,7 @@ public interface Lemmatiser {
 	 * Runs the lemmatiser on an input file.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+   *      Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
@@ -23,14 +24,14 @@ public interface Lemmatiser {
 	 * @param output
 	 * 			File where to store the lemmas
 	 */
-	public void execute(Properties p, File input, String lang, File output);
+	public void execute(Section p, File input, String lang, File output);
 
 	
 	/** 
 	 * Runs the lemmatiser on an input string. Returns the string with the lemmas.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 			Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input string text
 	 * @param lang
@@ -40,6 +41,6 @@ public interface Lemmatiser {
 	 * 			String with the lemmas
 	 */
 	//public String execute(String exeTok, String exeLem, String input, String lang);
-	public String execute(Properties p, String input, String lang);
+	public String execute(Section p, String input, String lang);
 
 }

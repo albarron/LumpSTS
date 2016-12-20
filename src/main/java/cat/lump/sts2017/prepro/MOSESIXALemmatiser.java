@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.ini4j.Profile.Section;
 
 import cat.lump.aq.basics.log.LumpLogger;
 import ixa.kaflib.KAFDocument;
@@ -32,7 +33,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 	 * Runs the lemmatiser on an input file.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 			Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
@@ -40,23 +41,23 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 	 * @param output
 	 * 			File where to store the annotated source
 	 */
-	public void execute(Properties p, File input, String lang, File output) {
+	public void execute(Section p, File input, String lang, File output) {
 
 		// Loading paths from the config file
-		String jarLem = p.getProperty("ixaLem");
+		String jarLem = p.get("ixaLem");
 		Annotator.checkExists(jarLem, "The IXA lemmatiser cannot be found at ");
 
 		String posM = "";
 		String lemM = "";
 		if (lang.equalsIgnoreCase("es")) {
-			posM = p.getProperty("posEs");
+			posM = p.get("posEs");
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
-			lemM = p.getProperty("lemEs");
+			lemM = p.get("lemEs");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else if (lang.equalsIgnoreCase("en")) {
-			posM = p.getProperty("posEn");
+			posM = p.get("posEn");
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
-			lemM = p.getProperty("lemEn");
+			lemM = p.get("lemEn");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else {
 			logger.error("Your language " + lang + 
@@ -71,7 +72,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 		
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
-		String exe = p.getProperty("mosesTok");
+		String exe = p.get("mosesTok");
 		Annotator.checkExists(exe, "The moses tokenisation script cannot be found at ");
 		
 		String[] commandTok = {"perl", exe, language};
@@ -168,7 +169,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 	 * Runs the lemmatiser on an input string. Returns the string with the lemmas.
 	 * 
 	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 			Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input string text
 	 * @param lang
@@ -177,25 +178,25 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 	 * @return 
 	 * 			String with the lemmas
 	 */
-	public String execute(Properties p, String input, String lang) {
+	public String execute(Section p, String input, String lang) {
 		// Default output
 		String lemOutput = "NON ANNOTATED";
 
 		// Loading paths from the config file
-		String jarLem = p.getProperty("ixaLem");
+		String jarLem = p.get("ixaLem");
 		Annotator.checkExists(jarLem, "The IXA lemmatiser cannot be found at ");
 
 		String posM = "";
 		String lemM = "";
 		if (lang.equalsIgnoreCase("es")) {
-			posM = p.getProperty("posEs");
+			posM = p.get("posEs");
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
-			lemM = p.getProperty("lemEs");
+			lemM = p.get("lemEs");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else if (lang.equalsIgnoreCase("en")) {
-			posM = p.getProperty("posEn");
+			posM = p.get("posEn");
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
-			lemM = p.getProperty("lemEn");
+			lemM = p.get("lemEn");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else {
 			logger.error("Your language " + lang + 
@@ -208,7 +209,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 		
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
-		String exe = p.getProperty("mosesTok");
+		String exe = p.get("mosesTok");
 		Annotator.checkExists(exe, "The moses tokenisation script cannot be found at ");
 		
 		String[] commandTok = {"perl", exe, language};

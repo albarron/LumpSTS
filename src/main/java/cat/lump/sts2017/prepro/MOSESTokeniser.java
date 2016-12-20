@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.ini4j.Profile.Section;
 
 import cat.lump.aq.basics.log.LumpLogger;
 
@@ -28,8 +28,8 @@ public class MOSESTokeniser implements Tokeniser {
 	/** 
 	 * Runs the tokeniser on an input file.
 	 * 
-	 * @param p
-	 * 			Properties object with the config file loaded
+	 * @param section
+   *      Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input file
 	 * @param lang
@@ -37,7 +37,7 @@ public class MOSESTokeniser implements Tokeniser {
 	 * @param output
 	 * 			File where to store the tokenisation
 	 */
-	public void execute(Properties p, File input, String lang, File output) {
+	public void execute(Section section, File input, String lang, File output) {
 
 		// Previous normalisation
 		logger.warn("Text is being normalised.");
@@ -47,7 +47,7 @@ public class MOSESTokeniser implements Tokeniser {
 		
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
-		String exe = p.getProperty("mosesTok");
+		String exe = section.get("mosesTok");
 		
 		String[] commandTok = { "perl", exe, language};
 		//perl mosesdecoder/scripts/tokenizer/tokenizerNO2html.perl -l de < in > out
@@ -57,6 +57,7 @@ public class MOSESTokeniser implements Tokeniser {
 		builder.redirectInput(fileTMP);
 		builder.redirectOutput(output);
 		logger.info("Starting tokenisation...");
+		System.out.println(commandTok);
 		try {
 			builder.start();
 		} catch (IOException e) {
@@ -72,8 +73,8 @@ public class MOSESTokeniser implements Tokeniser {
 	/** 
 	 * Runs the tokeniser on an input string. Returns the tokenised string.
 	 * 
-	 * @param p
-	 * 			Properties object with the config file loaded
+	 * @param section
+   *      Properties object with the config file's proper section loaded
 	 * @param input
 	 * 			Input string text
 	 * @param lang
@@ -82,7 +83,7 @@ public class MOSESTokeniser implements Tokeniser {
 	 * @return tokOutput
 	 * 			Tokenised string
 	 */
-	public String execute(Properties p, String input, String lang) {
+	public String execute(Section section, String input, String lang) {
 
 		// Default output
 		String tokOutput = "NON TOKENISED";
@@ -93,7 +94,7 @@ public class MOSESTokeniser implements Tokeniser {
 		
         // Parameters needed to tokenise raw text into raw text for the languages in STS
 		String language = "-l"+lang;
-		String exe = p.getProperty("mosesTok");
+		String exe = section.get("mosesTok");
 		
 		String[] commandTok = { "perl", exe, language};
 		//perl mosesdecoder/scripts/tokenizer/tokenizerNO2html.perl -l de < in > out

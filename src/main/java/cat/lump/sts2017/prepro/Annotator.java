@@ -9,10 +9,13 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.HelpFormatter;
+import org.ini4j.Ini;
+import org.ini4j.Profile.Section;
 
 import cat.lump.aq.basics.check.CHK;
 import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
+import cat.lump.sts2017.LumpIni;
 import cat.lump.sts2017.lumpConfig;
 
 /**
@@ -26,21 +29,23 @@ public class Annotator {
 
 
 	/** Language */
-	private String lang;
+	private final String lang;
 	/** Layer of annotation */
-	private String layer;
+	private final String layer;
 	
 	/** Configuration file */
-	private static Properties p;
+//	private static Properties p;
+
+	/** Configuration file section */
+	private static Section section;
 
 	/** Annotation object*/
-	private AnnotatorFactory annFactory;
+	private final AnnotatorFactory annFactory;
 	
 	/** Logger */
 	private static LumpLogger logger = 
 			new LumpLogger (Annotator.class.getSimpleName());
 
-	
 	/** Constructors */
 	public Annotator (String language, String layer, String iniFile) {
 		CHK.CHECK_NOT_NULL(language);
@@ -48,7 +53,8 @@ public class Annotator {
 		CHK.CHECK_NOT_NULL(iniFile);
 		this.lang = language;
 		this.layer = layer;
-		p = lumpConfig.getProperties(iniFile); 
+//		p = lumpConfig.getProperties(iniFile);
+		section = LumpIni.getProperties(iniFile);
 		logger = new LumpLogger(this.getClass().getCanonicalName());
 		annFactory = new AnnotatorFactory();		
 	}
@@ -155,12 +161,12 @@ public class Annotator {
 		if(layer.equalsIgnoreCase("tok")){
 			File output = new File(input+".tok");
 			Tokeniser tok = annFactory.getTokeniser(lang);
-			tok.execute(p, input, lang, output);
+			tok.execute(section, input, lang, output);
 		// Lemmatisation	
 		} else if (layer.equalsIgnoreCase("lem")){
 			File output = new File(input+".wpl");
 			Lemmatiser lem = annFactory.getLemmatiser(lang);
-			lem.execute(p, input, lang, output);
+			lem.execute(section, input, lang, output);
 		}
 	}
 
@@ -181,11 +187,11 @@ public class Annotator {
 		// Tokenisation
 		if(layer.equalsIgnoreCase("tok")){
 			Tokeniser tok = annFactory.getTokeniser(lang);
-			annOutput = tok.execute(p, input, lang);
+			annOutput = tok.execute(section, input, lang);
 		// Lemmatisation	
 		} else if (layer.equalsIgnoreCase("lem")){
 			Lemmatiser lem = annFactory.getLemmatiser(lang);
-			annOutput = lem.execute(p, input, lang);
+			annOutput = lem.execute(section, input, lang);
 		}
 		return annOutput;
 	}
@@ -205,11 +211,12 @@ public class Annotator {
 	/** 
 	 * Getters 
 	 */
+	//TODO albarron, Dec 20. Not sure why we need these getters here;
 	public int getPropertyInt(String key){
-		return Integer.valueOf(p.getProperty(key));
+		return Integer.valueOf(section.get(key));
 	} 
 	
 	public String getPropertyStr(String key){
-		return p.getProperty(key);
+		return section.get(key);
 	} 
 }

@@ -1,15 +1,18 @@
 package cat.lump.sts2017.prepro;
 
 import java.io.File;
-import java.util.Properties;
-import cat.lump.aq.basics.log.LumpLogger;
 
+import cat.lump.aq.basics.log.LumpLogger;
 import edu.columbia.ccls.madamira.MADAMIRAWrapper;
 import edu.columbia.ccls.madamira.configuration.MadamiraInput;
 import edu.columbia.ccls.madamira.configuration.MadamiraOutput;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import org.ini4j.Profile.Section;
+
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -27,12 +30,14 @@ public class MADATokeniser implements Tokeniser {
     /** MADAMIRA namespace as defined by its XML schema */
     private static final String MADAMIRA_NS = "edu.columbia.ccls.madamira.configuration";
 
-    
+   
 	/** 
 	 * Runs the tokeniser on an input file.
+	 * TODO if the section (formerly section) is not necessary here, why do we want it?
 	 * 
-	 * @param p
-	 * 			Properties object with the config file loaded
+	 * 
+	 * @param section
+   *      Properties object with the config file's proper section loaded
 	 * 			(not needed for this software)
 	 * @param input
 	 * 			Input file
@@ -42,7 +47,7 @@ public class MADATokeniser implements Tokeniser {
 	 * @param output
 	 * 			File where to store the annotated source
 	 */
-	public void execute(Properties p, File inputRaw, String lang, File outputF) {
+	public void execute(Section section, File inputRaw, String lang, File outputF) {
 		
 		
 		logger.info("Tokenising input text with MADAMIRA...");
@@ -115,8 +120,8 @@ public class MADATokeniser implements Tokeniser {
 	/** 
 	 * Runs the lemmatiser on an input string. Returns the string with the lemmas.
 	 * 
-	 * @param p
-	 * 			Properties object with the config file loaded
+	 * @param section
+   *      Properties object with the config file's proper section loaded
 	 * 			(not needed for this software)
 	 * @param input
 	 * 			Input string text
@@ -127,7 +132,7 @@ public class MADATokeniser implements Tokeniser {
 	 * @return 
 	 * 			String with the lemmas
 	 */
-	public String execute(Properties p, String input, String lang) {
+	public String execute(Section section, String input, String lang) {
 
 		// Default output
 		String lemOutput = "NON ANNOTATED";
