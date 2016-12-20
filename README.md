@@ -15,13 +15,13 @@ If you need to annotate corpora: <br />
 
 If you need to work with BabelNet indices: <br />
 
-3. Download and install BabelNet API and its dependencies <br />
+3. Download and install the BabelNet API and its dependencies <br />
 [API download] (http://babelnet.org/data/3.7/BabelNet-API-3.7.zip) <br />
 `unzip BabelNet-API-3.7.zip` <br />
 `mvn install:install-file -Dfile=lib/jltutils-2.2.jar -DgroupId=it.uniroma1.lcl.jlt -DartifactId=jltutils -Dversion=2.2 -Dpackaging=jar` <br />
 `unzip -p babelnet-api-3.7.jar META-INF/maven/it.uniroma1.lcl.babelnet/babelnet-api/pom.xml | grep -vP '<(scope|systemPath)>' >babelnet-api-3.7.pom` <br />
+(consider using homebrew's ggrep if on OsX)<br />
 `mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />
-(consider using homebrew's ggrep if on OsX)
 
 4. Download BabelNet indices and make the API aware of them <br />
 [Indices download] (http://babelnet.org/login) <br />
