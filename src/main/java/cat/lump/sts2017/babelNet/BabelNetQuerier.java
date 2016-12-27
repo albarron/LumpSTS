@@ -5,6 +5,8 @@ import java.io.IOException;
 import cat.lump.aq.basics.log.LumpLogger;
 import it.uniroma1.lcl.babelnet.BabelNet;
 import it.uniroma1.lcl.babelnet.BabelSynset;
+import it.uniroma1.lcl.babelnet.BabelSynsetType;
+import it.uniroma1.lcl.babelnet.data.BabelPOS;
 import it.uniroma1.lcl.jlt.util.Language;
 
 
@@ -16,7 +18,7 @@ public class BabelNetQuerier {
 			new LumpLogger (BabelNetQuerier.class.getSimpleName());
 
 	
-	public static String retrieveID(BabelNet bn, String lemma, String lang) {
+	public static String retrieveID(BabelNet bn, String lemma, String lang, Boolean NE) {
 		
 		String bnID = null;
 //		List<BabelSynset> byl = bn.getSynsets("run", Language.EN, BabelPOS.NOUN, BabelSenseSource.WIKI, BabelSenseSource.OMWIKI);
@@ -24,7 +26,13 @@ public class BabelNetQuerier {
 
         try {
 			for (BabelSynset synset : bn.getSynsets(lemma, Language.EN)) {
-			    System.out.println("Synset ID: " + synset.getId());
+				BabelPOS pos = synset.getPOS();
+				BabelSynsetType type = synset.getSynsetType();
+				if(type.toString().equalsIgnoreCase("NAMED_ENTITY")){
+					
+				}
+				int relacions = synset.getEdges().size();
+			    System.out.println("Synset ID: " + synset.getId() + pos.toString() + relacions);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

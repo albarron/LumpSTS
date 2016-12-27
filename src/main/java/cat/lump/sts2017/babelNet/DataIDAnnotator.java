@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -20,7 +21,7 @@ import cat.lump.aq.basics.log.LumpLogger;
 import cat.lump.sts2017.lumpConfig;
 
 import it.uniroma1.lcl.babelnet.BabelNet;
-
+import it.uniroma1.lcl.babelnet.data.BabelPOS;
 
 /**
  * 
@@ -31,22 +32,23 @@ import it.uniroma1.lcl.babelnet.BabelNet;
  * @since Dec 15, 2016
  */
 public class DataIDAnnotator {
-
-	/** Configuration file */
-	private static Properties p;
 	
 	/** Logger */
 	private static LumpLogger logger = 
 			new LumpLogger (DataIDAnnotator.class.getSimpleName());
 
+	/** Conversion into BabelNet tags*/
+	private static Map<String, BabelPOS> posMapping = null;
+	
+	// This is somewhere else
 	public final static String lineSeparator = System.lineSeparator();
 
 
 	/** Constructor */
-	public DataIDAnnotator (String iniFile) {
-		CHK.CHECK_NOT_NULL(iniFile);
-		p = lumpConfig.getProperties(iniFile); 
-		//logger = new LumpLogger(this.getClass().getCanonicalName());
+	public DataIDAnnotator (String language) {
+		PoSFactory pf= new PoSFactory();
+		posMapping = pf.getPoSMapper(language);
+	
 	}
 
 	/**
@@ -68,8 +70,8 @@ public class DataIDAnnotator {
 		options.addOption("i", "input", true, 
 					"Input file to annotate (in Annotator format wpl)");		
 		options.addOption("h", "help", false, "This help");
-		options.addOption("c", "config", true,
-		        	"Configuration file for the lumpSTS project");
+		//options.addOption("c", "config", true,
+		//        	"Configuration file for the lumpSTS project");
 
 		try {			
 		    cLine = parser.parse( options, args );
@@ -111,16 +113,16 @@ public class DataIDAnnotator {
 		
 		// Config file
 		// Guessing if its an absolute or a relative path
-		String conf = cLine.getOptionValue("c");
+		/*String conf = cLine.getOptionValue("c");
 		String confFile;
 		if (conf.startsWith(FileIO.separator)){
 			confFile = conf;
 		} else {
 			confFile = System.getProperty("user.dir")+FileIO.separator+conf;
-		}
+		}*/
 
 		// Run
-		DataIDAnnotator ann = new DataIDAnnotator (confFile);
+		DataIDAnnotator ann = new DataIDAnnotator (language);
 		ann.annotate(input, language);
 
 	}
@@ -132,10 +134,9 @@ public class DataIDAnnotator {
 	 * 			input file to annotate
 	 * 
 	 */
-	private void annotate(File input, String lang) {
+	private void annotate(File input, String language) {
 
 		File output = new File(input+".bn");
-
 		BabelNet bn = BabelNet.getInstance();
 
 		// Initilise the writer
@@ -151,10 +152,16 @@ public class DataIDAnnotator {
 		        String line = sc.nextLine();
 		        String[] tokens = line.split("\\s+");
 		        for (String token:tokens) {  
-	        	
+		        	//afegir strip pels numeros de l¡arab
+		        	String id = "-";
 		        	String lemma = DataProcessor.readFactor3(token, 3);
-		        	//System.out.println(lemma);
-		        	String id = BabelNetQuerier.retrieveID(bn, lemma, lang);
+		        	String pos = DataProcessor.readFactor3(token, 2);
+		    		if (language.equalsIgnoreCase("en")) {
+		    		    id = getBNID_en(lemma, pos);	
+		    		} else if (language.equalsIgnoreCase("es")) {
+		    		} else if (language.equalsIgnoreCase("ar")) {
+		    		} 
+		        	
 		        }
 		        
 		    }
@@ -183,15 +190,50 @@ public class DataIDAnnotator {
 
 	}
 
-	/** 
-	 * Getters 
+	/**
+	 * Given a lemma and a PoS the method retrieves the BN id for a subset of selected PoS
+	 * in English
+	 * 
+	 * @param lemma
+	 * @param pos
+	 * @return
 	 */
-	public int getPropertyInt(String key){
-		return Integer.valueOf(p.getProperty(key));
-	} 
-	
-	public String getPropertyStr(String key){
-		return p.getProperty(key);
-	} 
+	private String getBNID_en(String lemma, String pos) {
+ 
+		String id = "-";
+		Boolean ne = false;
+		String NEG = "NEG";
+
+		//arabic
+    	if(pos.equalsIgnoreCase("noun_prop")){ //NEs
+    		ne = true;    		
+    	} else if(pos.equalsIgnoreCase("part_neg")){ //Negation
+    		return NEG;
+    	}
+    	//tallar el lema
+    	
+    	
+    	//english
+    	if(pos.equalsIgnoreCase("NNP") || pos.equalsIgnoreCase("NNPS")){ //NEs
+    		ne = true;
+    	} else if(pos.equalsIgnoreCase("RP")){ //Negation and rest of the particles
+    		// mirar a ma les negacions amb angles
+    		return NEG;
+    	}
+    	
+    	//spanish
+    	String pos2chars = pos.substring(0, 1); //check
+    	if(pos2chars.equalsIgnoreCase("np")){ //NEs
+    		ne = true;
+    	} else if(pos2chars.equalsIgnoreCase("rn")){ //Negation
+    		return NEG;    		
+    	}
+    	
+		BabelPOS bnPos = posMapping.get(pos); 
+    	System.out.println(bnPos);
+    	//String id = BabelNetQuerier.retrieveID(bn, lemma, lang, ne);
+		return id;
+	}
+
 
 }
