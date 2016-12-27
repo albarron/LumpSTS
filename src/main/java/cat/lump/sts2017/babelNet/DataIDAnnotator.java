@@ -139,7 +139,7 @@ public class DataIDAnnotator {
 		BabelNet bn = BabelNet.getInstance();
 
 		// Initilise the writer
-		File output = new File(input+".bn");
+		File output = new File(input+"b");
 		FileIO.deleteFile(output);
 	    FileWriter fw = null;
 	    BufferedWriter bw = null;
@@ -162,7 +162,6 @@ public class DataIDAnnotator {
 		        String line = sc.nextLine();
 		        String[] tokens = line.split("\\s+");
 		        for (String token:tokens) {  
-		        	//afegir strip pels numeros de l¡arab
 		        	String id = "-";
 		        	String lemma = DataProcessor.readFactor3(token, 3);
 		        	String pos = DataProcessor.readFactor3(token, 2);
@@ -231,9 +230,10 @@ public class DataIDAnnotator {
     	
     	if(pos.equalsIgnoreCase("NNP") || pos.equalsIgnoreCase("NNPS")){ //NEs
     		ne = true;
-    	} else if(pos.equalsIgnoreCase("RP")){ //Negation and rest of the particles
-    		// mirar a ma les negacions amb angles
+    	} else if(PoSAccept.NEG_EN.contains(lemma)){                     //Negation      		
     		return NEG;
+    	} else if(!PoSAccept.POS_EN_ACC.contains(pos)) {                 //Non-content PoS
+    		return id;
     	}
      	
 		BabelPOS bnPos = posMapping.get(pos); 
@@ -262,18 +262,20 @@ public class DataIDAnnotator {
 		String NEG = "NEG";
 		Language lang = Language.ES;
 
-    	String pos2chars = pos.substring(0, 1); //check
-    	if(pos2chars.equalsIgnoreCase("np")){ //NEs
+    	String pos2chars = pos.substring(0, 1); 
+    	if(pos2chars.equalsIgnoreCase("np")){                      //NEs
     		ne = true;
-    	} else if(pos2chars.equalsIgnoreCase("rn")){ //Negation
+    	} else if(pos2chars.equalsIgnoreCase("rn")){               //Negation
     		return NEG;    		
+    	} else if(!PoSAccept.POS_ES_ACC.contains(pos2chars)) {     //Non-content PoS
+    		return id;
     	}
     	
 		BabelPOS bnPos = posMapping.get(pos2chars); 
     	if (bnPos == null){
     		return id;
     	} else {
-    	   //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
     	}
 		return id;
 	}
@@ -294,11 +296,12 @@ public class DataIDAnnotator {
 		String NEG = "NEG";
 		Language lang = Language.AR;
 
-		//arabic MOVE
-    	if(pos.equalsIgnoreCase("noun_prop")){ //NEs
+    	if(pos.equalsIgnoreCase("noun_prop")){               //NEs
     		ne = true;    		
-    	} else if(pos.equalsIgnoreCase("part_neg")){ //Negation
+    	} else if(pos.equalsIgnoreCase("part_neg")){         //Negation
     		return NEG;
+    	} else if(!PoSAccept.POS_AR_ACC.contains(pos)) {     //Non-content PoS
+    		return id;
     	}
 
     	    	    	
@@ -307,7 +310,7 @@ public class DataIDAnnotator {
     		return id;
     	} else {
     		String lemmaClean = lemma.replaceAll("_\\d+", "");   //replaceAll but it should only happen at the end
-    	   //id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang, ne);
+    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang, ne);
     	}
 		return id;
 	}

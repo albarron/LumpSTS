@@ -47,26 +47,26 @@ public class BabelNetQuerier {
 
         try {
 			for (BabelSynset synset : bn.getSynsets(lemma, lang)) {
-				
+				Integer relacions = synset.getEdges().size();
 				if (NE){                      // If it's tagged as a NE we expect BN to have the tag also
 					BabelSynsetType type = synset.getSynsetType();
-					if(type.toString().equalsIgnoreCase("NAMED_ENTITY")){
+					if(type.equals(BabelSynsetType.NAMED_ENTITY)){
 						//BabelPOS bnpos = synset.getPOS();  
-						//if (pos.equals(bnpos)){           // and we don't mind the pos (which is a noun)
-							Integer relacions = synset.getEdges().size();
-							idChoices.put(synset.getId().toString(), relacions);
+						//if (pos.equals(bnpos)){           // and we don't mind the PoS (which is a noun)
+						//Extra weight to NEs in case there are nonNEs that also match
+						Integer relacionsAugment = relacions+100;
+						idChoices.put(synset.getId().toString(), relacionsAugment);
 						//}
 					} else {
-						break;
+						idChoices.put(synset.getId().toString(), relacions);
 					}
-				} else {					  // It it's not a NE we want the acception with more relations
+				} else {					  // It it's not a NE we want the aception with more relations
 					BabelPOS bnpos = synset.getPOS();
 					if (pos.equals(bnpos)){
-						Integer relacions = synset.getEdges().size();
 						idChoices.put(synset.getId().toString(), relacions);
 					}
 				}
-			    //System.out.println("Synset ID: " + synset.getId() + pos.toString() + relacions); 
+			    //System.out.println("Synset ID: " + synset.getId() + lemma + relacions); 
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

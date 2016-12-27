@@ -59,6 +59,7 @@ public class PoSAccept {
 	    	add("VBD");
 	    	add("VBG");
 	    	add("VBN");
+	    	add("VBP");
 	    	add("VBZ");
 	    	add("FW");  //Foreign words
 		}
@@ -72,9 +73,9 @@ public class PoSAccept {
 		private static final long serialVersionUID = 2652098132934864041L;
 	    {
 	    	add("not");
-	    	add("non");
 	    	add("n't");
-	    	add("no");
+	    	add("non");  //not seen
+	    	add("no");   //not seen
 		}
 	};
 
