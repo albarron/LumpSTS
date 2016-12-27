@@ -6,7 +6,7 @@ import java.util.Map;
 import it.uniroma1.lcl.babelnet.data.BabelPOS;
 
 /**
- * Mapping PoS tags for Arabic, English and Spanish into the BabelNet tagset.
+ * Mapping PoS tags for Arabic, English and Spanish into the BabelNet tag set.
  * 
  * @author cristina
  * @since Dec 27, 2016
@@ -261,7 +261,7 @@ cs	Conjunction (subordinating)	que, como, mientras
 Determiners
 da0000	Article (definite)	el, la, los, las
 dd0000	Demonstrative	este, esta, esos
-de0000	"Exclamative" (TODO)	qué (¡Qué pobre!)
+de0000	"Exclamative" 	qué (¡Qué pobre!)
 di0000	Article (indefinite)	un, muchos, todos, otros
 dn0000	Numeral	tres, doscientas
 dp0000	Possessive	sus, mi

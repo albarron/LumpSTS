@@ -14,7 +14,7 @@ import java.util.Set;
 public class PoSAccept {
 
 	/**
-	 * Selected PoS tags from the MadaMira 2.1 tagset for Arabic for which we want
+	 * Selected PoS tags from the MadaMira 2.1 tag set for Arabic for which we want
 	 * the BabelNet ID
 	 */
 	static final Set<String> POS_AR_ACC= new HashSet<String>(){
@@ -37,7 +37,7 @@ public class PoSAccept {
 	};
 	
 	/**
-	 * Selected PoS tags from the Penn Tree Bank tagset for English for which we want
+	 * Selected PoS tags from the Penn Tree Bank tag set for English for which we want
 	 * the BabelNet ID
 	 */
 	static final Set<String> POS_EN_ACC= new HashSet<String>(){
@@ -63,9 +63,23 @@ public class PoSAccept {
 	    	add("FW");  //Foreign words
 		}
 	};
-	
+
 	/**
-	 * Selected PoS tags from the Ancora tagset for Spanish for which we want the BabelNet ID.
+	 * Negations in English. Tokens that appear within the RP (particle) and RB (adverb) PoS tags
+	 * of the Penn Tree Bank tag set for English 
+	 */
+	static final Set<String> NEG_EN= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864041L;
+	    {
+	    	add("not");
+	    	add("non");
+	    	add("n't");
+	    	add("no");
+		}
+	};
+
+	/**
+	 * Selected PoS tags from the Ancora tag set for Spanish for which we want the BabelNet ID.
 	 * Only the first two characters of the tag are considered.
 	 */
 	static final Set<String> POS_ES_ACC= new HashSet<String>(){
