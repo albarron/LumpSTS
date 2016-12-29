@@ -33,6 +33,9 @@ public class BabelNetQuerier {
 	/**
 	 * Looks for the synset for a specific lemma with PoS pos. The ranking is done as in BabelNet
 	 * (sense numbers are used to sort the BabelSynsets corresponding to WordNet synsets)
+	 * (1) puts WordNet synsets first; 
+	 * (2) sorts WordNet synsets based on the sense number of a specific input word; 
+	 * (3) sorts Wikipedia synsets lexicographically based on their main sense.
 	 * 
 	 * @param bn
 	 * @param pos
@@ -60,6 +63,9 @@ public class BabelNetQuerier {
 					return synset.getId().toString();
 			}
 		}
+        
+        // If no sense with matching PoS has been found we return the top1 sense irrespective of the PoS
+        bnID = synsets.get(0).getId().toString();	
 		return bnID;
 	}
 
