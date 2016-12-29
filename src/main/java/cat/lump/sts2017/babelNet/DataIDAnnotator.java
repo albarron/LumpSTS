@@ -241,7 +241,9 @@ public class DataIDAnnotator {
     	if (bnPos == null){
     		return id;
     	} else {
-    	   id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	   // NE are adding too much noise
+    	   //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	   id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang);
     	}
 		return id;
 	}
@@ -275,7 +277,9 @@ public class DataIDAnnotator {
     	if (bnPos == null){
     		return id;
     	} else {
-    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+     	   // NE are adding too much noise
+     	   //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+     	   id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang);
     	}
 		return id;
 	}
@@ -310,7 +314,9 @@ public class DataIDAnnotator {
     		return id;
     	} else {
     		String lemmaClean = lemma.replaceAll("_\\d+", "");   //replaceAll but it should only happen at the end
-    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang, ne);
+     	    // NE are adding too much noise
+     	    //id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang, ne);
+    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang);
     	}
 		return id;
 	}
