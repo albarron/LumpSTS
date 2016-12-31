@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -16,12 +18,16 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import com.google.common.collect.Multimap;
+
 import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
 
 import it.uniroma1.lcl.babelnet.BabelNet;
+import it.uniroma1.lcl.babelnet.BabelNetUtils;
 import it.uniroma1.lcl.babelnet.data.BabelPOS;
 import it.uniroma1.lcl.jlt.util.Language;
+import it.uniroma1.lcl.jlt.util.ScoredItem;
 
 /**
  * 
@@ -321,4 +327,34 @@ public class DataIDAnnotator {
 		return id;
 	}
 
+	
+	/**
+	 * Get the top translation of a lemma
+	 * DON'T USE
+	 * 
+	 * @param lemma
+	 * @return
+	 */
+	private String get1stTrad_en(String lemma) {
+		
+		Multimap<Language, ScoredItem<String>> tradsAll = null;
+		try {
+			tradsAll = BabelNetUtils.getTranslations(Language.EN, lemma);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Collection<ScoredItem<String>> trads = tradsAll.get(Language.ES);
+   
+		//System.out.println(trads);
+		TreeMap<Double, String> mapTrads = new TreeMap<Double, String>();
+		for (ScoredItem<String> trad : trads){
+			if (!mapTrads.containsKey(-trad.getScore())) {
+				mapTrads.put(-trad.getScore(), trad.getItem());}
+		}
+		//System.out.println(mapTrads.lastKey());
+		//System.out.println(mapTrads.firstKey());
+		return mapTrads.firstEntry().toString();
+	}
+	
 }
