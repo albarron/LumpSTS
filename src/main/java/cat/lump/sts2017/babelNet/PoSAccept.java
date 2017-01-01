@@ -20,19 +20,19 @@ public class PoSAccept {
 	static final Set<String> POS_AR_ACC= new HashSet<String>(){
 		private static final long serialVersionUID = 2652098132934864030L;
 	    {
-	    	add("noun");
+	      add("adj");    // Adjectives
+        add("adj_comp");
+        add("adj_num");
+	    	add("noun");    // Nouns
 	    	add("noun_num");
 	    	add("noun_quant");
-	    	add("noun_prop");
-	    	add("adj");
-	    	add("adj_comp");
-	    	add("adj_num");
-	    	add("adv");
+	    	add("noun_prop");	    	
+	    	add("adv");     // Adverbs
 	    	add("adv_interrog");
 	    	add("adv_rel");
-	    	add("verb");
+	    	add("verb");    // Verbs
 	    	add("verb_pseudo");
-	    	add("latin");
+	    	add("latin");   // Foreign words
 		}
 	};
 	
@@ -96,7 +96,7 @@ public class PoSAccept {
 	    	//add("va"); //Verbs
 	    	add("vm");
 	    	add("vs");
-	    	add("zm");  //monedes
+	    	add("zm");  //Currency
 	    	add("zu");  //unitats
 		}
 	};
