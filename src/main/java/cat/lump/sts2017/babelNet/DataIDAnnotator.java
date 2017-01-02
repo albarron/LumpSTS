@@ -242,8 +242,8 @@ public class DataIDAnnotator {
     		return id;
     	}
      	
-		BabelPOS bnPos = posMapping.get(pos); 
-    	//System.out.println(bnPos);
+		BabelPOS bnPos = posMapping.get(pos);
+		
     	if (bnPos == null){
     		return id;
     	} else {
