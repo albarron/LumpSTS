@@ -204,4 +204,114 @@ public class Normaliser {
 		    
 		    return input;
 	}
+	
+	/**
+	 * Removes diacritics from an Arabic string
+	 * 
+	 * @param input
+	 * 			Input string
+	 * @return
+	 */
+	public static String removeDiacriticsAR(String input){
+		
+	     input = input.replaceAll("\u064B","");
+	     input = input.replaceAll("\u064C","");
+	     input = input.replaceAll("\u064D","");
+	     input = input.replaceAll("\u064E","");
+	     input = input.replaceAll("\u064F","");
+	     input = input.replaceAll("\u0650","");
+	     input = input.replaceAll("\u0651","");
+	     input = input.replaceAll("\u0652","");
+	     input = input.replaceAll("\u0653","");
+	     input = input.replaceAll("\u0654","");
+	     input = input.replaceAll("\u0655","");
+	     input = input.replaceAll("\u0656","");
+	     input = input.replaceAll("\u0657","");
+	     input = input.replaceAll("\u0658","");
+	     input = input.replaceAll("\u0659","");
+	     input = input.replaceAll("\u065A","");
+	     input = input.replaceAll("\u065B","");
+	     input = input.replaceAll("\u065C","");
+	     input = input.replaceAll("\u065D","");
+	     input = input.replaceAll("\u065E","");
+	     input = input.replaceAll("\u0670","");
+	      //This is a taweel
+	     input = input.replaceAll("\u0640","");
+	     input = input.replaceAll("_","");		
+		    
+		 return input;
+	}
+	   
+	/**
+	 * Changes the alphabet of Arabic digits
+	 * 
+	 * @param input
+	 * 			Input string
+	 * @return
+	 */
+	public static String normArabicDigits(String input){
+		
+	      input = input.replaceAll("\u0660","0");
+	      input = input.replaceAll("\u0661","1");
+	      input = input.replaceAll("\u0662","2");
+	      input = input.replaceAll("\u0663","3");
+	      input = input.replaceAll("\u0664","4");
+	      input = input.replaceAll("\u0665","5");
+	      input = input.replaceAll("\u0666","6");
+	      input = input.replaceAll("\u0667","7");
+	      input = input.replaceAll("\u0668","8");
+	      input = input.replaceAll("\u0669","9");
+	      input = input.replaceAll("\u06F0","0");
+	      input = input.replaceAll("\u06F1","1");
+	      input = input.replaceAll("\u06F2","2");
+	      input = input.replaceAll("\u06F3","3");
+	      input = input.replaceAll("\u06F4","4");
+	      input = input.replaceAll("\u06F5","5");
+	      input = input.replaceAll("\u06F6","6");
+	      input = input.replaceAll("\u06F7","7");
+	      input = input.replaceAll("\u06F8","8");
+	      input = input.replaceAll("\u06F9","9");
+		    
+		 return input;
+	}
+	   
+	/**
+	 * Normalises the Arabic punctuation
+	 * TODO Check if this is done as a preprocess of MadaMira
+	 * 
+	 * @param input
+	 * 			Input string
+	 * @return
+	 */
+	public static String normArabicPunctuation(String input){
+		
+	      input = input.replaceAll("\u00BB","\"");
+	      input = input.replaceAll("\u00AB","\"");
+	      input = input.replaceAll("\u060C",",");
+	      input = input.replaceAll("\u060D",",");
+	      input = input.replaceAll("\u061B",";");
+	      input = input.replaceAll("\u061E",".");
+	      input = input.replaceAll("\u061F","?");
+	      input = input.replaceAll("\u066A","%");
+	      input = input.replaceAll("\u066B",",");
+	      input = input.replaceAll("\u066C","\u0027");
+	      input = input.replaceAll("\u066F","*");
+	      input = input.replaceAll("\u06DF",".");
+	      
+	      return input;
+	}
+
+	/**
+	 * Removes non-characters (seen in Arabic strings)
+	 * 
+	 * @param input
+	 * 			Input string
+	 * @return
+	 */
+	public static String removeNonCharacters(String input){
+		
+		input = input.replaceAll("[\u0020\u2000-\u200F\u2028-\u202F\u205F-\u206F\uFEFF]+", "");
+	    return input;
+	}
+
 }

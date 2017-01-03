@@ -50,6 +50,7 @@ public class BabelNetQuerier {
 		try {
 			synsets = bn.getSynsets(lemma, lang);
 			if(synsets.size()==0){
+				//System.out.println("No synsets for this lemma");
 				return bnID;				
 			}
 		} catch (IOException e2) {
