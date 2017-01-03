@@ -172,6 +172,12 @@ public class DataIDAnnotator {
 		        	String lemma = DataProcessor.readFactor3(token, 3);
 		        	String pos = DataProcessor.readFactor3(token, 2);
 		        	String word = DataProcessor.readFactor3(token, 1);
+		        	// This is a patch to solve a problem seen in Arabic where some tokens have not been annotated
+		        	// TODO fix the annotation
+		        	if (lemma==null || pos==null){
+			    		bw.append(word+"|-|-|"+id+" ");
+			    		continue;
+		        	}
 		    		if (language.equalsIgnoreCase("en")) {
 		    		    id = getBNID_en(bn, lemma, pos);	
 		    		} else if (language.equalsIgnoreCase("es")) {
@@ -179,7 +185,7 @@ public class DataIDAnnotator {
 		    		} else if (language.equalsIgnoreCase("ar")) {
 		    		    id = getBNID_ar(bn, lemma, pos);	
 		    		} 
-		    		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
+	        		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
 		        }
 	        	bw.newLine();
 		        // Write every 10000 lines
