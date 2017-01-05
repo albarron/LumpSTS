@@ -28,8 +28,7 @@ public class DatasetHandlerSingle extends DatasetHandlerAbstract{
       //TODO CHANGE
       datasets = new AvailableDatasetsArabic();
     } else {
-    //TODO CHANGE
-      datasets = new AvailableDatasetsArabic();
+      datasets = new AvailableDatasetsSpanish();
     }
     
     LANGUAGE = language;
@@ -69,7 +68,6 @@ public class DatasetHandlerSingle extends DatasetHandlerAbstract{
   
   
   
-//  public void addDataset
   
   
 }

@@ -99,14 +99,15 @@ public class DatasetGenerator {
       String[] lines = FileIO.fileToLines(new File(getInputFileFullPath(f)));
       
       for (int j=0; j< lines.length; j++) {
-        writers.get(i).write(lines[i]);
-        writers.get(i++).write("\n");
-        if (i==FOLDS) {
+        writers.get(i).write(lines[j]); // we write line j into file i
+        writers.get(i++).write("\n");   // and add a line break
+        if (i==FOLDS) {   // reset the file counter; another option would be a module
           i = 0;
         }
       }      
     }
 
+    // Now we close all the writers
     for (i = 0; i < FOLDS; i++) {
       writers.get(i).close();
     }

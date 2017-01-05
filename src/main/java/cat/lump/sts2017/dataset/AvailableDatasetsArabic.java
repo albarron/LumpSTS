@@ -3,6 +3,19 @@ package cat.lump.sts2017.dataset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * The Arabic dataset is only available for the 2017 edition. It includes:
+ * <ul>
+ * <li /> MSRpar
+ * <li /> MSRvid
+ * <li /> SMTeuroparl
+ * </ul>
+ * 
+ * This class simply returns a map with the default subpaths to these files.
+ * 
+ * @author albarron
+ * @since Jan 5th, 2017 
+ */
 public class AvailableDatasetsArabic implements AvailableDatasets {
 
   
