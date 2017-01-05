@@ -172,11 +172,11 @@ public class DataIDAnnotator {
 		        	String lemma = DataProcessor.readFactor3(token, 3);
 		        	String pos = DataProcessor.readFactor3(token, 2);
 		        	String word = DataProcessor.readFactor3(token, 1);
-		        	// This is a patch to solve a problem seen in Arabic where some tokens have not been annotated
-		        	// TODO fix the annotation
+		        	// This is a patch to solve the cases where a token has not been annotated
+		        	// "joker" is a toy PoS available in all the mappings as a BabelPOS.NOUN
 		        	if (lemma==null || pos==null){
 		        		lemma = token;
-		        		pos = token;
+		        		pos = "joker";
 		        		word = token;
 		        	}
 		    		if (language.equalsIgnoreCase("en")) {
