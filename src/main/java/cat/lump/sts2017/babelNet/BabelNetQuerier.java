@@ -49,8 +49,11 @@ public class BabelNetQuerier {
 		List<BabelSynset> synsets = null;
 		try {
 			synsets = bn.getSynsets(lemma, lang);
+			if(synsets.size()==0){
+				//System.out.println("No synsets for this lemma");
+				return bnID;				
+			}
 		} catch (IOException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 		// lemma whose sense numbers are used to sort the BabelSynsets corresponding to WordNet synsets
@@ -60,7 +63,7 @@ public class BabelNetQuerier {
         for (BabelSynset synset : synsets) {			
 			BabelPOS bnpos = synset.getPOS();
 			if (pos.equals(bnpos)){
-					return synset.getId().toString();
+				return synset.getId().toString();
 			}
 		}
         

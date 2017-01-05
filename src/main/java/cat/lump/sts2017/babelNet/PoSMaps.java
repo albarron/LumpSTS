@@ -88,7 +88,7 @@ public class PoSMaps {
 	    	put("RBS", BabelPOS.ADVERB); 
 	    	put("RP", null); //think
 	    	put("SYM", null); //think 
-	    	put("TO", null); //think 
+	    	put("TO", BabelPOS.PREPOSITION); 
 	    	put("UH", BabelPOS.INTERJECTION); 
 	    	put("VB", BabelPOS.VERB); 
 	    	put("VBD", BabelPOS.VERB); 
@@ -125,7 +125,7 @@ public class PoSMaps {
 	    	put("rbs", BabelPOS.ADVERB); 
 	    	put("rp", null); //think
 	    	put("sym", null); //think 
-	    	put("to", null); //think 
+	    	put("to", BabelPOS.PREPOSITION); 
 	    	put("uh", BabelPOS.INTERJECTION); 
 	    	put("vb", BabelPOS.VERB); 
 	    	put("vbd", BabelPOS.VERB); 
@@ -191,7 +191,7 @@ public class PoSMaps {
 	    	put("vm", BabelPOS.VERB);
 	    	put("vs", BabelPOS.VERB);
 	    	put("w", null); //dates
-	    	put("z0", null); //numerals
+	    	put("z0", BabelPOS.NOUN); //numerals
 	    	put("zm", BabelPOS.NOUN);
 	    	put("zu", BabelPOS.NOUN);
 		}

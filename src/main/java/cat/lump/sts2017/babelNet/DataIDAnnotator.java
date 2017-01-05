@@ -22,7 +22,7 @@ import com.google.common.collect.Multimap;
 
 import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
-
+import cat.lump.sts2017.prepro.Normaliser;
 import it.uniroma1.lcl.babelnet.BabelNet;
 import it.uniroma1.lcl.babelnet.BabelNetUtils;
 import it.uniroma1.lcl.babelnet.data.BabelPOS;
@@ -172,6 +172,12 @@ public class DataIDAnnotator {
 		        	String lemma = DataProcessor.readFactor3(token, 3);
 		        	String pos = DataProcessor.readFactor3(token, 2);
 		        	String word = DataProcessor.readFactor3(token, 1);
+		        	// This is a patch to solve a problem seen in Arabic where some tokens have not been annotated
+		        	// TODO fix the annotation
+		        	if (lemma==null || pos==null){
+			    		bw.append(token+"|-|-|"+id+" ");
+			    		continue;
+		        	}
 		    		if (language.equalsIgnoreCase("en")) {
 		    		    id = getBNID_en(bn, lemma, pos);	
 		    		} else if (language.equalsIgnoreCase("es")) {
@@ -179,7 +185,7 @@ public class DataIDAnnotator {
 		    		} else if (language.equalsIgnoreCase("ar")) {
 		    		    id = getBNID_ar(bn, lemma, pos);	
 		    		} 
-		    		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
+	        		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
 		        }
 	        	bw.newLine();
 		        // Write every 10000 lines
@@ -208,7 +214,6 @@ public class DataIDAnnotator {
 		    if (sc != null) {
 		        sc.close();
 		        try {
-		        	bw.newLine();
 					bw.close();
 					fw.close();
 				} catch (IOException e) {
@@ -242,8 +247,8 @@ public class DataIDAnnotator {
     		return id;
     	}
      	
-		BabelPOS bnPos = posMapping.get(pos); 
-    	//System.out.println(bnPos);
+		BabelPOS bnPos = posMapping.get(pos);
+		
     	if (bnPos == null){
     		return id;
     	} else {
@@ -313,13 +318,15 @@ public class DataIDAnnotator {
     	} else if(!PoSAccept.POS_AR_ACC.contains(pos)) {     //Non-content PoS
     		return id;
     	}
-
     	    	    	
 		BabelPOS bnPos = posMapping.get(pos); 
     	if (bnPos == null){
     		return id;
     	} else {
     		String lemmaClean = lemma.replaceAll("_\\d+", "");   //replaceAll but it should only happen at the end
+    		lemmaClean = Normaliser.removeNonCharacters(lemmaClean);
+    		lemmaClean = Normaliser.removeDiacriticsAR(lemmaClean);
+
      	    // NE are adding too much noise
      	    //id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang, ne);
     	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemmaClean, lang);
