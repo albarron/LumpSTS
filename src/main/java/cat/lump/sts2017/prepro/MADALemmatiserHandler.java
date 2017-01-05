@@ -55,10 +55,13 @@ public class MADALemmatiserHandler  extends DefaultHandler {
 	        	analysis = false;
 	        	morph_feature_set = false;
 	        } else if (qName.equalsIgnoreCase("analysis")) {
+	        //} else if (qName.equalsIgnoreCase("svn_prediction")) {
 	        	analysis = true;
 	        } else if (qName.equalsIgnoreCase("morph_feature_set") && analysis) {
-	            String p = attributes.getValue("pos");
-	            String l = attributes.getValue("lemma");
+	            String p = "";
+	            p = attributes.getValue("pos");
+	            String l = "";
+	            l = attributes.getValue("lemma");	        
 	        	String previous = sent.getWord();	        	
 	        	if (previous !=null){
 	        		sent.setWord(previous + "|"+ p + "|\u202A"+ l + "\u202C");	        		

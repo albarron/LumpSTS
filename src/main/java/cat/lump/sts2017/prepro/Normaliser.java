@@ -297,6 +297,7 @@ public class Normaliser {
 	      input = input.replaceAll("\u066C","\u0027");
 	      input = input.replaceAll("\u066F","*");
 	      input = input.replaceAll("\u06DF",".");
+	      input = input.replaceAll("\u06DF",".");
 	      
 	      return input;
 	}
@@ -311,6 +312,20 @@ public class Normaliser {
 	public static String removeNonCharacters(String input){
 		
 		input = input.replaceAll("[\u0020\u2000-\u200F\u2028-\u202F\u205F-\u206F\uFEFF]+", "");
+	    return input;
+	}
+
+	/**
+	 * Puts a space before and after a punctuation symbol
+	 * 
+	 * @param input
+	 * 			Input string
+	 * @return
+	 */
+	public static String separatePunctuation(String input){
+		
+		input = input.replaceAll("\\p{Punct}", " $0 ").replaceAll("\\s+", " ");
+		
 	    return input;
 	}
 

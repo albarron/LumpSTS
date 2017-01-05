@@ -223,7 +223,11 @@ public class FormatConverter {
 		        bw.append("\t<in_seg id=\"SENT");
 		        bw.append(i.toString());
 		        bw.append("\"> ");
-		        bw.append(StringEscapeUtils.escapeXml(line));
+			    String text = Normaliser.normArabicDigits(line);
+			    text = Normaliser.normArabicPunctuation(text);
+			    text = Normaliser.replacements(text, "ar");
+			    text = Normaliser.separatePunctuation(text); 
+		        bw.append(StringEscapeUtils.escapeXml(text));
 		        bw.append(" </in_seg>");
 	        	bw.newLine();
 		        // Write every 10000 lines
