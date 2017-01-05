@@ -51,7 +51,7 @@ public class DatasetGenerator {
 
   public DatasetGenerator(String language, int folds, String corpusPath) {
     //this(language, language, folds, shuffle, iniFile);
-    dha = new DatasetHandlerSingle(language);
+    dha = DatasetHandlerFactory.getDatasetHandler(language);
     FOLDS = validateFolds(folds);
     LANGUAGE = language;
     BASE_PATH = corpusPath;
@@ -96,7 +96,8 @@ public class DatasetGenerator {
     
     i = 0;
     for (String f : requiredDatasets.values()) {
-      String[] lines = FileIO.fileToLines(new File(getInputFileFullPath(f)));
+      String[] lines = dha.getArrayOfInstances();
+          //FileIO.fileToLines(new File(getInputFileFullPath(f)));
       
       for (int j=0; j< lines.length; j++) {
         writers.get(i).write(lines[j]); // we write line j into file i
@@ -215,7 +216,7 @@ public class DatasetGenerator {
     // Getting the language(s)
     System.out.println("Enter the first language [ar, en, es]: ");
     String lan1 = scanner.readLine();
-    DatasetHandlerSingle.checkLanguageExists(lan1);
+    DatasetHandlerFactory.checkLanguageExists(lan1);
   
     System.out.println("Enter the second language [ar, en, es] (monolingual if empty): ");
     String tLan2 = scanner.readLine().trim();
