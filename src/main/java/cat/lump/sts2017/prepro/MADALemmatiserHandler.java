@@ -45,9 +45,15 @@ public class MADALemmatiserHandler  extends DefaultHandler {
 	        	// Concatenating a new word in left-to-right order. 
 	        	// We mark bidi regions using unicode format control codepoints:
 	        	// Left-to-right embedding (U+202A); Pop directional formatting (U+202C);
-	        	if (previous !=null){
+	        	
+	        	// MadaMira is not giving an _analysis_ for non arabic words
+                if (previous != null && w.matches("\\p{L}+") && !w.matches("\\p{InArabic}+")){
+                	sent.setWord(previous + " \u202A" + w + "\u202C|latin|\u202A"+ w + "\u202C");
+                } else if (previous != null){
 	        		sent.setWord(previous + " \u202A" + w + "\u202C");
 	        		//System.out.println(previous);
+	            } else if (previous == null && w.matches("\\p{L}+") && !w.matches("\\p{InArabic}+")) {
+	        		sent.setWord("\u202A" + w + "\u202C|latin|\u202A"+ w + "\u202C");	            	
 	            } else {
 	        		sent.setWord("\u202A" + w + "\u202C");	            	
 	            }
@@ -55,7 +61,6 @@ public class MADALemmatiserHandler  extends DefaultHandler {
 	        	analysis = false;
 	        	morph_feature_set = false;
 	        } else if (qName.equalsIgnoreCase("analysis")) {
-	        //} else if (qName.equalsIgnoreCase("svn_prediction")) {
 	        	analysis = true;
 	        } else if (qName.equalsIgnoreCase("morph_feature_set") && analysis) {
 	            String p = "";

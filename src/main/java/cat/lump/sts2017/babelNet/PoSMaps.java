@@ -55,6 +55,7 @@ public class PoSMaps {
 	    	put("interj", BabelPOS.INTERJECTION);
 	    	put("digit", BabelPOS.NOUN); //think determiner?
 	    	put("latin", BabelPOS.NOUN);  //think
+	    	put("joker", BabelPOS.NOUN); //artificially added
 		}
 	};
 	
@@ -137,6 +138,7 @@ public class PoSMaps {
 	    	put("wp", BabelPOS.PRONOUN);
 	    	put("wp$", BabelPOS.PRONOUN); 
 	    	put("wrb", BabelPOS.ADVERB); 
+	    	put("joker", BabelPOS.NOUN); //artificially added
 		}
 	};
 	
@@ -194,6 +196,7 @@ public class PoSMaps {
 	    	put("z0", BabelPOS.NOUN); //numerals
 	    	put("zm", BabelPOS.NOUN);
 	    	put("zu", BabelPOS.NOUN);
+	    	put("joker", BabelPOS.NOUN); //artificially added
 		}
 	};
 

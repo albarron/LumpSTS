@@ -14,7 +14,7 @@ public class ConfigConstants {
     public static final String MADACONFIG4LEM = 
 			"<madamira_configuration> \n" +
 			"    <preprocessing sentence_ids=\"false\" separate_punct=\"true\" input_encoding=\"UTF8\"/> \n" +
-			"    <overall_vars output_encoding=\"UTF8\" dialect=\"MSA\" output_analyses=\"TOP\" morph_backoff=\"NONE\"/>\n" +
+			"    <overall_vars output_encoding=\"UTF8\" dialect=\"MSA\" output_analyses=\"TOP\" morph_backoff=\"NOAN_ALL\"/>\n" +
 			"    <requested_output>\n" +
 			"        <req_variable name=\"PREPROCESSED\" value=\"false\" />\n" +
 			"        <req_variable name=\"GLOSS\" value=\"false\" />\n" +
@@ -31,7 +31,7 @@ public class ConfigConstants {
     public static final String MADACONFIG4TOK =
     		"<madamira_configuration> \n" +
 			"    <preprocessing sentence_ids=\"false\" separate_punct=\"true\" input_encoding=\"UTF8\"/> \n" +
-			"    <overall_vars output_encoding=\"UTF8\" dialect=\"MSA\" output_analyses=\"TOP\" morph_backoff=\"NONE\"/>\n" +
+			"    <overall_vars output_encoding=\"UTF8\" dialect=\"MSA\" output_analyses=\"TOP\" morph_backoff=\"NOAN_ALL\"/>\n" +
 			"    <requested_output>\n" +
 			"        <req_variable name=\"PREPROCESSED\" value=\"false\" />\n" +
 						"    </requested_output>\n" +
