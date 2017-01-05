@@ -175,8 +175,9 @@ public class DataIDAnnotator {
 		        	// This is a patch to solve a problem seen in Arabic where some tokens have not been annotated
 		        	// TODO fix the annotation
 		        	if (lemma==null || pos==null){
-			    		bw.append(token+"|-|-|"+id+" ");
-			    		continue;
+		        		lemma = token;
+		        		pos = token;
+		        		word = token;
 		        	}
 		    		if (language.equalsIgnoreCase("en")) {
 		    		    id = getBNID_en(bn, lemma, pos);	
@@ -317,6 +318,9 @@ public class DataIDAnnotator {
     		return NEG;
     	} else if(!PoSAccept.POS_AR_ACC.contains(pos)) {     //Non-content PoS
     		return id;
+    	}
+    	if (pos==lemma) {
+    		pos = "noun";
     	}
     	    	    	
 		BabelPOS bnPos = posMapping.get(pos); 
