@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.Properties;
 
 import org.ini4j.Ini;
 import org.ini4j.Profile.Section;
@@ -26,9 +25,12 @@ public class LumpIni {
 //	protected static Properties p;
   
 	protected static Section section;
-  /** Default fome for cristina. It is used to load the proper ini section */
+  /** Default home for cristina. It is used to load the proper ini section */
   private final static String VAR_CRISTINA = "/home/cristinae";
   
+  /** Cluster home for cristina. It is used to load the proper ini section */
+  private final static String VAR_CRISTINA_CLUSTER = "/home/usuaris/cristinae";
+
   /** Default fome for albarron. It is used to load the proper ini section */
   private final static String VAR_ALBARRON = "/Users/albarron";
   
@@ -36,6 +38,8 @@ public class LumpIni {
   private final static String PROPERTY_FOR_INI = "user.home";
   
   private final static String SECTION_CRISTINA = "cristina";
+  
+  private final static String SECTION_CRISTINA_CLUSTER = "cristinae";
   
   private final static String SECTION_ALBARRON = "albarron";
   
@@ -78,6 +82,8 @@ public class LumpIni {
 		  ENVIRONMENT = SECTION_CRISTINA;
 		} else if (currentHome.equals(VAR_ALBARRON)) {
 		  ENVIRONMENT = SECTION_ALBARRON;
+		} else if (currentHome.equals(VAR_CRISTINA_CLUSTER)) {
+		  ENVIRONMENT = SECTION_CRISTINA_CLUSTER;
 		} else {
 		  System.err.println("I do not know what section from the ini file I should load");
 		  System.exit(1);
