@@ -1,10 +1,12 @@
 package cat.lump.sts2017.dataset;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import cat.lump.aq.basics.log.LumpLogger;
 
-public  class DatasetHandlerPair extends DatasetHandlerAbstract{
+public  class DatasetHandlerPair implements DatasetHandlerInterface{
 //  abstract
   
   /** Available languages in our collection/task */
@@ -25,7 +27,7 @@ public  class DatasetHandlerPair extends DatasetHandlerAbstract{
     }
   }
  
-  public  Map<String, String> getAvailableCorpora() {
+  public Set<String> getAvailableCorpora() {
     return null;
   }
   
@@ -62,17 +64,32 @@ public  class DatasetHandlerPair extends DatasetHandlerAbstract{
     return null;
   }
 
+
+
   @Override
-  public String[] getArrayOfInstances() {
+  public void activateAllCorpus() {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void activateCorpus(String availableCorpus) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public List<String> getInstances() throws IOException {
     // TODO Auto-generated method stub
     return null;
   }
   
 //  public static boolean checkLanguagePairExists(String lan1, String lan2) {
-//    
+//    //TODO 
+//    return false;
 //  }
-  
-  
+//  
+//  
   
   
 //  public void addDataset

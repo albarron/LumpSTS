@@ -13,9 +13,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import cat.lump.aq.basics.check.CHK;
-import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
 
 /**
@@ -47,15 +47,16 @@ public class DatasetGenerator {
   private static final LumpLogger logger = 
       new LumpLogger (DatasetGenerator.class.getSimpleName());
   
-  private final DatasetHandlerAbstract dha;
+  private final DatasetHandlerInterface dha;
 
   public DatasetGenerator(String language, int folds, String corpusPath) {
     //this(language, language, folds, shuffle, iniFile);
-    dha = DatasetHandlerFactory.getDatasetHandler(language);
+    
     FOLDS = validateFolds(folds);
     LANGUAGE = language;
     BASE_PATH = corpusPath;
 
+    dha = DatasetHandlerFactory.getDatasetHandler(LANGUAGE, corpusPath);
     logger.info("Set language: " + LANGUAGE);
     logger.info("Number of folds: " + FOLDS);
     logger.info("Path to the corpus: " + BASE_PATH);
@@ -78,7 +79,7 @@ public class DatasetGenerator {
   }
   
 
-  public void generateFolds(Map<String, String> requiredDatasets) throws IOException {
+  public void generateFolds() throws IOException {
     // generate the folder with the current timestamp
     File dir = new File(getFolderName());
     logger.info(String.format("Creating folder %s%n", dir));
@@ -95,18 +96,17 @@ public class DatasetGenerator {
     logger.info(String.format("Creating %d folds%n", i));
     
     i = 0;
-    for (String f : requiredDatasets.values()) {
-      String[] lines = dha.getArrayOfInstances();
+      List<String> lines = dha.getInstances();
           //FileIO.fileToLines(new File(getInputFileFullPath(f)));
       
-      for (int j=0; j< lines.length; j++) {
-        writers.get(i).write(lines[j]); // we write line j into file i
+      for (String line : lines) {
+        writers.get(i).write(line); // we write line j into file i
         writers.get(i++).write("\n");   // and add a line break
         if (i==FOLDS) {   // reset the file counter; another option would be a module
           i = 0;
         }
       }      
-    }
+    
 
     // Now we close all the writers
     for (i = 0; i < FOLDS; i++) {
@@ -115,36 +115,28 @@ public class DatasetGenerator {
     logger.info("Have a nice day");
   }
   
-  public Map<String, String> getRequiredDatasets() throws IOException {
+  public void getRequiredDatasets() throws IOException {
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
-    Map<String, String> availableCorpora = dha.getAvailableCorpora();
-    Map<String, String> requiredCorpora = new LinkedHashMap<String, String>();
     
     System.out.println("Include every subcorpus available? [y,n] (y if empty)");
     if (yesOrEmpty(scanner.readLine().trim())) {
-      logSelectedCorpora(availableCorpora);
-      return availableCorpora;
+      dha.activateAllCorpus();
+      return;
     }
     
-    for (Entry<String, String> availableCorpus : availableCorpora.entrySet()) {
-      System.out.format("Include corpus %s? [y,n] (y if empty)%n", 
-          availableCorpus.getKey());
+    for (String availableCorpus : dha.getAvailableCorpora()) {
+      System.out.format("Include corpus %s? [y,n] (y if empty)%n", availableCorpus);
       if (yesOrEmpty(scanner.readLine().trim())) {
-        requiredCorpora.put(availableCorpus.getKey(), availableCorpus.getValue());
+        dha.activateCorpus(availableCorpus);
+//        requiredCorpora.put(availableCorpus.getKey(), availableCorpus.getValue());
       }
     }
     
-    logSelectedCorpora(requiredCorpora);
     
-    return requiredCorpora;
   }
   
   
-  private void logSelectedCorpora(Map<String, String> corpora) {
-    for (String key : corpora.keySet()) {
-      logger.info(String.format("Considering corpus %s", key));
-    }
-  }
+
 
   private int validateFolds(int folds) {
     CHK.CHECK(folds > 0 && folds <=MAX_FOLDS, 
@@ -177,9 +169,7 @@ public class DatasetGenerator {
     return outPath;
   }
   
-  private String getInputFileFullPath(String file) {
-    return String.format("%s%s%s", BASE_PATH, File.separator, file);
-  }
+
 
 //  public void getFolds() {
 //    //TODO RETURN SOMETHING
@@ -272,8 +262,8 @@ public class DatasetGenerator {
       dg = new DatasetGenerator(lan1, lan2, folds, basePath);
     }
     
-    Map<String, String> requiredDatasets = dg.getRequiredDatasets();
-    dg.generateFolds(requiredDatasets);
+    dg.getRequiredDatasets();
+    dg.generateFolds();
     
   }
 

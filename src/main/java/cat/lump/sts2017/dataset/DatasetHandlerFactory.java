@@ -6,20 +6,19 @@ public class DatasetHandlerFactory {
   /** Available languages in our collection/task */
   private static  enum LANGUAGES {en, ar, es};
   
-  public static DatasetHandlerSingle getDatasetHandler (String language) {
+  public static DatasetHandlerSingle getDatasetHandler (String language, String basePath) {
     if (! checkLanguageExists(language)) {
       System.err.println("Unexpected language: " + language);
       System.exit(-1);
     }
     if (language.equals("ar")) {
-      return new DatasetHandlerArabic();
+      return new DatasetHandlerArabic(basePath);
     } else if (language.equals("en")) {
       //TODO CHANGE
-      return new DatasetHandlerArabic();
+      return new DatasetHandlerArabic(basePath);
     } else {
-//      return new DaatasetHandlerSpanish();
+      return new DatasetHandlerSpanish(basePath);
     }
-    return null;
   }
   
   public DatasetHandlerPair getDatasetHAndler(String language1, String language2 ) {
