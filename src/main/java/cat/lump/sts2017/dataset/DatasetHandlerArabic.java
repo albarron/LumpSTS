@@ -1,7 +1,16 @@
 package cat.lump.sts2017.dataset;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+
+import cat.lump.aq.basics.check.CHK;
+import cat.lump.aq.basics.io.files.FileIO;
 
 /**
  * The Arabic dataset is only available for the 2017 edition. It includes:
@@ -16,32 +25,60 @@ import java.util.Map;
  * @author albarron
  * @since Jan 5th, 2017 
  */
-public class DatasetHandlerArabic extends DatasetHandlerSingle implements AvailableDatasets {
+public class DatasetHandlerArabic extends DatasetHandlerSingle  {
 
-  private final Map<String, String> AVAILABLE_CORPORA;
   
-  private final String LANGUAGE = "ar";
+  private static final Map<String, String> AVAILABLE_CORPORA;
+  static {
+      Map<String, String> aMap = new LinkedHashMap<String, String>();
+      aMap.put("MSRpar",     "Ar_STS/ar.STS.MSRpar.txt");
+      aMap.put("MSRvid",     "Ar_STS/ar.STS.MSRvid.txt");
+      aMap.put("SMTeuroparl", "Ar_STS/ar.STS.SMTeuroparl.txt");
+      AVAILABLE_CORPORA = Collections.unmodifiableMap(aMap);
+  }
+
   
-  public DatasetHandlerArabic() {
-    super();
-    AVAILABLE_CORPORA = new LinkedHashMap<String, String>();
-    AVAILABLE_CORPORA.put("MSRpar",     "Ar_STS/ar.STS.MSRpar.txt");
-    AVAILABLE_CORPORA.put("MSRvid",     "Ar_STS/ar.STS.MSRvid.txt");
-    AVAILABLE_CORPORA.put("SMTeuroparl", "Ar_STS/ar.STS.SMTeuroparl.txt");
+  
+  
+//  private final Map<AVAILABLE_CORPORA_IDS, String> AVAILABLE_CORPORA;
+  
+  private static final String LAN = "ar";
+  
+  public DatasetHandlerArabic(String basePath) {
+    super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
   }
   
-  
-  public Map<String, String> getAvailableCorpora() {    
-    return AVAILABLE_CORPORA;
+  public List<String> getInstances() throws IOException {
+    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+    List<String> instances = new ArrayList<String>();
+    for (String id : ACTIVATED_CORPORA_IDS) {
+      instances.addAll(
+          Arrays.asList(
+              FileIO.fileToLines(
+                  new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))
+              )
+          )
+      );
+    }
+    return instances;
   }
   
-  public String getLanguage() {
-    return LANGUAGE;
-  }
+//  public String next() {
+//    //TODO
+//    return null;
+//  }
   
-  public String[] getArrayOfInstances() {
-    return null;
-  }
+  
+
+  
+
+  
+//  public String[] getArrayOfInstances() {
+//    return null;
+//  }
   
   
 }
+  
+  
+  
