@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cat.lump.aq.basics.check.CHK;
@@ -48,24 +47,6 @@ public abstract class DatasetHandlerSingle implements DatasetHandlerInterface{
   
  
   public abstract List<String> getInstances() throws IOException;
-  
-  
-//  public boolean hasNext() {
-//    CHK.CHECK((ACTIVATED_CORPORA_IDS != null), 
-//        "I cannot load anything if no corpora have been selected");
-//    
-//    
-//
-//  }
-//  
-//  
-//  
-//  public abstract String next();
-//  
-  
-//  public  Map<String, String> getAvailableCorpora() {
-//    return datasets.getAvailableCorpora();
-//  }
   
   public Set<String> getAvailableCorpora() {    
     return AVAILABLE_CORPORA_IDS;

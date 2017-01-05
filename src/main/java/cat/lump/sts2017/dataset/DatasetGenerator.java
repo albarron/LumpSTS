@@ -115,7 +115,7 @@ public class DatasetGenerator {
     logger.info("Have a nice day");
   }
   
-  public void getRequiredDatasets() throws IOException {
+  public void selectDatasets() throws IOException {
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
     
     System.out.println("Include every subcorpus available? [y,n] (y if empty)");
@@ -262,7 +262,7 @@ public class DatasetGenerator {
       dg = new DatasetGenerator(lan1, lan2, folds, basePath);
     }
     
-    dg.getRequiredDatasets();
+    dg.selectDatasets();
     dg.generateFolds();
     
   }

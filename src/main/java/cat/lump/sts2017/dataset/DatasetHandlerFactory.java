@@ -15,7 +15,7 @@ public class DatasetHandlerFactory {
       return new DatasetHandlerArabic(basePath);
     } else if (language.equals("en")) {
       //TODO CHANGE
-      return new DatasetHandlerArabic(basePath);
+      return new DatasetHandlerEnglish(basePath);
     } else {
       return new DatasetHandlerSpanish(basePath);
     }

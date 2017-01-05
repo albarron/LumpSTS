@@ -56,11 +56,7 @@ public class DatasetHandlerSpanish extends DatasetHandlerSingle {
     
     GOLD_CORPORA = Collections.unmodifiableMap(aGold);
   }
-  
-  
-  
-  
-  
+
   private static final String LAN = "es";
   
   public DatasetHandlerSpanish(String basePath) {
