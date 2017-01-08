@@ -60,16 +60,16 @@ public class DatasetGenerator {
   }
   
   public DatasetGenerator(String lan1, String lan2, int folds, String corpusPath) {
-    dha = new DatasetHandlerPair(lan1, lan2); 
-
-    LANGUAGE = lan1;
+    dha = DatasetHandlerFactory.getDatasetHandler(lan1, lan2, corpusPath); 
+    
+    LANGUAGE = dha.getLanguage();
 //    LANGUAGE_2 = lan2;
     FOLDS = validateFolds(folds);
     BASE_PATH = corpusPath;
     
-    logger.info("Set language: " + LANGUAGE);
+    logger.info("Set language pair: " + LANGUAGE);
     //TODO CHANGE THIS
-    logger.info("Set language 2:" + lan2 ); 
+//    logger.info("Set language 2:" + lan2 ); 
     logger.info("Number of folds: " + FOLDS);
     logger.info("Path to the corpus: " + BASE_PATH);
   }
@@ -78,7 +78,7 @@ public class DatasetGenerator {
   public void generateFolds() throws IOException {
     // generate the folder with the current timestamp
     File dir = new File(getFolderName());
-    logger.info(String.format("Creating folder %s%n", dir));
+    logger.info(String.format("Creating folder %s", dir));
     dir.mkdir();
     
     //Setup the writers for all the folds.
@@ -89,7 +89,7 @@ public class DatasetGenerator {
           new FileWriter(getFoldFileName(dir.toString(), i))));
     }
     
-    logger.info(String.format("Creating %d folds%n", i));
+    logger.info(String.format("Creating %d folds", i));
     
     i = 0;
       List<String> lines = dha.getInstances();
@@ -210,7 +210,7 @@ public class DatasetGenerator {
         ? null 
         : tLan2;
     if (lan2 != null) { 
-      DatasetHandlerPair.checkLanguagePairExists(lan1, lan2); 
+      DatasetHandlerFactory.checkLanguagePairExists(lan1, lan2); 
       if (lan1.equals(lan2)) {
         logger.error("I cannot set up CL with the same language on both sides");
       }
