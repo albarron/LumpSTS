@@ -276,8 +276,14 @@ public class DataIDAnnotator {
 		String NEG = "NEG";
 		Language lang = Language.ES;
 
-    	String pos2chars = pos.substring(0, 1); 
-    	if(pos2chars.equalsIgnoreCase("np")){                      //NEs
+		String pos2chars = "";
+		if (pos.length() > 1){
+	    	pos2chars = pos.substring(0, 2).toLowerCase(); 			
+		} else {
+	   		return id;			
+		}
+
+		if(pos2chars.equalsIgnoreCase("np")){                      //NEs
     		ne = true;
     	} else if(pos2chars.equalsIgnoreCase("rn")){               //Negation
     		return NEG;    		
@@ -286,6 +292,7 @@ public class DataIDAnnotator {
     	}
     	
 		BabelPOS bnPos = posMapping.get(pos2chars); 
+
     	if (bnPos == null){
     		return id;
     	} else {

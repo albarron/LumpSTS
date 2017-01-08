@@ -20,9 +20,9 @@ public class PoSAccept {
 	static final Set<String> POS_AR_ACC= new HashSet<String>(){
 		private static final long serialVersionUID = 2652098132934864030L;
 	    {
-	      add("adj");    // Adjectives
-        add("adj_comp");
-        add("adj_num");
+	    	add("adj");    // Adjectives
+	    	add("adj_comp");
+	    	add("adj_num");
 	    	add("noun");    // Nouns
 	    	add("noun_num");
 	    	add("noun_quant");
