@@ -1,15 +1,8 @@
 package cat.lump.sts2017.dataset;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-
-import cat.lump.aq.basics.check.CHK;
-import cat.lump.aq.basics.io.files.FileIO;
 
 /**
  * The Spanish dataset is available for different editions. It includes:
@@ -37,8 +30,8 @@ import cat.lump.aq.basics.io.files.FileIO;
 public class DatasetHandlerSpanish extends DatasetHandlerSingle {
 
  
-  private static final Map<String, String> AVAILABLE_CORPORA;
-  private static final Map<String, String> GOLD_CORPORA;
+//  private static final Map<String, String> AVAILABLE_CORPORA;
+//  private static final Map<String, String> GOLD_CORPORA;
   static {
     Map<String, String> aMap = new LinkedHashMap<String, String>();
     
@@ -61,50 +54,6 @@ public class DatasetHandlerSpanish extends DatasetHandlerSingle {
   
   public DatasetHandlerSpanish(String basePath) {
     super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
-  }
-  
-  public List<String> getInstances() throws IOException {
-    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
-    List<String> instances = new ArrayList<String>();
-    for (String id : ACTIVATED_CORPORA_IDS) {
-      instances.addAll(joinInstances(id));
-    }
-    return instances;
-  }
-  
-  private List<String> joinInstances(String id) throws IOException {
-    String[] texts = FileIO.fileToLines(
-        new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))
-    );
-    
-    String[] gs = FileIO.fileToLines(
-        new File(getInputFileFullPath(GOLD_CORPORA.get(id)))
-    );
-    
-    List<String> instances = new ArrayList<String>();
-    
-    CHK.CHECK(texts.length == gs.length, 
-        String.format("There's something wrong. Files %s and %s have different lengths",
-            AVAILABLE_CORPORA.get(id), GOLD_CORPORA.get(id)));
-    
-    
-    for (int i = 0; i < texts.length ; i++) {
-      instances.add(produceLine(id, i, gs[i], texts[i]));
-    }
-    return instances;
-  }
-  
-  /**
-   * Creates a single line with all the information, as in the Arabic format:
-   * [corpus]#[idx]\tab[gs]\tab[texts]
-   * @param corpusId    identifier for this corpus
-   * @param idx         index in this corpus
-   * @param gold        gold number
-   * @param text        tab-separated text pair
-   * @return
-   */
-  private String produceLine(String corpusId, int idx, String gold, String text) {
-    return String.format("%s#%d\t%s\t%s", corpusId, idx, gold, text);
   }
   
 }

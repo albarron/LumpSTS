@@ -15,7 +15,9 @@ interface DatasetHandlerInterface {
 //  public  String[] getArrayOfInstances();
   public  String getLanguage();
   
-  public List<String> getInstances() throws IOException;
+  public List<String> getTexts() throws IOException;
+  
+  public List<String> getScores() throws IOException;
   
   public  Set<String> getAvailableCorpora();
 

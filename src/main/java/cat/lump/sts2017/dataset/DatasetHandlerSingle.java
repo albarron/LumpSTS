@@ -2,15 +2,22 @@ package cat.lump.sts2017.dataset;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cat.lump.aq.basics.check.CHK;
+import cat.lump.aq.basics.io.files.FileIO;
 import cat.lump.aq.basics.log.LumpLogger;
 
 public abstract class DatasetHandlerSingle implements DatasetHandlerInterface{
     
+  protected static Map<String, String> AVAILABLE_CORPORA;
+  protected static Map<String, String> GOLD_CORPORA;
+  
   protected final Set<String> AVAILABLE_CORPORA_IDS;
   
   protected Set<String> ACTIVATED_CORPORA_IDS;
@@ -46,7 +53,39 @@ public abstract class DatasetHandlerSingle implements DatasetHandlerInterface{
   }
   
  
-  public abstract List<String> getInstances() throws IOException;
+  /* (non-Javadoc)
+   * @see cat.lump.sts2017.dataset.DatasetHandlerInterface#getTexts()
+   */
+  public List<String> getTexts() throws IOException {
+    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+    List<String> instances = new ArrayList<String>();
+    for (String id : ACTIVATED_CORPORA_IDS) {
+      instances.addAll(
+          Arrays.asList(
+              FileIO.fileToLines(
+                  new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))
+              )
+          )
+      );
+    }
+    return instances;  
+  }
+  
+  public List<String> getScores() throws IOException {
+    //TODO right now does the same
+    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+    List<String> instances = new ArrayList<String>();
+    for (String id : ACTIVATED_CORPORA_IDS) {
+      instances.addAll(
+          Arrays.asList(
+              FileIO.fileToLines(
+                  new File(getInputFileFullPath(GOLD_CORPORA.get(id)))
+              )
+          )
+      );
+    }
+    return instances;  
+  }
   
   public Set<String> getAvailableCorpora() {    
     return AVAILABLE_CORPORA_IDS;

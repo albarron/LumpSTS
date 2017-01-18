@@ -3,7 +3,6 @@ package cat.lump.sts2017.dataset;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,8 +26,6 @@ import cat.lump.aq.basics.io.files.FileIO;
  */
 public class DatasetHandlerEnglishArabic extends DatasetHandlerSingle  {
 
-  
-  private static final Map<String, String> AVAILABLE_CORPORA;
   static {
       Map<String, String> aMap = new LinkedHashMap<String, String>();
       aMap.put("MSRpar",     "En_Ar_STS/en_ar.STS.MSRpar.txt");
@@ -36,11 +33,10 @@ public class DatasetHandlerEnglishArabic extends DatasetHandlerSingle  {
       aMap.put("SMTeuroparl", "En_Ar_STS/en_ar.STS.SMTeuroparl.txt");
       AVAILABLE_CORPORA = Collections.unmodifiableMap(aMap);
   }
-
   
-  
-  
-//  private final Map<AVAILABLE_CORPORA_IDS, String> AVAILABLE_CORPORA;
+  private final int SCORE_INDEX = 1;
+  private final int TXT1_INDEX = 2;
+  private final int TXT2_INDEX = 3;
   
   private static final String LAN = "en_ar";
   
@@ -48,35 +44,42 @@ public class DatasetHandlerEnglishArabic extends DatasetHandlerSingle  {
     super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
   }
   
-  public List<String> getInstances() throws IOException {
+  public List<String> getTexts() throws IOException {
     CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
     List<String> instances = new ArrayList<String>();
     for (String id : ACTIVATED_CORPORA_IDS) {
-      instances.addAll(
-          Arrays.asList(
-              FileIO.fileToLines(
-                  new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))
-              )
-          )
-      );
+      String[] crudeLines = FileIO.fileToLines(
+                    new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id))));
+      for (int i = 0 ; i < crudeLines.length ; i++) {
+        instances.add(getTexts(crudeLines[i]));
+      }
+     
     }
     return instances;
   }
   
-//  public String next() {
-//    //TODO
-//    return null;
-//  }
-  
-  
+  public List<String> getScores() throws IOException {
+    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+    List<String> instances = new ArrayList<String>();
+    for (String id : ACTIVATED_CORPORA_IDS) {
+      String[] crudeLines = FileIO.fileToLines(
+                    new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id))));
+      for (int i = 0 ; i < crudeLines.length ; i++) {
+        instances.add(getScore(crudeLines[i]));
+      }
+     
+    }
+    return instances;  
+   }
 
+  private String getTexts(String crudeLine) {
+    String[] spl = crudeLine.split("\t");
+    return String.format("%s\t%s", spl[TXT1_INDEX], spl[TXT2_INDEX]);
+   }
   
-
-  
-//  public String[] getArrayOfInstances() {
-//    return null;
-//  }
-  
+  private String getScore(String crudeLine) {
+    return crudeLine.split("\t")[SCORE_INDEX];
+  }
   
 }
   

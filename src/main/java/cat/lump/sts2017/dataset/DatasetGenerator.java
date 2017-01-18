@@ -75,6 +75,42 @@ public class DatasetGenerator {
   }
   
 
+//  public void generateFolds() throws IOException {
+//    // generate the folder with the current timestamp
+//    File dir = new File(getFolderName());
+//    logger.info(String.format("Creating folder %s", dir));
+//    dir.mkdir();
+//    
+//    //Setup the writers for all the folds.
+//    List<BufferedWriter> writers = new ArrayList<BufferedWriter>();
+//    int i;
+//    for (i = 0; i < FOLDS; i++) {
+//      writers.add(new BufferedWriter( 
+//          new FileWriter(getFoldFileName(dir.toString(), i))));
+//    }
+//    
+//    logger.info(String.format("Creating %d folds", i));
+//    
+//    i = 0;
+//      List<String> lines = dha.getInstances();
+//          //FileIO.fileToLines(new File(getInputFileFullPath(f)));
+//      
+//      for (String line : lines) {
+//        writers.get(i).write(line); // we write line j into file i
+//        writers.get(i++).write("\n");   // and add a line break
+//        if (i==FOLDS) {   // reset the file counter; another option would be a module
+//          i = 0;
+//        }
+//      }      
+//    
+//
+//    // Now we close all the writers
+//    for (i = 0; i < FOLDS; i++) {
+//      writers.get(i).close();
+//    }
+//    logger.info("Have a nice day");
+//  }
+  
   public void generateFolds() throws IOException {
     // generate the folder with the current timestamp
     File dir = new File(getFolderName());
@@ -82,31 +118,53 @@ public class DatasetGenerator {
     dir.mkdir();
     
     //Setup the writers for all the folds.
-    List<BufferedWriter> writers = new ArrayList<BufferedWriter>();
-    int i;
-    for (i = 0; i < FOLDS; i++) {
-      writers.add(new BufferedWriter( 
-          new FileWriter(getFoldFileName(dir.toString(), i))));
+    List<BufferedWriter> writersScores = new ArrayList<BufferedWriter>();
+    List<BufferedWriter> writersText = new ArrayList<BufferedWriter>();
+    int f;
+    for (f = 0; f < FOLDS; f++) {
+      writersScores.add(new BufferedWriter(
+          new FileWriter(getScoreFoldFileName(dir.toString(), f))));
+      writersText.add(new BufferedWriter( 
+          new FileWriter(getTextFoldFileName(dir.toString(), f))));
     }
     
-    logger.info(String.format("Creating %d folds", i));
+    logger.info(String.format("Creating %d folds", f));
     
-    i = 0;
-      List<String> lines = dha.getInstances();
+    f = 0;
+      List<String> lines = dha.getTexts();
+      List<String> scores = dha.getScores();
+      CHK.CHECK(lines.size() == scores.size(), 
+          "There is something wrong; the number of text and score lines is not the same");
           //FileIO.fileToLines(new File(getInputFileFullPath(f)));
       
-      for (String line : lines) {
-        writers.get(i).write(line); // we write line j into file i
-        writers.get(i++).write("\n");   // and add a line break
-        if (i==FOLDS) {   // reset the file counter; another option would be a module
-          i = 0;
+      for (int i = 0; i < lines.size(); i++) {
+        writersScores.get(f).write(scores.get(i));
+        writersScores.get(f).write("\n");
+        
+        writersText.get(f).write(lines.get(i)); // we write line j into file i
+        writersText.get(f++).write("\n");   // and add a line break
+        if (f==FOLDS) {   // reset the file counter; another option would be a module
+          f = 0;
         }
-      }      
+      }
+      
+//      for (String line : lines) {
+//        writersScores.get(f).write(" " );
+//        writersScores.get(f).write("\n");
+//        
+//        writersText.get(f).write(line); // we write line j into file i
+//        writersText.get(f++).write("\n");   // and add a line break
+//        if (f==FOLDS) {   // reset the file counter; another option would be a module
+//          f = 0;
+//        }
+//      }      
     
 
     // Now we close all the writers
-    for (i = 0; i < FOLDS; i++) {
-      writers.get(i).close();
+    for (f = 0; f < FOLDS; f++) {
+      writersScores.get(f).close();
+      writersText.get(f).close();
+      
     }
     logger.info("Have a nice day");
   }
@@ -140,8 +198,16 @@ public class DatasetGenerator {
     return folds;
   }
   
-  private String getFoldFileName(String path, int i) {
-    return String.format("%s%s%s.%d.txt", 
+  private String getScoreFoldFileName(String path, int i) {
+    return String.format("%s%s%s.scores.%d.txt", 
+        path, 
+        File.separator, 
+        dha.getLanguage(), 
+        i);
+  }
+  
+  private String getTextFoldFileName(String path, int i) {
+    return String.format("%s%s%s.input.%d.txt", 
         path, 
         File.separator, 
         dha.getLanguage(), 

@@ -39,9 +39,6 @@ import cat.lump.aq.basics.io.files.FileIO;
  */
 public class DatasetHandlerEnglishSpanish extends DatasetHandlerSingle {
 
- 
-  private static final Map<String, String> AVAILABLE_CORPORA;
-  private static final Map<String, String> GOLD_CORPORA;
   // multi commented because there is no gs for all the instances.
   static {
     Map<String, String> aMap = new LinkedHashMap<String, String>();
@@ -67,15 +64,39 @@ public class DatasetHandlerEnglishSpanish extends DatasetHandlerSingle {
     super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
   }
   
-  public List<String> getInstances() throws IOException {
+  /* (non-Javadoc)
+   * @see cat.lump.sts2017.dataset.DatasetHandlerSingle#getTexts()
+   */
+  public List<String> getTexts() throws IOException {
     CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
     List<String> instances = new ArrayList<String>();
+    String [] triplet = new String[3];
     for (String id : ACTIVATED_CORPORA_IDS) {
-      instances.addAll(joinInstances(id));
+      String[] crudeLines = FileIO.fileToLines(
+          new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id))));
+      for (int i = 0 ; i < crudeLines.length ; i++) {
+        triplet = crudeLines[i].split("\t");
+        //Some of these files include 2 extra colums with smt info. We discard them here
+        instances.add(String.format("%s\t%s", triplet[0], triplet[1]) );
+      }
     }
     return instances;
   }
   
+  
+
+  
+  /**
+   * Joined the texts and scores from two files and added an extra id.
+   * This was called by getTexts(). It is deprecated because at the end we
+   * use the more simple format of one file with pairs of texts and one file 
+   * with scores. 
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  @SuppressWarnings("unused")
+  @Deprecated
   private List<String> joinInstances(String id) throws IOException {
     String[] texts = FileIO.fileToLines(
         new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))

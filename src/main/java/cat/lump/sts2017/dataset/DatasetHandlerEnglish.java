@@ -78,8 +78,8 @@ import cat.lump.aq.basics.io.files.FileIO;
 public class DatasetHandlerEnglish extends DatasetHandlerSingle {
 
  
-  private static final Map<String, String> AVAILABLE_CORPORA;
-  private static final Map<String, String> GOLD_CORPORA;
+//  private static final Map<String, String> AVAILABLE_CORPORA;
+//  private static final Map<String, String> GOLD_CORPORA;
   static {
     Map<String, String> aMap = new LinkedHashMap<String, String>();
     
@@ -162,15 +162,26 @@ public class DatasetHandlerEnglish extends DatasetHandlerSingle {
     super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
   }
   
-  public List<String> getInstances() throws IOException {
-    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
-    List<String> instances = new ArrayList<String>();
-    for (String id : ACTIVATED_CORPORA_IDS) {
-      instances.addAll(joinInstances(id));
-    }
-    return instances;
-  }
+//  public List<String> getTexts() throws IOException {
+//    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+//    List<String> instances = new ArrayList<String>();
+//    for (String id : ACTIVATED_CORPORA_IDS) {
+//      instances.addAll(joinInstances(id));
+//    }
+//    return instances;
+//  }
   
+  /**
+   * Joined the texts and scores from two files and added an extra id.
+   * This was called by getTexts(). It is deprecated because at the end we
+   * use the more simple format of one file with pairs of texts and one file 
+   * with scores. 
+   * @param id
+   * @return
+   * @throws IOException
+   */
+  @SuppressWarnings("unused")
+  @Deprecated
   private List<String> joinInstances(String id) throws IOException {
     String[] texts = FileIO.fileToLines(
         new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id)))
