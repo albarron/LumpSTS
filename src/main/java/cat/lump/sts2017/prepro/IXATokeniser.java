@@ -135,7 +135,7 @@ public class IXATokeniser implements Tokeniser {
 	public void execute(File input, String lang, File output) {
 
 		// Trying to mimick a command line input 
-		CLI cli = new CLI();
+		CliMinimum cli = new CliMinimum();
 		String language = "-l".concat(lang);
 		String[] commandLine = { "tok", language, "-ooneline", "-nptb", "-uyes"};
 		System.out.println(output.toString());

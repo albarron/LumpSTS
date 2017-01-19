@@ -174,6 +174,7 @@ public class DataIDAnnotator {
 		        	String word = DataProcessor.readFactor3(token, 1);
 		        	// This is a patch to solve the cases where a token has not been annotated
 		        	// "joker" is a toy PoS available in all the mappings as a BabelPOS.NOUN
+		        	// but is not present in the PoSAccept lists
 		        	if (lemma==null || pos==null){
 		        		lemma = token;
 		        		pos = "joker";
