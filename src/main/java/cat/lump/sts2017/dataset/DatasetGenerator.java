@@ -185,11 +185,9 @@ public class DatasetGenerator {
 //        requiredCorpora.put(availableCorpus.getKey(), availableCorpus.getValue());
       }
     }
-    
-    
   }
   
-  
+
 
 
   private int validateFolds(int folds) {
@@ -261,59 +259,110 @@ public class DatasetGenerator {
   }
   
   
+  /**
+   * Getting the source language
+   * @param scanner
+   * @return
+   *        the selected language; crashes if language is not available.
+   * @throws IOException
+   */
+  private static String getSourceLanguage(BufferedReader scanner) throws IOException {
+    System.out.println("Enter the first language [ar, en, es]: ");
+    String lan = scanner.readLine();
+    DatasetHandlerFactory.checkLanguageExists(lan);
+    return lan;
+  }
+  
+  /**
+   * Getting the target language. N
+   * @param scanner
+   * @param srcLan
+   * @return
+   *      
+   * @throws IOException
+   */
+  private static String getTargetLanguage(BufferedReader scanner, String srcLan) 
+  throws IOException {
+    System.out.println("Enter the second language [ar, en, es] (monolingual if empty): ");
+    String tLan = scanner.readLine().trim();
+    String lan = (tLan.isEmpty()) 
+        ? null 
+        : tLan;
+    if (lan != null) { 
+      DatasetHandlerFactory.checkLanguagePairExists(srcLan, lan); 
+      if (srcLan.equals(lan)) {
+        logger.error("I cannot set up CL with the same language on both sides");
+      }
+    }
+    return lan;
+  }
+  
+//  /**
+//   * Getting if we should generate the test partition rather than the training one
+//   * @param scanner
+//   * THIS DOESN'T WORK. THE TEST IS THE 2016 DATASET (WHEN AVAILABLE) IT HAS TO BE DEFINED MANUALLY
+//   * @return
+//   * @throws IOException
+//   */
+//  private static boolean chooseSetPartition(BufferedReader scanner) throws IOException {
+//    System.out.println("Generate 2016 test partition? [y/n] (no if empty)");
+//    String genTest = scanner.readLine().trim();
+//    if (genTest.isEmpty() || genTest.startsWith("n")) {
+//      return false;
+//    }
+//    return true;
+//  }
+  
+  /**
+   * Getting the number of folds
+   * @param scanner
+   * @return
+   * @throws IOException
+   */
+  private static int getFolds(BufferedReader scanner) throws IOException {
+    System.out.format("Enter the desired number of folds (%d if empty): %n", DEFAULT_FOLDS);
+    String sFolds = scanner.readLine().trim();
+    int folds = sFolds.isEmpty()
+        ? DEFAULT_FOLDS
+        : Integer.valueOf(sFolds);
+    return folds;
+  }
+  
+  private static String getCorpusPath(BufferedReader scanner) throws IOException {
+    System.out.format("Parent path to the dataset (default: %s) %n", 
+        DEFAULT_BASE_PATH);
+    String corpusPath = scanner.readLine().trim();
+    if (corpusPath.isEmpty()) {
+      return DEFAULT_BASE_PATH;
+    }
+    String basePath = corpusPath.startsWith(File.separator) 
+        ? corpusPath 
+        : System.getProperty("user.dir") + File.separator + corpusPath;
+    return basePath;
+  }
+  
   public static void main(String[] args) throws IOException {
     // A scanner allows us for reading from he command line
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
     
     // Getting the language(s)
-    System.out.println("Enter the first language [ar, en, es]: ");
-    String lan1 = scanner.readLine();
-    DatasetHandlerFactory.checkLanguageExists(lan1);
-  
-    System.out.println("Enter the second language [ar, en, es] (monolingual if empty): ");
-    String tLan2 = scanner.readLine().trim();
-    String lan2 = (tLan2.isEmpty()) 
-        ? null 
-        : tLan2;
-    if (lan2 != null) { 
-      DatasetHandlerFactory.checkLanguagePairExists(lan1, lan2); 
-      if (lan1.equals(lan2)) {
-        logger.error("I cannot set up CL with the same language on both sides");
-      }
-    }
-    
-    // Getting the number of folds
-    System.out.format("Enter the number of desired folds (%d if empty): %n", DEFAULT_FOLDS);
-    String sFolds = scanner.readLine().trim();
-    int folds = sFolds.isEmpty()
-        ? DEFAULT_FOLDS
-        : Integer.valueOf(sFolds);
-    
-//    // Shuffling
-//    System.out.format(
-//        "Shuffle the data before mixing? (%b if empty; contrary otherwise): %n", 
-//        DEFAULT_SHUFFLE);
-//    String sShuffle = scanner.readLine().trim();
-//    boolean shuffle = sShuffle.isEmpty() ? DEFAULT_SHUFFLE : true;
-    
-    
-    System.out.format("Parent path to the dataset (default: %s) %n", 
-        DEFAULT_BASE_PATH);
-        
-    String corpusPath = scanner.readLine().trim();
+    String lan1 = getSourceLanguage(scanner);
+    String lan2 = getTargetLanguage(scanner, lan1);
 
-    if (corpusPath.isEmpty()) { corpusPath = DEFAULT_BASE_PATH; }
+    String basePath = getCorpusPath(scanner);
     
-    String basePath = corpusPath.startsWith(File.separator) 
-        ? corpusPath 
-        : System.getProperty("user.dir") + File.separator + corpusPath;
+    int folds;
     
-//    System.out.println(lan1);
-//    System.out.println(lan2);
-//    System.out.println(folds);
-////    System.out.println(shuffle);
-//    System.out.println(basePath);
-
+    //THIS DOESNT WORK
+//    boolean genTest = chooseSetPartition(scanner);
+    
+//    if (genTest) {
+//      folds = 1;
+//    } else {
+//      folds = getFolds(scanner);
+//    }
+    
+    folds = getFolds(scanner);
     
     //    //Run
     DatasetGenerator dg;
@@ -323,7 +372,6 @@ public class DatasetGenerator {
     } else {
       dg = new DatasetGenerator(lan1, lan2, folds, basePath);
     }
-    
     dg.selectDatasets();
     dg.generateFolds();
     

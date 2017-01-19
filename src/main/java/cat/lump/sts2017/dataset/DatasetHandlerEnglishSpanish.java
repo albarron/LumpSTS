@@ -40,20 +40,21 @@ import cat.lump.aq.basics.io.files.FileIO;
 public class DatasetHandlerEnglishSpanish extends DatasetHandlerSingle {
 
   // multi commented because there is no gs for all the instances.
+  // multisource was modified externally because it was originally es-en instead of en-es which all the others have
   static {
     Map<String, String> aMap = new LinkedHashMap<String, String>();
     aMap.put("2017", "En_Es_STS/STS.input.en-es.train.txt");
 //    aMap.put("multi", "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.input.multi.txt");
-    aMap.put("multisource",  "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.input.multisource.txt");
-    aMap.put("news",      "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.input.news.txt");
+    aMap.put("2016_multisource",  "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.input.multisource.RIGHTORDER.txt");
+    aMap.put("2016_news",      "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.input.news.txt");
     
     AVAILABLE_CORPORA = Collections.unmodifiableMap(aMap);
     
     Map<String, String> aGold = new LinkedHashMap<String, String>();
     aGold.put("2017", "En_Es_STS/STS.input.en-es.train_scores.txt");
 //    aGold.put("multi", "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.gs.multi.txt");
-    aGold.put("multisource",  "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.gs.multisource.txt");
-    aGold.put("news",      "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.gs.news.txt");;
+    aGold.put("2016_multisource",  "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.gs.multisource.txt");
+    aGold.put("2016_news",      "previous_years/sts2016/cl_en_es/STS2016-cross-lingual-test/STS.gs.news.txt");;
     
     GOLD_CORPORA = Collections.unmodifiableMap(aGold);
   }

@@ -107,9 +107,12 @@ public class DatasetHandlerEnglish extends DatasetHandlerSingle {
     aMap.put("2014_deft-forum", "previous_years/sts2014/english/sts-en-test-gs-2014/STS.input.deft-forum.txt");
     aMap.put("2014_headlines", "previous_years/sts2014/english/sts-en-test-gs-2014/STS.input.headlines.txt");
 
-
+    aMap.put("2015_answers-forums", "previous_years/sts2015/english/sts2015-en-post/data/raw/sts/STS.input.answers-forums.txt");
+    aMap.put("2015_answers-students", "previous_years/sts2015/english/sts2015-en-post/data/raw/sts/STS.input.answers-students.txt");
+    aMap.put("2015_belief", "previous_years/sts2015/english/sts2015-en-post/data/raw/sts/STS.input.belief.txt");
+    aMap.put("2015_headlines", "previous_years/sts2015/english/sts2015-en-post/data/raw/sts/STS.input.headlines.txt");
+    aMap.put("2015_images", "previous_years/sts2015/english/sts2015-en-post/data/raw/sts/STS.input.images.txt");
  
-    // TODO 2015  THIS IS PENDING
     aMap.put("2016_answer-answer", "previous_years/sts2016/english/sts2016-english-with-gs-v1.0/STS2016.input.answer-answer.txt");
     aMap.put("2016_headlines", "previous_years/sts2016/english/sts2016-english-with-gs-v1.0/STS2016.input.headlines.txt");
     aMap.put("2016_plagiarism", "previous_years/sts2016/english/sts2016-english-with-gs-v1.0/STS2016.input.plagiarism.txt");
@@ -143,7 +146,13 @@ public class DatasetHandlerEnglish extends DatasetHandlerSingle {
     aGold.put("2014_deft-forum", "previous_years/sts2014/english/sts-en-test-gs-2014/STS.gs.deft-forum.txt");
     aGold.put("2014_headlines", "previous_years/sts2014/english/sts-en-test-gs-2014/STS.gs.headlines.txt");
 
-
+    aGold.put("2015_answers-forums", "previous_years/sts2015/english/sts2015-en-post/data/gs/STS.gs.answers-forums.txt");
+    aGold.put("2015_answers-students", "previous_years/sts2015/english/sts2015-en-post/data/gs/STS.gs.answers-students.txt");
+    aGold.put("2015_belief", "previous_years/sts2015/english/sts2015-en-post/data/gs/STS.gs.belief.txt");
+    aGold.put("2015_headlines", "previous_years/sts2015/english/sts2015-en-post/data/gs/STS.gs.headlines.txt");
+    aGold.put("2015_images", "previous_years/sts2015/english/sts2015-en-post/data/gs/STS.gs.images.txt");
+ 
+    
  
     // TODO 2015  THIS IS PENDING
 
@@ -162,14 +171,24 @@ public class DatasetHandlerEnglish extends DatasetHandlerSingle {
     super(AVAILABLE_CORPORA.keySet(), LAN, basePath);
   }
   
-//  public List<String> getTexts() throws IOException {
-//    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
-//    List<String> instances = new ArrayList<String>();
-//    for (String id : ACTIVATED_CORPORA_IDS) {
-//      instances.addAll(joinInstances(id));
-//    }
-//    return instances;
-//  }
+  /* (non-Javadoc)
+   * @see cat.lump.sts2017.dataset.DatasetHandlerSingle#getTexts()
+   */
+  public List<String> getTexts() throws IOException {
+    CHK.CHECK(! ACTIVATED_CORPORA_IDS.isEmpty(), "No corpus was selected. Nothing to do");
+    List<String> instances = new ArrayList<String>();
+    String [] triplet = new String[3];
+    for (String id : ACTIVATED_CORPORA_IDS) {
+      String[] crudeLines = FileIO.fileToLines(
+          new File(getInputFileFullPath(AVAILABLE_CORPORA.get(id))));
+      for (int i = 0 ; i < crudeLines.length ; i++) {
+        triplet = crudeLines[i].split("\t");
+        //Some of these files include 2 extra colums with smt info. We discard them here
+        instances.add(String.format("%s\t%s", triplet[0], triplet[1]) );
+      }
+    }
+    return instances;
+  }
   
   /**
    * Joined the texts and scores from two files and added an extra id.

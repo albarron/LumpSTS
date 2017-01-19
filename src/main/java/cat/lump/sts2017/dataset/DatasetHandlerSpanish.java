@@ -33,19 +33,19 @@ public class DatasetHandlerSpanish extends DatasetHandlerSingle {
 //  private static final Map<String, String> AVAILABLE_CORPORA;
 //  private static final Map<String, String> GOLD_CORPORA;
   static {
-    Map<String, String> aMap = new LinkedHashMap<String, String>();
-    
+    Map<String, String> aMap = new LinkedHashMap<String, String>();    
     aMap.put("2014_news",      "previous_years/sts2014/spanish/STS.input.news.txt");
     aMap.put("2014_wikipedia", "previous_years/sts2014/spanish/STS.input.wikipedia.txt");
     aMap.put("2015_newswire",  "previous_years/sts2015/spanish/STS.input.newswire.txt");
     aMap.put("2015_wikipedia", "previous_years/sts2015/spanish/STS.input.wikipedia.txt");
     AVAILABLE_CORPORA = Collections.unmodifiableMap(aMap);
     
+    //The .5 files have been adjusted to have values in the range [0,5] instead of the original [0,4]
     Map<String, String> aGold = new LinkedHashMap<String, String>();
-    aGold.put("2014_news",      "previous_years/sts2014/spanish/STS.gs.news.txt");
-    aGold.put("2014_wikipedia", "previous_years/sts2014/spanish/STS.gs.wikipedia.txt");
-    aGold.put("2015_newswire",  "previous_years/sts2015/spanish/STS.gs.newswire.txt");
-    aGold.put("2015_wikipedia", "previous_years/sts2015/spanish/STS.gs.wikipedia.txt");
+    aGold.put("2014_news",      "previous_years/sts2014/spanish/STS.gs.news.5.txt");
+    aGold.put("2014_wikipedia", "previous_years/sts2014/spanish/STS.gs.wikipedia.5.txt");
+    aGold.put("2015_newswire",  "previous_years/sts2015/spanish/STS.gs.newswire.5.txt");
+    aGold.put("2015_wikipedia", "previous_years/sts2015/spanish/STS.gs.wikipedia.5.txt");
     
     GOLD_CORPORA = Collections.unmodifiableMap(aGold);
   }
