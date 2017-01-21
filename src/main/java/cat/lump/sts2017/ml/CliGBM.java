@@ -4,7 +4,6 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
@@ -20,6 +19,23 @@ public class CliGBM extends CliMinimum {
 	private int crossvalidation;
 	private int gridsearch;
 	
+	public CliGBM(){
+		super();
+		loadOptions();
+	}
+	
+	@Override
+	protected void loadOptions()
+	{
+		super.loadOptions();
+		options.addOption("c", "crossvalidation", true, 
+				"number of cross-validation folds [0,...]");		
+		options.addOption("g", "gridsearch", true, 
+				"Grid search parameter optimisation [0/1]");		
+		options.addOption("h", "help", false, "This help");
+				
+	}
+
 	/**
 	 * Parses the command line arguments
 	 * 	
@@ -31,21 +47,15 @@ public class CliGBM extends CliMinimum {
 	public CommandLine parseArguments(String[] args)
 	{	
 		super.parseArguments(args);
-		HelpFormatter formatter = new HelpFormatter();
 		CommandLine cLine = null;
-		Options options= new Options();
+		HelpFormatter formatter = new HelpFormatter();
 		CommandLineParser parser = new BasicParser();
 
-		options.addOption("c", "crossvalidation", true, 
-					"number of cross-validation folds [0,...]");		
-		options.addOption("g", "gridsearch", true, 
-					"Grid search parameter optimisation [0/1]");		
-		options.addOption("h", "help", false, "This help");
 
 		try {			
 		    cLine = parser.parse( options, args );
 		} catch( ParseException exp ) {
-			logger.error( "Unexpected exception :" + exp.getMessage() );			
+			logger.error( "Unexpected exception :v" + exp.getMessage() );			
 		}	
 		
 		if (cLine.hasOption("h")) {

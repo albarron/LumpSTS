@@ -36,12 +36,28 @@ public abstract class CliMinimum {
 	/** File with the model */
 	protected File model;
 
+	/** The options for the given CLI */
+	protected Options options;
 
 	/** Loads the logger*/
 	public CliMinimum() {			
 		logger = new LumpLogger(this.getClass().getCanonicalName());
+		loadOptions();
 	}
 
+	protected void loadOptions() {
+		options= new Options();		
+		options.addOption("f", "training", true, 
+				"Input file with the training features in csv format. Labels are expected in the first column.");		
+		//options.addOption("s", "scores", true, 
+		//			"Input file with the training scores.");		
+		options.addOption("t", "test", true, 
+				"Input file with the test data.");		
+		options.addOption("m", "model", true, 
+				"Previously trained model");		
+		options.addOption("h", "help", false, "This help");
+	}
+	
 	/**
 	 * Parses the command line arguments
 	 * 	
@@ -53,23 +69,13 @@ public abstract class CliMinimum {
 	{	
 		HelpFormatter formatter = new HelpFormatter();
 		CommandLine cLine = null;
-		Options options= new Options();
 		CommandLineParser parser = new BasicParser();
 
-		options.addOption("f", "training", true, 
-					"Input file with the training features in csv format. Labels are expected in the first column.");		
-		//options.addOption("s", "scores", true, 
-		//			"Input file with the training scores.");		
-		options.addOption("t", "test", true, 
-					"Input file with the test data.");		
-		options.addOption("m", "model", true, 
-					"Previously trained model");		
-		options.addOption("h", "help", false, "This help");
 
 		try {			
 		    cLine = parser.parse( options, args );
 		} catch( ParseException exp ) {
-			logger.error( "Unexpected exception :" + exp.getMessage() );			
+			logger.error( "Unexpected exception: " + exp.getMessage() );			
 		}	
 		
 		if (!cLine.hasOption("f") && !cLine.hasOption("t") && !cLine.hasOption("m"))	{

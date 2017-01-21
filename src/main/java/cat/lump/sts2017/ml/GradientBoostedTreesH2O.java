@@ -4,10 +4,13 @@ package cat.lump.sts2017.ml;
 import java.io.File;
 
 import cat.lump.aq.basics.log.LumpLogger;
-
+import hex.genmodel.utils.DistributionFamily;
 import hex.tree.gbm.GBM;
 import hex.tree.gbm.GBMModel;
+import water.Key;
 import water.fvec.*;
+import water.parser.ParseDataset;
+import water.util.MathUtils;
 
 /**
  * Class to learn and apply a Gradient Boosted Machines on the STS data using the H2O library
@@ -33,24 +36,59 @@ public class GradientBoostedTreesH2O {
 	 */
 	public static void main(String[] args) {
 		
-		CliGBM cliGBM = new CliGBM();
-		cliGBM.parseArguments(args);
+		CliGBM cli = new CliGBM();
+		cli.parseArguments(args);
 		
 		String training = null;
 		//File scores = null;
 		String test = null;
 		File model = null;
 
-		training = cliGBM.getTraining();
+		training = cli.getTraining();
 		//scores = cliGBM.getScores();
-		test = cliGBM.getTest();
-		model = cliGBM.getModel();
+		test = cli.getTest();
+		model = cli.getModel();
+		System.out.println(test);
 
+		File file =  new File(test);			
+	    NFSFileVec nfs = NFSFileVec.make(file);
+		Frame featFrame = ParseDataset.parse(Key.make(), nfs._key);
 
-		if (test==null && model==null && training!=null ){
-			//Frame featFrame = parse_test_file(training);
-		}
+		//featFrame = Utils4H2O.parse_test_file(test);
+		System.out.println(featFrame);
+		//if (test==null && model==null && training!=null ){
+		//	featFrame = Utils4H2O.parse_test_file(training);
+		//}
+		GBMModel.GBMParameters params = new GBMModel.GBMParameters();
+//	    params._ntrees = 50;
+//	    params._nfolds = 10;
 
+	      params._train = featFrame._key;
+	      params._distribution =  DistributionFamily.gaussian;
+	      params._response_column = featFrame._names[1]; // Row in col 0, dependent in col 1, predictor in col 2
+	      params._ntrees = 1;
+	      params._max_depth = 1;
+	      params._min_rows = 1;
+	      params._nbins = 20;
+	      // Drop ColV2 0 (row), keep 1 (response), keep col 2 (only predictor), drop remaining cols
+	      String[] xcols = params._ignored_columns = new String[featFrame.numCols()-2];
+	      xcols[0] = featFrame._names[0];
+	      System.arraycopy(featFrame._names,3,xcols,1,featFrame.numCols()-3);
+	      params._learn_rate = 1.0f;
+	      params._score_each_iteration=true;
+
+	      GBM job = new GBM(params);
+	      GBMModel gbm = job.trainModel().get();
+
+	      // Done building model; produce a score column with predictions
+	      Frame fr2 = gbm.score(featFrame);
+	      //job.response() can be used in place of fr.vecs()[1] but it has been rebalanced
+	      double sq_err = new MathUtils.SquareError().doAll(featFrame.vecs()[1],fr2.vecs()[0])._sum;
+	      double mse = sq_err/fr2.numRows();
+		  System.out.println("79152.12337641386");
+		  System.out.println(mse);
+	
+	
 		// Setting the parameters
 		/* h2o.gbm(x, y, training_frame, model_id, checkpoint, ignore_const_cols = TRUE, 
 			distribution = c("AUTO", "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"), 
@@ -69,9 +107,9 @@ public class GradientBoostedTreesH2O {
 			max_abs_leafnode_pred, pred_noise_bandwidth = 0, 
 			categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen"))
 		*/
-		GBMModel.GBMParameters params = new GBMModel.GBMParameters();
-	    params._ntrees = 50;
-	    params._nfolds = 10;
+		//GBMModel.GBMParameters params = new GBMModel.GBMParameters();
+	    //params._ntrees = 50;
+	    //params._nfolds = 10;
 	    
 	    // Advice
 	    //If you run cross validation with 1000 trees it will slow down the computation significantly, however, 
@@ -79,27 +117,9 @@ public class GradientBoostedTreesH2O {
 	    //hyperparameters as if you were running it on the full dataset.
 	   
 		
-	    GBMModel gbm = new GBM(params).trainModel().get();
+	    //GBMModel gbm = new GBM(params).trainModel().get();
 	      // Done building model; produce a score column with predictions
 	      //fr2 = gbm.score(fr);
-
-
-		System.out.println(params);
-		 
-		 
-		 /*
-	     parms._train = fr._key;
-	     //parms._response_column = fr._names[idx];
-	     parms._ntrees = 5;
-	     parms._distribution = family;
-	     parms._max_depth = 4;
-	     parms._min_rows = 1;
-	     parms._nbins = 50;
-	     parms._learn_rate = .2f;
-	     parms._score_each_iteration = true;
-	     */
-
-
 
 	}
 

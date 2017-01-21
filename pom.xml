@@ -291,18 +291,27 @@
     	<version>4.9.0</version>
     </dependency>
     <dependency>
-	<groupId>org.apache.lucene</groupId>
-	<artifactId>lucene-queryparser</artifactId>
-	<version>4.9.0</version>
+		<groupId>org.apache.lucene</groupId>
+		<artifactId>lucene-queryparser</artifactId>
+		<version>4.9.0</version>
     </dependency>
     <!-- For Machine Learning-->
     <dependency>
     	<groupId>ai.h2o</groupId>
-   	<artifactId>h2o-core</artifactId>
-    	<version>3.10.2.1</version>
+   		<artifactId>h2o-core</artifactId>
+    	<version>3.10.2.2</version>
     </dependency>
-
-
+    <dependency>
+        <groupId>ai.h2o</groupId>
+        <artifactId>h2o-algos</artifactId>
+        <version>3.10.2.2</version>
+	</dependency>
+    <dependency>
+        <groupId>ai.h2o</groupId>
+        <artifactId>h2o-genmodel</artifactId>
+        <version>3.10.2.2</version>
+	</dependency>
+    
   </dependencies>
 
   <build>
