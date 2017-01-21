@@ -32,6 +32,12 @@ public class DatasetGenerator {
   
   private final String BASE_PATH;
   
+  private static final String DEFAULT_INFIX = "train";
+  
+  private String INFIX;
+  
+  
+  
   private  String LANGUAGE;
     
   private int FOLDS;
@@ -114,18 +120,36 @@ public class DatasetGenerator {
   public void generateFolds() throws IOException {
     // generate the folder with the current timestamp
     File dir = new File(getFolderName());
+    if (dir.exists()) {
+      logger.info(String.format("Backing up existing folder %s", dir));
+      dir.renameTo(new File(getFolderNameTimestamp(dir)));
+    }
+    
     logger.info(String.format("Creating folder %s", dir));
     dir.mkdir();
     
     //Setup the writers for all the folds.
+    // Scores
     List<BufferedWriter> writersScores = new ArrayList<BufferedWriter>();
+    // Text pairs
     List<BufferedWriter> writersText = new ArrayList<BufferedWriter>();
+    // Source text
+    List<BufferedWriter> writersSrcText = new ArrayList<BufferedWriter>();
+    // Target text
+    List<BufferedWriter> writersTrgText = new ArrayList<BufferedWriter>();
+    
     int f;
     for (f = 0; f < FOLDS; f++) {
       writersScores.add(new BufferedWriter(
           new FileWriter(getScoreFoldFileName(dir.toString(), f))));
       writersText.add(new BufferedWriter( 
           new FileWriter(getTextFoldFileName(dir.toString(), f))));
+      
+      writersSrcText.add(new BufferedWriter(
+          new FileWriter(getSrcTextFoldFileName(dir.toString(), f))));
+      writersTrgText.add(new BufferedWriter(
+          new FileWriter(getTrgTextFoldFileName(dir.toString(), f))));
+      
     }
     
     logger.info(String.format("Creating %d folds", f));
@@ -141,33 +165,31 @@ public class DatasetGenerator {
         writersScores.get(f).write(scores.get(i));
         writersScores.get(f).write("\n");
         
-        writersText.get(f).write(lines.get(i)); // we write line j into file i
-        writersText.get(f++).write("\n");   // and add a line break
+        writersText.get(f).write(lines.get(i)); // we write line i into file f
+        writersText.get(f).write("\n");   
+        
+        String[] single = lines.get(i).split("\t");
+        writersSrcText.get(f).write(single[0]);
+        writersSrcText.get(f).write("\n");
+        
+        writersTrgText.get(f).write(single[1]);
+        writersTrgText.get(f++).write("\n"); // and add a line break
         if (f==FOLDS) {   // reset the file counter; another option would be a module
           f = 0;
         }
       }
-      
-//      for (String line : lines) {
-//        writersScores.get(f).write(" " );
-//        writersScores.get(f).write("\n");
-//        
-//        writersText.get(f).write(line); // we write line j into file i
-//        writersText.get(f++).write("\n");   // and add a line break
-//        if (f==FOLDS) {   // reset the file counter; another option would be a module
-//          f = 0;
-//        }
-//      }      
-    
 
     // Now we close all the writers
     for (f = 0; f < FOLDS; f++) {
       writersScores.get(f).close();
       writersText.get(f).close();
-      
+      writersSrcText.get(f).close();
+      writersTrgText.get(f).close();
     }
     logger.info("Have a nice day");
   }
+  
+
   
   public void selectDatasets() throws IOException {
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
@@ -185,12 +207,7 @@ public class DatasetGenerator {
 //        requiredCorpora.put(availableCorpus.getKey(), availableCorpus.getValue());
       }
     }
-    
-    
   }
-  
-  
-
 
   private int validateFolds(int folds) {
     CHK.CHECK(folds > 0 && folds <=MAX_FOLDS, 
@@ -205,9 +222,25 @@ public class DatasetGenerator {
         dha.getLanguage(), 
         i);
   }
-  
+
   private String getTextFoldFileName(String path, int i) {
     return String.format("%s%s%s.input.%d.txt", 
+        path, 
+        File.separator, 
+        dha.getLanguage(), 
+        i);
+  }
+  
+  private String getSrcTextFoldFileName(String path, int i) {
+    return String.format("%s%s%s.src.input.%d.txt", 
+        path, 
+        File.separator, 
+        dha.getLanguage(), 
+        i);
+  }
+  
+  private String getTrgTextFoldFileName(String path, int i) {
+    return String.format("%s%s%s.trg.input.%d.txt", 
         path, 
         File.separator, 
         dha.getLanguage(), 
@@ -220,18 +253,37 @@ public class DatasetGenerator {
    * dataset.
    * 
    * @return
-   *        [BASE_PATH]/[lang].[timestamp]
+   *        [BASE_PATH]/[lang].[FOLDS]_fold
    */     
   private String getFolderName() {
-    // TODO LANGUAGE WILL EVENTUALLY BECOME PAIR OR SINGLE
-    // DECIDE IF IT COMES FROM HANDLER OR FROM THIS CLASS
-    Date now = new Date();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("M_D_hh_mm_ss");
-    String outPath = String.format("%s%s%s.%s", BASE_PATH, File.separator, LANGUAGE, dateFormat.format(now) );
+    String outPath = String.format("%s%s%s.%s.%d_fold", 
+          BASE_PATH, File.separator, LANGUAGE, INFIX, FOLDS);
     return outPath;
   }
   
-
+  private String getFolderNameTimestamp(File dir) {
+    Date now = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("M_D_hh_mm_ss");
+    String path = String.format("%s.%s", dir.toString(), dateFormat.format(now));
+    return path;
+  }
+  
+//  /**
+//   * Combines the base path to the corpus with the language (pair) and the 
+//   * timestamp in order to generate one unique folder with the newly generated 
+//   * dataset.
+//   * 
+//   * @return
+//   *        [BASE_PATH]/[lang].[timestamp]
+//   */     
+//  private String getFolderNameTimestamp() {
+//    // TODO LANGUAGE WILL EVENTUALLY BECOME PAIR OR SINGLE
+//    // DECIDE IF IT COMES FROM HANDLER OR FROM THIS CLASS
+//    Date now = new Date();
+//    SimpleDateFormat dateFormat = new SimpleDateFormat("M_D_hh_mm_ss");
+//    String outPath = String.format("%s%s%s.%s", BASE_PATH, File.separator, LANGUAGE, dateFormat.format(now) );
+//    return outPath;
+//  }
 
 //  public void getFolds() {
 //    //TODO RETURN SOMETHING
@@ -261,59 +313,128 @@ public class DatasetGenerator {
   }
   
   
+  /**
+   * Getting the source language
+   * @param scanner
+   * @return
+   *        the selected language; crashes if language is not available.
+   * @throws IOException
+   */
+  private static String getSourceLanguage(BufferedReader scanner) throws IOException {
+    System.out.println("Enter the first language [ar, en, es]: ");
+    String lan = scanner.readLine();
+    DatasetHandlerFactory.checkLanguageExists(lan);
+    return lan;
+  }
+  
+  /**
+   * Getting the target language. N
+   * @param scanner
+   * @param srcLan
+   * @return
+   *      
+   * @throws IOException
+   */
+  private static String getTargetLanguage(BufferedReader scanner, String srcLan) 
+  throws IOException {
+    System.out.println("Enter the second language [ar, en, es] (monolingual if empty): ");
+    String tLan = scanner.readLine().trim();
+    String lan = (tLan.isEmpty()) 
+        ? null 
+        : tLan;
+    if (lan != null) { 
+      DatasetHandlerFactory.checkLanguagePairExists(srcLan, lan); 
+      if (srcLan.equals(lan)) {
+        logger.error("I cannot set up CL with the same language on both sides");
+      }
+    }
+    return lan;
+  }
+  
+//  /**
+//   * Getting if we should generate the test partition rather than the training one
+//   * @param scanner
+//   * THIS DOESN'T WORK. THE TEST IS THE 2016 DATASET (WHEN AVAILABLE) IT HAS TO BE DEFINED MANUALLY
+//   * @return
+//   * @throws IOException
+//   */
+//  private static boolean chooseSetPartition(BufferedReader scanner) throws IOException {
+//    System.out.println("Generate 2016 test partition? [y/n] (no if empty)");
+//    String genTest = scanner.readLine().trim();
+//    if (genTest.isEmpty() || genTest.startsWith("n")) {
+//      return false;
+//    }
+//    return true;
+//  }
+  
+  /**
+   * Getting the number of folds
+   * @param scanner
+   * @return
+   * @throws IOException
+   */
+  private static int getFolds(BufferedReader scanner) throws IOException {
+    System.out.format("Enter the desired number of folds (%d if empty): %n", DEFAULT_FOLDS);
+    String sFolds = scanner.readLine().trim();
+    int folds = sFolds.isEmpty()
+        ? DEFAULT_FOLDS
+        : Integer.valueOf(sFolds);
+    return folds;
+  }
+
+  private static String getCorpusPath(BufferedReader scanner) throws IOException {
+    System.out.format("Parent path to the dataset (default: %s) %n", 
+        DEFAULT_BASE_PATH);
+    String corpusPath = scanner.readLine().trim();
+    if (corpusPath.isEmpty()) {
+      return DEFAULT_BASE_PATH;
+    }
+    String basePath = corpusPath.startsWith(File.separator) 
+        ? corpusPath 
+        : System.getProperty("user.dir") + File.separator + corpusPath;
+    return basePath;
+  }
+  
+  private static String getFolderInfix(BufferedReader scanner) throws IOException {
+    System.out.format("Infix label [train/test] (default: %s) %n", 
+        DEFAULT_INFIX);
+    String readInfix = scanner.readLine().trim();
+    if (readInfix.isEmpty()) {
+      return DEFAULT_INFIX;
+    }
+    String infix = readInfix.equals(DEFAULT_INFIX) 
+        ? DEFAULT_INFIX 
+        : "test";
+    return infix;
+  }
+  
+  public void setOutputInfix(String infix) {
+    INFIX = infix;
+  }
   public static void main(String[] args) throws IOException {
     // A scanner allows us for reading from he command line
     BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
     
     // Getting the language(s)
-    System.out.println("Enter the first language [ar, en, es]: ");
-    String lan1 = scanner.readLine();
-    DatasetHandlerFactory.checkLanguageExists(lan1);
-  
-    System.out.println("Enter the second language [ar, en, es] (monolingual if empty): ");
-    String tLan2 = scanner.readLine().trim();
-    String lan2 = (tLan2.isEmpty()) 
-        ? null 
-        : tLan2;
-    if (lan2 != null) { 
-      DatasetHandlerFactory.checkLanguagePairExists(lan1, lan2); 
-      if (lan1.equals(lan2)) {
-        logger.error("I cannot set up CL with the same language on both sides");
-      }
-    }
-    
-    // Getting the number of folds
-    System.out.format("Enter the number of desired folds (%d if empty): %n", DEFAULT_FOLDS);
-    String sFolds = scanner.readLine().trim();
-    int folds = sFolds.isEmpty()
-        ? DEFAULT_FOLDS
-        : Integer.valueOf(sFolds);
-    
-//    // Shuffling
-//    System.out.format(
-//        "Shuffle the data before mixing? (%b if empty; contrary otherwise): %n", 
-//        DEFAULT_SHUFFLE);
-//    String sShuffle = scanner.readLine().trim();
-//    boolean shuffle = sShuffle.isEmpty() ? DEFAULT_SHUFFLE : true;
-    
-    
-    System.out.format("Parent path to the dataset (default: %s) %n", 
-        DEFAULT_BASE_PATH);
-        
-    String corpusPath = scanner.readLine().trim();
+    String lan1 = getSourceLanguage(scanner);
+    String lan2 = getTargetLanguage(scanner, lan1);
 
-    if (corpusPath.isEmpty()) { corpusPath = DEFAULT_BASE_PATH; }
+    String basePath = getCorpusPath(scanner);
     
-    String basePath = corpusPath.startsWith(File.separator) 
-        ? corpusPath 
-        : System.getProperty("user.dir") + File.separator + corpusPath;
+    String folderInfix = getFolderInfix(scanner);
     
-//    System.out.println(lan1);
-//    System.out.println(lan2);
-//    System.out.println(folds);
-////    System.out.println(shuffle);
-//    System.out.println(basePath);
-
+    int folds;
+    
+    //THIS DOESNT WORK
+//    boolean genTest = chooseSetPartition(scanner);
+    
+//    if (genTest) {
+//      folds = 1;
+//    } else {
+//      folds = getFolds(scanner);
+//    }
+    
+    folds = getFolds(scanner);
     
     //    //Run
     DatasetGenerator dg;
@@ -323,7 +444,7 @@ public class DatasetGenerator {
     } else {
       dg = new DatasetGenerator(lan1, lan2, folds, basePath);
     }
-    
+    dg.setOutputInfix(folderInfix);
     dg.selectDatasets();
     dg.generateFolds();
     
