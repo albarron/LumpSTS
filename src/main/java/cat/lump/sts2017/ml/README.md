@@ -1,4 +1,4 @@
-# Training and testing a dataset with XGBools
+# Training and testing a dataset with XGBoost
 
 Machine learning system with cat.lump.sts2017.ml.XGBoost4j class:
 
@@ -29,8 +29,8 @@ java -cp target/LumpSTS-0.0.1-SNAPSHOT-jar-with-dependencies.jar cat.lump.sts201
 ```
     'learningRate':range(0.04,0.3,0.02) 
     'gamma':range(0,0.5,0.1)
-    'max_depth':range(3,10,2),
-    'min\_child\_weight':range(1,6,2)
+    'max_depth':range(3,10,2)
+    'min_child_weight':range(1,6,2)
 ```
 
 
