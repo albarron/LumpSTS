@@ -34,7 +34,7 @@ public abstract class CliMinimum {
 	protected String test;
 
 	/** File with the model */
-	protected File model;
+	protected String model;
 
 	/** The options for the given CLI */
 	protected Options options;
@@ -99,11 +99,11 @@ public abstract class CliMinimum {
 		} 
 
 		if (cLine.hasOption("m"))	{
-			model = new File(cLine.getOptionValue("m"));
+			model = cLine.getOptionValue("m");
 		} 
 
 		if (cLine.hasOption("f")  && !cLine.hasOption("t") && !cLine.hasOption("m"))	{
-			logger.warn("Preparing for training only, no test or model given.");			
+			logger.warn("Training starting.");			
 		} 
 		
 		/*
@@ -117,7 +117,10 @@ public abstract class CliMinimum {
 		*/
 		if (cLine.hasOption("f") && cLine.hasOption("t") && cLine.hasOption("m"))	{
 			logger.warn("You are giving a model, no training set needed. Proceeding with current model.");			
+		} else if (cLine.hasOption("t") && cLine.hasOption("m"))	{
+			logger.warn("Testing...");			
 		} 
+
 
 		return cLine;		
 	}
@@ -149,7 +152,7 @@ public abstract class CliMinimum {
 	 * Get file with the model
 	 * @return
 	 */
-	public File getModel(){
+	public String getModel(){
 		return model;		
 	}
 	

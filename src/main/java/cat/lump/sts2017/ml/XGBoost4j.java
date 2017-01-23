@@ -1,19 +1,24 @@
 package cat.lump.sts2017.ml;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cat.lump.aq.basics.log.LumpLogger;
-
+import ml.dmlc.xgboost4j.java.Booster;
 import ml.dmlc.xgboost4j.java.DMatrix;
 import ml.dmlc.xgboost4j.java.XGBoost;
 import ml.dmlc.xgboost4j.java.XGBoostError;
 
 /**
- * Class to learn and apply a Gradient Boosted Machines on the STS data using the H2O library
+ * Class to learn and apply eXtreme Gradient Boosting on the STS data
  * 
  * @author cristina
- * @since Dec 30, 2016
+ * @since Jan 22, 2016
  */
 
 public class XGBoost4j {
@@ -22,6 +27,8 @@ public class XGBoost4j {
 	private static LumpLogger logger = 
 			new LumpLogger (XGBoost4j.class.getSimpleName());
 
+	public static final float MAX_SCORE = 10000000f;
+	
 	
 	/**
 	 * Given a set of eXtreme Gradient Boosting parameters performs n-fold cross-validation on a given
@@ -61,15 +68,25 @@ public class XGBoost4j {
 	    String[] metrics = null;
 	    String[] evalHist = null;
 		try {
-	   			evalHist = XGBoost.crossValidation(trainMat, params, iters, nfold, metrics, null, null);
+			evalHist = XGBoost.crossValidation(trainMat, params, iters, nfold, metrics, null, null);
 		} catch (XGBoostError e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		if (evalHist.equals(null)){
+			return MAX_SCORE;
+		}
 		String lastEv = evalHist[evalHist.length-1];
-		
-		System.out.println(lastEv);
-		return 0.2f;
+
+		// we extract the score on test
+		Matcher m = Pattern.compile("cv-test-\\w+:(.+)$").matcher(lastEv);
+		Float score =  null; 
+		if (m.find()) {
+		    score = Float.valueOf(m.group(1));
+		}
+
+		return score;
 		
 	}
 
@@ -93,6 +110,7 @@ public class XGBoost4j {
 		// Fixed parameters
 		int nfold = 10;
 		int iters = 1100;
+		//iters = 110;
 		
 		// Grid intervals
 		float learningRateMin = 0.04f;
@@ -112,25 +130,178 @@ public class XGBoost4j {
 		// 'gamma':[i/10.0 for i in range(0,5)]
 		// 'learningRate' 0.05 to 0.3 
 		
+		// Best point will be stored in
+		int itersBest = iters;
+		float learningBest = 0f;
+		float gammaBest = 0f;
+		int max_depthBest = 0;
+		int min_child_weightBest = 0;
+		
 		// Grid Search
+		float score = MAX_SCORE;
+		float scoreBest = MAX_SCORE;
 		for (int l=0; l<=learningInt; l++) {
 		    float lr = learningRateMin + learningDelta*l;
+			// The higher the learning rate, the less the number of iterations we need
+			int itersW = (int) (iters - 1000*lr);
 			for (int g=0; g<=gammaInt; g++) {
-			    float gp = gammaMin + gammaDelta*l;
+			    float gp = gammaMin + gammaDelta*g;
 				for (int md=max_depthMin; md<=max_depthMax; md++) {
 					for (int mc=min_child_weightMin; mc<=min_child_weightMax; mc++) {
-						// The higher the learning rate, the less the number of iterations we need
-						int itersW = (int) (iters - 1000*lr);
-						float kk = trainWithCV(training, nfold, itersW, lr, gp, md, mc);
-						System.out.println("iters: "+ itersW +" lr: "+ lr +" gamma: "+ gp +" maxDepth: "+ md + " minCW: "+mc);
+						score = trainWithCV(training, nfold, itersW, lr, gp, md, mc);
+						if (score<scoreBest) {
+							itersBest = iters;
+							learningBest = lr;
+							gammaBest = gp;
+							max_depthBest = md;
+							min_child_weightBest = mc;
+							scoreBest = score;
+						}
+						System.out.println("iters: "+ itersW +" lr: "+ lr +" gamma: "+ gp +" maxDepth: "+
+						md + " minCW: "+mc+ " (score="+score+")" );
 					}
 				}
 			}
 		}
 		
-		
+		logger.info("The best parameters after 10-fold CV are\n    lr: "+ 
+				learningBest +" gamma: "+ gammaBest +" maxDepth: "+ max_depthBest + 
+				" minCW: "+min_child_weightBest+"  (score="+scoreBest+")");
+
+		try {
+			itersBest=itersBest+100;
+			trainSingleModel(training, itersBest, learningBest, gammaBest, max_depthBest, min_child_weightBest);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XGBoostError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+	
+	/**
+	 * Trains and saves a model with the given fixed parameters for the boosting
+	 * 
+	 * @param training
+	 * @param iters
+	 * @param learningRate
+	 * @param gamma
+	 * @param max_depth
+	 * @param min_child_weight
+	 * @throws IOException
+	 * @throws XGBoostError
+	 */
+	private static void trainSingleModel(String training, int iters, float learningRate, float gamma,
+			int max_depth, int min_child_weight)  throws IOException, XGBoostError {
+
+		DMatrix trainMat = null;
+		try {
+			String input = training + ".libsvm";
+			trainMat = new DMatrix(input);
+		} catch (XGBoostError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    HashMap<String, Object> params = new HashMap<String, Object>();
+	    params.put("eta", learningRate);
+	    params.put("max_depth", max_depth);
+	    params.put("min_child_weight", min_child_weight);
+	    params.put("silent", 1);   //non-verbose
+	    params.put("objective", "reg:linear");
+	    params.put("gamma", gamma);
+
+	    HashMap<String, DMatrix> watches = new HashMap<String, DMatrix>();
+	    watches.put("train", trainMat);
+	
+	    //train a boost model
+	    Booster booster = XGBoost.train(trainMat, params, iters, watches, null, null);
+
+	    //save model to modelPath
+	    File file = new File("./models");
+	    if (!file.exists()) {
+	      file.mkdirs();
+	    }
+	    String modelPath = "./models/xgb."+"LR"+learningRate+"G"+gamma+"MD"+max_depth+"CW"+min_child_weight+".model";
+	    booster.saveModel(modelPath);
+
+	    //dump model with feature map
+	    //String[] modelInfos = booster.getModelDump("../../demo/data/featmap.txt", false);
+	    //saveDumpModel("./model/dump.raw.txt", modelInfos);
+
+	    //save dmatrix into binary buffer
+	    //testMat.saveBinary("./model/dtest.buffer");
+	}
+
+	
+
+	/**
+	 * Given a previously trained model, generates and prints the predictions in a text
+	 * file with extension .pred
+	 * 
+	 * @param test
+	 * @param model
+	 */
+	private static void predictor(String test, String model) {
+		
+		DMatrix testMat = null;
+	    Booster booster = null;
+	    float[][] predictions = null;
+		try {
+			String input = test + ".libsvm";
+			testMat = new DMatrix(input);
+			booster = XGBoost.loadModel(model);
+			predictions = booster.predict(testMat);
+		} catch (XGBoostError e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			savePredictions(test, predictions);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
+	public static void saveDumpModel(String modelPath, String[] modelInfos) throws IOException {
+		   try{
+		      PrintWriter writer = new PrintWriter(modelPath, "UTF-8");
+		      for(int i = 0; i < modelInfos.length; ++ i) {
+		        writer.print("booster[" + i + "]:\n");
+		        writer.print(modelInfos[i]);
+		      }
+		      writer.close();
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		    }
+	}
+
+	/**
+	 * Prints the actual predictions into a file 
+	 * 
+	 * @param test
+	 * @param predictions
+	 * @throws IOException
+	 */
+	public static void savePredictions(String test, float[][] predictions) throws IOException {
+		   String output = test + ".pred";
+		   try{
+		      PrintWriter writer = new PrintWriter(output, "UTF-8");
+			  for (int i=0; i<predictions.length; i++) {
+			        writer.print(predictions[i][0] +"\n");
+			  }
+		      writer.close();
+		    } catch (Exception e) {
+		      e.printStackTrace();
+		    }
+	}
+
+	
 	/**
 	 * Main function to run the class, serves as example
 	 * 
@@ -147,21 +318,29 @@ public class XGBoost4j {
 		String training = null;
 		//File scores = null;
 		String test = null;
-		File model = null;
+		String model = null;
 
 		training = cli.getTraining();
 		//scores = cliGBM.getScores();
 		test = cli.getTest();
 		model = cli.getModel();
 		
-		// Convert input into the input xgboost format
-		Utils.csv2libsvm(training);
-		// Begins the training
-		trainWithGridSearch(training);
+		// To be sure decimals will be points and no commas:
+		Locale.setDefault(new Locale("en"));
 		
+		if (training!=null && test==null && model==null){
+			// Convert input into the input xgboost format
+			Utils.csv2libsvm(training);
+			// Begins the training
+			trainWithGridSearch(training);
+		}
+		if (training==null && test!=null && model!=null){
+			// Convert input into the input xgboost format
+			Utils.csv2libsvm(test);
+			predictor(test, model);
+		}
 
 	}
-
 
 
 }

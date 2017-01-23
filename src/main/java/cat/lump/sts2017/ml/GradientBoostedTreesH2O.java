@@ -43,7 +43,7 @@ public class GradientBoostedTreesH2O {
 		String training = null;
 		//File scores = null;
 		String test = null;
-		File model = null;
+		String model = null;
 
 		training = cli.getTraining();
 		//scores = cliGBM.getScores();
