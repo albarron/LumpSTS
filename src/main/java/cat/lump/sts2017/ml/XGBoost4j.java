@@ -127,8 +127,8 @@ public class XGBoost4j {
 		int min_child_weightMax = 6;
 		// 'max_depth':range(3,10,2),
 		// 'min_child_weight':range(1,6,2)
-		// 'gamma':[i/10.0 for i in range(0,5)]
-		// 'learningRate' 0.05 to 0.3 
+		// 'gamma':range(0,0.5,0.1)
+		// 'learningRate':range(0.04,0.3,0.02) 
 		
 		// Best point will be stored in
 		int itersBest = iters;

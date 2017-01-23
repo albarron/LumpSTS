@@ -38,9 +38,11 @@ If you need to use the machine learning module: <br />
 `git clone https://github.com/dmlc/xgboost.git` <br />
 
 which requires the dmlc-core and rabit packages. Download them into xgboost corresponding folders and `make` both of them <br />
-`git clone https://github.com/dmlc/dmlc-core.git`
+
+`git clone https://github.com/dmlc/dmlc-core.git` <br />
 `git clone https://github.com/dmlc/rabit.git` <br />
-And now you are ready to compile `./xgboost/jvm-packages`  <br />
+
+Now you are ready to compile in folder `./xgboost/jvm-packages`  <br />
 `mvn package` <br />
 
 
