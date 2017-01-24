@@ -1,7 +1,6 @@
 package cat.lump.sts2017.prepro;
 
 import java.io.File;
-import java.util.Properties;
 
 import org.ini4j.Profile.Section;
 

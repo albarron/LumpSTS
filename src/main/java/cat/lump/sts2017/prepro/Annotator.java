@@ -27,7 +27,6 @@ import cat.lump.sts2017.lumpConfig;
  */
 public class Annotator {
 
-
 	/** Language */
 	private final String lang;
 	/** Layer of annotation */
@@ -89,6 +88,11 @@ public class Annotator {
 			logger.error( "Unexpected exception :" + exp.getMessage() );			
 		}	
 		
+		if (cLine.hasOption("h")) {
+			formatter.printHelp(Annotator.class.getSimpleName(),options );
+			System.exit(0);
+		}
+
 		if (cLine == null || !(cLine.hasOption("l")) ) {
 			logger.error("Please, set the language\n");
 			formatter.printHelp(Annotator.class.getSimpleName(),options );
@@ -99,10 +103,6 @@ public class Annotator {
 			formatter.printHelp(Annotator.class.getSimpleName(),options );
 			System.exit(1);
 		}		
-		if (cLine.hasOption("h")) {
-			formatter.printHelp(Annotator.class.getSimpleName(),options );
-			System.exit(0);
-}
 
 		return cLine;		
 	}

@@ -21,7 +21,7 @@ public class IXATokeniser implements Tokeniser {
 
 	/** Logger */
 	private static LumpLogger logger = 
-			new LumpLogger (Annotator.class.getSimpleName());
+			new LumpLogger (Tokeniser.class.getSimpleName());
 
 	/** 
 	 * Runs the tokeniser on an input file.
@@ -135,7 +135,7 @@ public class IXATokeniser implements Tokeniser {
 	public void execute(File input, String lang, File output) {
 
 		// Trying to mimick a command line input 
-		CliMinimum cli = new CliMinimum();
+		CLI cli = new CLI();
 		String language = "-l".concat(lang);
 		String[] commandLine = { "tok", language, "-ooneline", "-nptb", "-uyes"};
 		System.out.println(output.toString());
