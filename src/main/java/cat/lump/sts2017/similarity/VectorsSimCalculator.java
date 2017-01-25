@@ -40,7 +40,7 @@ public class VectorsSimCalculator {
 	
 	/** Constructor	 */
 	public VectorsSimCalculator(String mesure) {
-		setMeasure(this.measure);
+		setMeasure(measure);
 	}
 	
 	/**
@@ -60,20 +60,14 @@ public class VectorsSimCalculator {
 		try{
 		    PrintWriter writer = new PrintWriter(output, "UTF-8");
 		    String sentence1 = sources.readLine();
-		    String sentence2 = null;
+		    String sentence2 = targets.readLine();
 			while (sentence1 != null) {
-			    sentence2 = targets.readLine();
-
-			    Vector v1 = readVector(sentence1);
-			    Vector v2 = readVector(sentence2);
-			    
-			    double sim = 0f;
-			    if (measure.equalsIgnoreCase("cosine")){
-			    	sim = Functions.cosineSim(v1, v2);
-			    } 
-			    // add more measures here
+			    Vector v1 = Utils.readVector(sentence1);
+			    Vector v2 = Utils.readVector(sentence2);
+			    double sim = Utils.calculateMeasure(v1, v2, measure);
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();
+			    sentence2 = targets.readLine();
 			}
 			writer.close();
 		} catch (Exception e) {
@@ -81,49 +75,6 @@ public class VectorsSimCalculator {
 		}
 	}
 
-	
-	/**
-	 * Extracts the floats present in a string and returns them
-	 * in a Vector 
-	 * 
-	 * TODO: move this method to the Vector class?
-
-	 * @param sentence
-	 * @return vector
-	 */
-	private static Vector readVector(String sentence) {
-
-		List<Float> components = new ArrayList<Float>();
-	    Scanner scanner = new Scanner(sentence);
-	    scanner.useLocale(Locale.ENGLISH);
-	    while (scanner.hasNext()) {
-	    	scanner.next();
-	    	if (scanner.hasNextFloat()) {
-	    		components.add(scanner.nextFloat());
-	    	}
-	    }
-	    scanner.close();
-	    Vector v = new Vector(getFloatsArray(components));
-		return v;
-	}
-
-	/**
-	 * Transforms a list of Float values into an array of float.
-	 * TODO: move this method to a most appropriate place
-	 *  
-	 * @param values
-	 *            the list of Float
-     * @return the array of floats
-	 */
-	public static float[] getFloatsArray(List<Float> values) {
-	    int length = values.size();
-	    float[] result = new float[length];
-	    for (int i = 0; i < length; i++) {
-	      result[i] = values.get(i).floatValue();
-	    }
-	    return result;
-	}
-	  
 
 	/**
 	 * Parses the command line arguments
@@ -212,7 +163,7 @@ public class VectorsSimCalculator {
 	}
 
 	public void setMeasure(String measure) {
-		measure = this.measure;
+		this.measure = measure;
 	}
 
 }
