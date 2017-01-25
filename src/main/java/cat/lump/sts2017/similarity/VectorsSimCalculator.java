@@ -5,11 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -39,7 +34,7 @@ public class VectorsSimCalculator {
 	private String measure;
 	
 	/** Constructor	 */
-	public VectorsSimCalculator(String mesure) {
+	public VectorsSimCalculator(String measure) {
 		setMeasure(measure);
 	}
 	
@@ -61,6 +56,8 @@ public class VectorsSimCalculator {
 		    PrintWriter writer = new PrintWriter(output, "UTF-8");
 		    String sentence1 = sources.readLine();
 		    String sentence2 = targets.readLine();
+		    logger.info("Reading representations for the first pair...");
+		    int i=0;
 			while (sentence1 != null) {
 			    Vector v1 = Utils.readVector(sentence1);
 			    Vector v2 = Utils.readVector(sentence2);
@@ -68,8 +65,10 @@ public class VectorsSimCalculator {
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();
 			    sentence2 = targets.readLine();
+			    i++;
 			}
 			writer.close();
+			logger.info("Done with the "+i+" sentences.");
 		} catch (Exception e) {
 		      e.printStackTrace();
 		}

@@ -12,8 +12,13 @@ public class Functions {
 	 * @return
 	 */
 	public static double cosineSim(Vector v1, Vector v2) {
-		return  (v1.dotProduct(v2) / 
-				(v1.magnitude() * v2.magnitude()) );
+		double result;
+		if (v1.magnitude()==0 || v2.magnitude()==0) {
+			result = 0;
+		} else {
+			result = v1.dotProduct(v2)/(v1.magnitude() * v2.magnitude());
+		}
+		return result;
 	}
 
 

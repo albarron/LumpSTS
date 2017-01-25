@@ -38,12 +38,10 @@ public class Utils {
 	 * @return vector
 	 */
 	public static Vector readVector(String sentence) {
-
 		List<Float> components = new ArrayList<Float>();
 	    Scanner scanner = new Scanner(sentence);
 	    scanner.useLocale(Locale.ENGLISH);
 	    while (scanner.hasNext()) {
-	    	scanner.next();
 	    	if (scanner.hasNextFloat()) {
 	    		components.add(scanner.nextFloat());
 	    	}

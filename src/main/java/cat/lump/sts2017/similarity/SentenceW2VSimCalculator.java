@@ -6,8 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -39,14 +42,26 @@ public class SentenceW2VSimCalculator {
 	/** Similarity measure to be calculated	 */
 	private String measure;
 	
+	/** Control token added to the word embeddings*/
+	public static final String CONTROL = "4sizeEmb";
+
 	/** Constructor	 */
-	public SentenceW2VSimCalculator(String mesure) {
+	public SentenceW2VSimCalculator(String measure) {
 		setMeasure(measure);
 	}
 		  
-	
+	/**
+	 * Scans the input files to get each sentence, calculates its semantic representation and the
+	 * similarity among every pair.
+	 * 
+	 * @param sourceFile
+	 * @param targetFile
+	 * @param embeddings
+	 * @param output
+	 */
 	public void sentence2representation(File sourceFile, File targetFile, String embeddings, String output) {
 		
+		logger.info("Loading the embeddings...");
         Map<String, String> embeddingsMap = new HashMap<String, String>();
         embeddingsMap = loadW2Vembeddings(embeddings);
         
@@ -67,19 +82,23 @@ public class SentenceW2VSimCalculator {
 		    //PrintWriter writerTarget = new PrintWriter(vecsTarget, "UTF-8");
 		    PrintWriter writer = new PrintWriter(output, "UTF-8");
 
+		    logger.info("Reading the first sentence...");
 		    String sentence1 = sources.readLine();
 		    String sentence2 = targets.readLine();
+		    int i=0;
 			while (sentence1 != null) {
 				Vector v1 = getSentenceVector(sentence1, embeddingsMap);
 			    Vector v2 = getSentenceVector(sentence2, embeddingsMap);
 			    double sim = Utils.calculateMeasure(v1, v2, measure);
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();
-			    sentence2 = sources.readLine();
+			    sentence2 = targets.readLine();
+			    i++;
 			}
 			//writerSource.close();
 			//writerTarget.close();
 			writer.close();
+			logger.info("Done with the "+i+" sentences.");
 
 		} catch (Exception e) {
 		      e.printStackTrace();
@@ -87,14 +106,26 @@ public class SentenceW2VSimCalculator {
 
 	}
 
-	
+	/**
+	 * Get the semantic representation of a sentence as the sum of the representation of its words
+	 * 
+	 * @param sentence
+	 * @param embeddingsMap
+	 * @return
+	 */
 	private Vector getSentenceVector(String sentence, Map<String, String> embeddingsMap) {
-
 	    String[] words = sentence.split("\\s+");
-	    Vector v = new Vector(new float[words.length]); //ja s'inicialitza a 0 per default
+	    
+	    // We use the control element to know the size of the embeddings (300 dim, 500 dim etc)
+	    Vector vtmp = Utils.readVector(embeddingsMap.get(CONTROL));
+	    Vector v = new Vector(new float[vtmp.length()]); //ja s'inicialitza a 0 per default
+	    
 	    for (String word : words){
 	    	String vectorconcatenated = embeddingsMap.get(word);
-	    	Utils.readVector(vectorconcatenated).addEquals(v);
+	    	if (vectorconcatenated == null){
+	    		continue;
+	    	}
+			v.addEquals(Utils.readVector(vectorconcatenated));
 	    }
 	    return v;
 	}
@@ -116,17 +147,21 @@ public class SentenceW2VSimCalculator {
 			logger.error("The embedding's file "+embeddings+" is not available.");
 			e.printStackTrace();
 		}
+		String parts[] = null;
 	    try {
 		    String line = in.readLine(); // first line is discarded because it is just a description in w2v files
 	    	while ((line = in.readLine()) != null) {
-			      String parts[] = line.split("\\s+",2);
+			      parts = line.split("\\s+",2);
 			      embeddingsMap.put(parts[0], parts[1]);
 			}
 			in.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}	      
+		}	
+	    // We add a phantom element just to be able to read a known component
+	    embeddingsMap.put(CONTROL, parts[1]);
+	    
 	    return embeddingsMap;
 	}
 
@@ -220,7 +255,7 @@ public class SentenceW2VSimCalculator {
 	}
 
 	public void setMeasure(String measure) {
-		measure = this.measure;
+		this.measure = measure;
 	}
 
 }
