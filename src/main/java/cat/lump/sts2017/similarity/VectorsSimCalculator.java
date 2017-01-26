@@ -94,7 +94,7 @@ public class VectorsSimCalculator {
 		options.addOption("t", "target", true, 
 				"File with the vectors for the target sentences");		
 		options.addOption("m", "measure", true, 
-				"Similarity measure to use [cosine(default)/...]");		
+				"Similarity measure to use [cosine(default)/jaccard/KL/JS]");		
 		options.addOption("o", "output", true, 
 				"Output file to store the similarities");		
 		options.addOption("h", "help", false, "This help");

@@ -22,6 +22,12 @@ public class Utils {
 		double sim = 0f;
 	    if (measure.equalsIgnoreCase("cosine")){
 	    	sim = Functions.cosineSim(v1, v2);
+	    } else if (measure.equalsIgnoreCase("jaccard")){
+	    	sim = Functions.genJaccardSim(v1, v2);
+	    } else if (measure.equalsIgnoreCase("KL")){
+	    	sim = Functions.KLDiv(v1, v2);
+	    } else if (measure.equalsIgnoreCase("JS")){
+	    	sim = Functions.JSDiv(v1, v2);
 	    } 
 	    // add more measures here
 	    

@@ -187,7 +187,7 @@ public class SentenceW2VSimCalculator {
 		options.addOption("e", "embeddings", true, 
 				"File with the word embeddings in w2v format");		
 		options.addOption("m", "measure", true, 
-				"Similarity measure to use [cosine(default)/...]");		
+				"Similarity measure to use [cosine(default)/jaccard/KL/JS]");		
 		options.addOption("o", "output", true, 
 				"Output file to store the similarities");		
 		options.addOption("h", "help", false, "This help");
