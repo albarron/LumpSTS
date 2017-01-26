@@ -10,7 +10,7 @@ import java.io.IOException;
  * @author albarron
  *
  */
-public class StsBufferedReader extends BufferedReader{
+public class StsBufferedReaderArabic extends BufferedReader{
 
   private final String FIELD_SEPARATOR = "\t";
   
@@ -32,7 +32,7 @@ public class StsBufferedReader extends BufferedReader{
    *            So far it should come from the static variables in {@code CorpusHandler}
    * @throws FileNotFoundException
    */
-  public StsBufferedReader(String file) throws FileNotFoundException  {
+  public StsBufferedReaderArabic(String file) throws FileNotFoundException  {
     super(new FileReader(file));
   }
   
@@ -58,7 +58,7 @@ public class StsBufferedReader extends BufferedReader{
   }
   
   public static void main(String[] args) throws IOException {
-    StsBufferedReader cr = new StsBufferedReader(CorpusHandler.STS_CORPUS_PATH_ARABIC_MSRpar);
+    StsBufferedReaderArabic cr = new StsBufferedReaderArabic(CorpusHandler.STS_CORPUS_PATH_ARABIC_MSRpar);
 
     for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance())
     {  
