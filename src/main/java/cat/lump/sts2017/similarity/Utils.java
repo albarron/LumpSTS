@@ -19,9 +19,14 @@ public class Utils {
 	    	sim = Functions.cosineSim(v1, v2);
 	    } else if (measure.equalsIgnoreCase("jaccard")){
 	    	// Jaccard similarity assumes input vectors have positive reals components
+	    	// A shift is not a good solution for this method because the larger the values,
+	    	// the smaller the differences between instances
 	    	float shift = 100f;
 	    	sim = Functions.genJaccardSim(VectorSTS.shift(v1, shift), VectorSTS.shift(v2, shift));
 	    } else if (measure.equalsIgnoreCase("KL")){
+	    	// Kullback-Leibler and Jensen-Shannon need probabilities as inputs.
+	    	// We make a softmax on the input vectors, but not sure that a softmax on each vector
+	    	// independently make any sense
 	    	sim = Functions.KLDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
 	    } else if (measure.equalsIgnoreCase("JS")){
 	    	sim = Functions.JSDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
