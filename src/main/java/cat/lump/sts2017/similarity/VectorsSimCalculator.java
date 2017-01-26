@@ -59,8 +59,8 @@ public class VectorsSimCalculator {
 		    logger.info("Reading representations for the first pair...");
 		    int i=0;
 			while (sentence1 != null) {
-			    Vector v1 = Utils.readVector(sentence1);
-			    Vector v2 = Utils.readVector(sentence2);
+			    Vector v1 = VectorSTS.readVector(sentence1);
+			    Vector v2 = VectorSTS.readVector(sentence2);
 			    double sim = Utils.calculateMeasure(v1, v2, measure);
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();

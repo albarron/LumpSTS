@@ -6,12 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -117,7 +113,7 @@ public class SentenceW2VSimCalculator {
 	    String[] words = sentence.split("\\s+");
 	    
 	    // We use the control element to know the size of the embeddings (300 dim, 500 dim etc)
-	    Vector vtmp = Utils.readVector(embeddingsMap.get(CONTROL));
+	    Vector vtmp = VectorSTS.readVector(embeddingsMap.get(CONTROL));
 	    Vector v = new Vector(new float[vtmp.length()]); //ja s'inicialitza a 0 per default
 	    
 	    for (String word : words){
@@ -125,7 +121,7 @@ public class SentenceW2VSimCalculator {
 	    	if (vectorconcatenated == null){
 	    		continue;
 	    	}
-			v.addEquals(Utils.readVector(vectorconcatenated));
+			v.addEquals(VectorSTS.readVector(vectorconcatenated));
 	    }
 	    return v;
 	}

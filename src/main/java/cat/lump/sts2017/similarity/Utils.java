@@ -1,10 +1,5 @@
 package cat.lump.sts2017.similarity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-
 import cat.lump.aq.basics.algebra.vector.Vector;
 
 public class Utils {
@@ -23,54 +18,17 @@ public class Utils {
 	    if (measure.equalsIgnoreCase("cosine")){
 	    	sim = Functions.cosineSim(v1, v2);
 	    } else if (measure.equalsIgnoreCase("jaccard")){
-	    	sim = Functions.genJaccardSim(v1, v2);
+	    	// Jaccard similarity assumes input vectors have positive reals components
+	    	float shift = 100f;
+	    	sim = Functions.genJaccardSim(VectorSTS.shift(v1, shift), VectorSTS.shift(v2, shift));
 	    } else if (measure.equalsIgnoreCase("KL")){
-	    	sim = Functions.KLDiv(v1, v2);
+	    	sim = Functions.KLDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
 	    } else if (measure.equalsIgnoreCase("JS")){
-	    	sim = Functions.JSDiv(v1, v2);
+	    	sim = Functions.JSDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
 	    } 
-	    // add more measures here
 	    
 		return sim;
 	}
 
-	/**
-	 * Extracts the floats present in a string and returns them
-	 * in a Vector 
-	 * 
-	 * TODO: move this method to the Vector class?
 
-	 * @param sentence
-	 * @return vector
-	 */
-	public static Vector readVector(String sentence) {
-		List<Float> components = new ArrayList<Float>();
-	    Scanner scanner = new Scanner(sentence);
-	    scanner.useLocale(Locale.ENGLISH);
-	    while (scanner.hasNext()) {
-	    	if (scanner.hasNextFloat()) {
-	    		components.add(scanner.nextFloat());
-	    	}
-	    }
-	    scanner.close();
-	    Vector v = new Vector(getFloatsArray(components));
-		return v;
-	}
-	
-	/**
-	 * Transforms a list of Float values into an array of float.
-	 * TODO: move this method to a most appropriate place
-	 *  
-	 * @param values
-	 *            the list of Float
-     * @return the array of floats
-	 */
-	public static float[] getFloatsArray(List<Float> values) {
-	    int length = values.size();
-	    float[] result = new float[length];
-	    for (int i = 0; i < length; i++) {
-	      result[i] = values.get(i).floatValue();
-	    }
-	    return result;
-	}
 }
