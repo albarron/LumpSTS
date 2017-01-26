@@ -2,6 +2,8 @@ package cat.lump.sts2017.similarity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -83,14 +85,27 @@ public class CharNgramsSimilarity {
       str2 = removeVowels(str2);
     }
     Decomposition cNgrams = new CharacterNgrams(N);
-    Map<String, Integer> ngrams1 = cNgrams.getFreqs(str1);
-    Map<String, Integer> ngrams2 = cNgrams.getFreqs(str2);
+    Map<String, Integer> ngrams1 = getFreqs(cNgrams.getStrings(str1));
+    Map<String, Integer> ngrams2 = getFreqs(cNgrams.getStrings(str2));
     double sim = 
         dotproduct(ngrams1, ngrams2) / 
         (magnitude(ngrams1) * magnitude(ngrams2));
     
     return sim;
   }
+  
+  public Map<String, Integer> getFreqs(List<String> texts) {
+    Map<String, Integer> ngr = new LinkedHashMap<String, Integer>();
+    for (String n : texts) {
+      if (! ngr.containsKey(n)) {
+        ngr.put(n, 0);
+      }
+      ngr.put(n, ngr.get(n)+1);
+    }
+    return ngr;
+  }
+
+  
   
   private double dotproduct(Map<String, Integer> grams1, Map<String, Integer> grams2) {
     double d = 0;
