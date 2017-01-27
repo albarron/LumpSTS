@@ -28,34 +28,13 @@ import cat.lump.sts2017.dataset.StsInstance;
 import edu.stanford.nlp.international.arabic.Buckwalter;
 
 public class CharNgramsSimilarity {
+  
+  private static final int FEATURE_NUMBER = 2;
+  private static final String FEATURE_NAME = "grm";
 
   private static final int N_DEFAULT = 3;
   
   private final int N;
-  
-  private final Transliterator NORMALIZER = 
-      Transliterator.getInstance("NFD; [:NonspacingMark:] Remove; NFC");
-  
-//  private final Transliterator ARABIC_TO_LATIN = 
-//      Transliterator.getInstance("Arabic-Latin/BGN");
-  private final Buckwalter buckwalter = new Buckwalter(true);
-  
-  private static final int FEATURE_NUMBER = 2;
-  private static final String FEATURE_NAME = "grm";
-  
-  // READ THE FILE
-  // TRANSLITERATE IF NECESSARY
-  //BREAK INTO 2/3/4-grams
-  //COMPUTE SIMILARITY
-  
-//  INPUT
-  // FILE
-  // LANGUAGE(S)
-  //OUTPUT FILE WITH SIMILARITIES
-  
-  private static LumpLogger logger = 
-      new LumpLogger(CharNgramsSimilarity.class.getSimpleName());
-  
   
   private final File FILE;
   private final Locale LAN1;
@@ -63,7 +42,13 @@ public class CharNgramsSimilarity {
   private final boolean SINGLE_LANGUAGE;
   private final boolean ONE_IS_ARABIC;
   
+  private final Transliterator NORMALIZER = 
+      Transliterator.getInstance("NFD; [:NonspacingMark:] Remove; NFC");
   
+  private final Buckwalter BUCKWALTER = new Buckwalter(true);
+    
+  private static LumpLogger logger = 
+      new LumpLogger(CharNgramsSimilarity.class.getSimpleName());
   
   public CharNgramsSimilarity(String input, int n, Locale lan) {
     this(input, n, lan, lan);
@@ -89,9 +74,9 @@ public class CharNgramsSimilarity {
     System.out.println(str2);
     if (ONE_IS_ARABIC) {
       if (LAN1.equals("ar")) {
-        str1 = buckwalter.apply(str1);
+        str1 = BUCKWALTER.apply(str1);
       } else {
-        str2 = buckwalter.apply(str2);
+        str2 = BUCKWALTER.apply(str2);
       }
       str1 = removeVowels(str1);
       str2 = removeVowels(str2);
@@ -160,7 +145,7 @@ public class CharNgramsSimilarity {
    */
   private String normalize(String str, Locale lan) {
     if (lan.toString().equals("ar")) {
-    return buckwalter.apply(str).toLowerCase().replaceAll("\\s", "");
+    return BUCKWALTER.apply(str).toLowerCase().replaceAll("\\s", "");
     } else {
       return NORMALIZER.transliterate(str).toLowerCase().replaceAll("\\s", "");
     }
