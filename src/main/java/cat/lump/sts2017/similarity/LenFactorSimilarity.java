@@ -57,8 +57,8 @@ public class LenFactorSimilarity {
     str1 = normalize(str1);
     str2 = normalize(str2);
     
-    System.out.println(str1);
-    System.out.println(str2);
+//    System.out.println(str1);
+//    System.out.println(str2);
 
     double sim = LE.lengthFactor(str1.length(), str2.length());
     return sim;
@@ -78,7 +78,8 @@ public class LenFactorSimilarity {
   private File setFile (String input) {
     File f = new File(input);
     CHK.CHECK(f.exists() && f.isFile() && f.canRead(), 
-        "The file does not exist or I cannot read it");
+        String.format("The file %s does not exist or I cannot read it",
+            f));
     return f;
   }
 
@@ -87,6 +88,8 @@ public class LenFactorSimilarity {
     
     options.addOption("f", "input", true, 
         "Input file");
+    options.addOption("o", "output", true, 
+        "Output File");
     options.addOption("l", "lan1", true, 
         "language (en, es, ar)");
     options.addOption("m", "lan2", true,
@@ -103,8 +106,8 @@ public class LenFactorSimilarity {
       logger.error( "Unexpected exception: " + exp.getMessage() );      
     } 
     
-    if(!cLine.hasOption("f") || !cLine.hasOption("l")) {
-      logger.warn("Please, provide input file and at least one language");
+    if(!cLine.hasOption("f") || !cLine.hasOption("o") || !cLine.hasOption("l")) {
+      logger.warn("Please, provide input/output file and at least one language");
     formatter.printHelp("x", options);
 //    widthFormatter, command, header, options, footer, true);
       System.exit(1);
@@ -117,6 +120,8 @@ public class LenFactorSimilarity {
   public static void main(String[] args) throws IOException {
     CommandLine cLine = loadOptions(args);
     String inFile = cLine.getOptionValue("f");
+    String ouFile = cLine.getOptionValue("o");
+
     String lan1 = cLine.getOptionValue("l");
         
     String lan2;
@@ -128,13 +133,13 @@ public class LenFactorSimilarity {
     } else {
       cns = new LenFactorSimilarity(inFile, new Locale(lan1));
     }
-    FeatureDumper fd = new FeatureDumper(new File(inFile).getParent(), FEATURE_NUMBER, FEATURE_NAME);
+    FeatureDumper fd = new FeatureDumper(ouFile, FEATURE_NUMBER, FEATURE_NAME);
     StsBufferedReader cr = new StsBufferedReader(inFile);
 
     double sim;
     for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance()) {
       sim = cns.computeSimilarity(instance.getText1(), instance.getText2());
-      System.out.println(sim);
+//      System.out.println(sim);
       fd.writeLine(String.valueOf(sim));
        
     }

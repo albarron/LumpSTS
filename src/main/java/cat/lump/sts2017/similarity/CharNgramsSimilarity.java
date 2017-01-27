@@ -71,7 +71,7 @@ public class CharNgramsSimilarity {
   }
   
   public double computeSimilarity(String str1, String str2) {
-    System.out.println(str2);
+//    System.out.println(str2);
     if (ONE_IS_ARABIC) {
       if (LAN1.equals("ar")) {
         str1 = BUCKWALTER.apply(str1);
@@ -84,8 +84,8 @@ public class CharNgramsSimilarity {
     str1 = normalize(str1, LAN1);
     str2 = normalize(str2, LAN2);
     
-    System.out.println(str1);
-    System.out.println("k: " +str2);
+//    System.out.println(str1);
+//    System.out.println("k: " +str2);
     
     Decomposition cNgrams = new CharacterNgrams(N);
     Map<String, Integer> ngrams1 = getFreqs(cNgrams.getStrings(str1));
@@ -154,7 +154,8 @@ public class CharNgramsSimilarity {
   private File setFile (String input) {
     File f = new File(input);
     CHK.CHECK(f.exists() && f.isFile() && f.canRead(), 
-        "The file does not exist or I cannot read it");
+        String.format("The file %s does not exist or I cannot read it",
+            f));
     return f;
   }
   
@@ -165,6 +166,8 @@ public class CharNgramsSimilarity {
     
     options.addOption("f", "input", true, 
         "Input file");
+    options.addOption("o", "output", true, 
+        "Output File");
     options.addOption("l", "lan1", true, 
         "language (en, es, ar)");
     options.addOption("m", "lan2", true,
@@ -183,8 +186,8 @@ public class CharNgramsSimilarity {
       logger.error( "Unexpected exception: " + exp.getMessage() );      
     } 
     
-    if(!cLine.hasOption("f") || !cLine.hasOption("l")) {
-      logger.warn("Please, provide input file and at least one language");
+    if(!cLine.hasOption("f") || !cLine.hasOption("o") || !cLine.hasOption("l")) {
+      logger.warn("Please, provide input/output file and at least one language");
     formatter.printHelp("x", options);
 //    widthFormatter, command, header, options, footer, true);
       System.exit(1);
@@ -197,6 +200,7 @@ public class CharNgramsSimilarity {
   public static void main(String[] args) throws IOException {
     CommandLine cLine = loadOptions(args);
     String inFile = cLine.getOptionValue("f");
+    String ouFile = cLine.getOptionValue("o");
     String lan1 = cLine.getOptionValue("l");
     
     int n = (cLine.hasOption("n")) 
@@ -213,13 +217,13 @@ public class CharNgramsSimilarity {
     } else {
       cns = new CharNgramsSimilarity(inFile, n, new Locale(lan1));
     }
-    FeatureDumper fd = new FeatureDumper(new File(inFile).getParent(), FEATURE_NUMBER, n + FEATURE_NAME);
+    FeatureDumper fd = new FeatureDumper(ouFile, FEATURE_NUMBER, n + FEATURE_NAME);
     StsBufferedReader cr = new StsBufferedReader(inFile);
 
     double sim;
     for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance()) {
       sim = cns.computeSimilarity(instance.getText1(), instance.getText2());
-      System.out.println(sim);
+//      System.out.println(sim);
       fd.writeLine(String.valueOf(sim));
        
     }

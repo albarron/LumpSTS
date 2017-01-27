@@ -46,7 +46,7 @@ public class FeatureDumper {
     String filename = getFileName(path, i, feature );
     FW = new FileWriter(new File(filename));
     BW = new BufferedWriter(FW);
-    System.out.println("Files will be dumped to " + filename);
+    System.out.println("Features will be dumped to " + filename);
   }
   
  public void writeLine(String line) throws IOException {
@@ -60,7 +60,7 @@ public class FeatureDumper {
   }
   
   private String getFileName(String path, int i, String feature) {    
-    String s = String.format("%s%s%d-%s", path, File.separator, i, feature);
+    String s = String.format("%s.%d-%s", path, i, feature);
     return s;
   }
 }
