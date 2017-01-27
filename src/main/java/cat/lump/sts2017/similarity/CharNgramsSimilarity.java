@@ -2,6 +2,7 @@ package cat.lump.sts2017.similarity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,8 +22,10 @@ import cat.lump.aq.basics.check.CHK;
 import cat.lump.aq.basics.log.LumpLogger;
 import cat.lump.ie.textprocessing.Decomposition;
 import cat.lump.ie.textprocessing.ngram.CharacterNgrams;
-import cat.lump.sts2017.dataset.StsBufferedReaderArabic;
+import cat.lump.sts2017.dataset.FeatureDumper;
+import cat.lump.sts2017.dataset.StsBufferedReader;
 import cat.lump.sts2017.dataset.StsInstance;
+import edu.stanford.nlp.international.arabic.Buckwalter;
 
 public class CharNgramsSimilarity {
 
@@ -33,8 +36,12 @@ public class CharNgramsSimilarity {
   private final Transliterator NORMALIZER = 
       Transliterator.getInstance("NFD; [:NonspacingMark:] Remove; NFC");
   
-  private final Transliterator ARABIC_TO_LATIN = 
-      Transliterator.getInstance("Arabic-Latin/BGN");
+//  private final Transliterator ARABIC_TO_LATIN = 
+//      Transliterator.getInstance("Arabic-Latin/BGN");
+  private final Buckwalter buckwalter = new Buckwalter(true);
+  
+  private static final int FEATURE_NUMBER = 2;
+  private static final String FEATURE_NAME = "grm";
   
   // READ THE FILE
   // TRANSLITERATE IF NECESSARY
@@ -55,6 +62,7 @@ public class CharNgramsSimilarity {
   private final Locale LAN2;
   private final boolean SINGLE_LANGUAGE;
   private final boolean ONE_IS_ARABIC;
+  
   
   
   public CharNgramsSimilarity(String input, int n, Locale lan) {
@@ -78,12 +86,22 @@ public class CharNgramsSimilarity {
   }
   
   public double computeSimilarity(String str1, String str2) {
-    str1 = removeDiacritics(str1, LAN1);
-    str2 = removeDiacritics(str2, LAN2);
+    System.out.println(str2);
     if (ONE_IS_ARABIC) {
+      if (LAN1.equals("ar")) {
+        str1 = buckwalter.apply(str1);
+      } else {
+        str2 = buckwalter.apply(str2);
+      }
       str1 = removeVowels(str1);
       str2 = removeVowels(str2);
     }
+    str1 = normalize(str1, LAN1);
+    str2 = normalize(str2, LAN2);
+    
+    System.out.println(str1);
+    System.out.println("k: " +str2);
+    
     Decomposition cNgrams = new CharacterNgrams(N);
     Map<String, Integer> ngrams1 = getFreqs(cNgrams.getStrings(str1));
     Map<String, Integer> ngrams2 = getFreqs(cNgrams.getStrings(str2));
@@ -109,7 +127,8 @@ public class CharNgramsSimilarity {
   
   private double dotproduct(Map<String, Integer> grams1, Map<String, Integer> grams2) {
     double d = 0;
-    Set<String> common = grams1.keySet();
+    Set<String> common = new HashSet<String>();
+    common.addAll(grams1.keySet());
     common.retainAll(grams2.keySet());
     
     for (String s : common) {
@@ -132,14 +151,21 @@ public class CharNgramsSimilarity {
   }
   
   private String removeVowels(String str) {
-    return "";
+    return str.replaceAll("[aeiouAEIOU]", "");
   }
   
-  private String removeDiacritics(String str, Locale lan) {
+  /**
+   * Removes diacritics; converts to lower case. If Arabic, applies
+   * Buckwalter transliteration
+   * @param str
+   * @param lan
+   * @return
+   */
+  private String normalize(String str, Locale lan) {
     if (lan.toString().equals("ar")) {
-    return ARABIC_TO_LATIN.transliterate(str);
+    return buckwalter.apply(str).toLowerCase().replaceAll("\\s", "");
     } else {
-      return NORMALIZER.transliterate(str);
+      return NORMALIZER.transliterate(str).toLowerCase().replaceAll("\\s", "");
     }
   }
   
@@ -198,22 +224,24 @@ public class CharNgramsSimilarity {
     
     String lan2;
     CharNgramsSimilarity cns;
-    
-    
-    
+
     if (cLine.hasOption("m")) {
       lan2 = cLine.getOptionValue("m");
       cns = new CharNgramsSimilarity(inFile, n, new Locale(lan1), new Locale(lan2));
     } else {
       cns = new CharNgramsSimilarity(inFile, n, new Locale(lan1));
     }
- 
-    StsBufferedReaderArabic cr = new StsBufferedReaderArabic(inFile);
+    FeatureDumper fd = new FeatureDumper(new File(inFile).getParent(), FEATURE_NUMBER, n + FEATURE_NAME);
+    StsBufferedReader cr = new StsBufferedReader(inFile);
 
-    for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance())
-    {  
-       System.out.println(cns.computeSimilarity(instance.getText1(), instance.getText2()));
+    double sim;
+    for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance()) {
+      sim = cns.computeSimilarity(instance.getText1(), instance.getText2());
+      System.out.println(sim);
+      fd.writeLine(String.valueOf(sim));
+       
     }
+    fd.close();
   }
   
 }
