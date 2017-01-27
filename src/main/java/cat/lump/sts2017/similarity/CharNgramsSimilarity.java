@@ -123,14 +123,11 @@ public class CharNgramsSimilarity {
     return ngr;
   }
 
-  
-  
   private double dotproduct(Map<String, Integer> grams1, Map<String, Integer> grams2) {
     double d = 0;
     Set<String> common = new HashSet<String>();
     common.addAll(grams1.keySet());
     common.retainAll(grams2.keySet());
-    
     for (String s : common) {
       d += grams1.get(s) * grams2.get(s);
     }    
@@ -146,7 +143,7 @@ public class CharNgramsSimilarity {
   }
   
   private int getN(int n) {
-    CHK.CHECK(n > 0 && n < 5, "I expect a value in (1,5] for n");
+    CHK.CHECK(n > 0 && n <= 5, "I expect a value in (1,5] for n");
     return n;
   }
   
