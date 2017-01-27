@@ -21,7 +21,9 @@ public class Utils {
 	    	// Jaccard similarity assumes input vectors have positive reals components
 	    	// A shift is not a good solution for this method because the larger the values,
 	    	// the smaller the differences between instances
-	    	float shift = 100f;
+	    	// With negative values it is not a similarity any more because it doesn't lie in
+	    	// the [0,1] interval. However, it should be still useful as a score (TOCHECK)
+	    	float shift = 0f;
 	    	sim = Functions.genJaccardSim(VectorSTS.shift(v1, shift), VectorSTS.shift(v2, shift));
 	    } else if (measure.equalsIgnoreCase("KL")){
 	    	// Kullback-Leibler and Jensen-Shannon need probabilities as inputs.
