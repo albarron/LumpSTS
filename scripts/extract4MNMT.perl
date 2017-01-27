@@ -12,8 +12,8 @@ use strict;
 
 my ($filename, @factors) = @ARGV;
 my %indices = map {$_ => 1} @factors;
-my $sourceLabel = '<2en> ';
-#my $sourceLabel = '';
+#my $sourceLabel = '<2es> ';
+my $sourceLabel = '';
 
 open(INFILE, "<$filename") or die "couldn't open '$filename' for read: $!\n";
 while(my $line = <INFILE>)
@@ -21,6 +21,11 @@ while(my $line = <INFILE>)
 	chop $line;
 	my $factorLine = $sourceLabel.join(' ', map {my $i = 0; join('|', grep($indices{$i++}, split(/\|/, $_)))} split(/\s+/, $line)) . "\n";
 	# currently, the corpora for NMT is lowercased and I always forget it
-	print lc($factorLine);
+        #print lc($factorLine);
+	# this version is for Babelnet
+        $factorLine =~ s/-//g;
+        $factorLine =~ s/\s+/ /g;
+        $factorLine =~ s/^\s//;
+        print "$factorLine\n";
 }
 close(INFILE);
