@@ -72,7 +72,7 @@ public class DataIDAnnotator {
 		CommandLineParser parser = new BasicParser();
 
 		options.addOption("l", "language", true, 
-					"Language of the input text (ar/en/es)");		
+					"Language of the input text (ar/en/es/tr)");		
 		options.addOption("i", "input", true, 
 					"Input file to annotate (in Annotator format wpl)");		
 		options.addOption("h", "help", false, "This help");
@@ -103,7 +103,7 @@ public class DataIDAnnotator {
 	 * Main function to run the class, serves as example
 	 * 
 	 * @param args
-	 * 		-l Language of the input text (Arabic, English, Spanish)
+	 * 		-l Language of the input text (Arabic, English, Spanish, Turkish)
 	 *      -i Input file (in Annotator format wpl)
 	 * 		-c Configuration file
 	 */
@@ -186,6 +186,8 @@ public class DataIDAnnotator {
 		    		    id = getBNID_es(bn, lemma, pos);	
 		    		} else if (language.equalsIgnoreCase("ar")) {
 		    		    id = getBNID_ar(bn, lemma, pos);	
+		    		} else if (language.equalsIgnoreCase("tr")) {
+		    		    id = getBNID_tr(bn, lemma, pos);	
 		    		} 
 	        		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
 		        }
@@ -346,7 +348,40 @@ public class DataIDAnnotator {
 		return id;
 	}
 
-	
+
+	/**
+	 * Given a lemma and a PoS the method retrieves the BN id for a subset of selected PoS
+	 * in Turkish
+	 * 
+	 * @param lemma
+	 * @param pos
+	 * @return
+	 */
+	private String getBNID_tr(BabelNet bn, String lemma, String pos) {
+ 
+		String id = "-";
+		boolean ne = false;
+		String NEG = "NEG";
+		Language lang = Language.TR;    	
+    	
+    	if(PoSAccept.NEG_TR.contains(lemma)){                     //Negation      		
+    		return NEG;
+    	} else if(!PoSAccept.POS_TR_ACC.contains(pos)) {          //Non-content PoS
+    		return id;
+    	}
+     	
+		BabelPOS bnPos = posMapping.get(pos);
+		
+    	if (bnPos == null){
+    		return id;
+    	} else {
+    	   // NE are adding too much noise
+    	   //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	   id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang);
+    	}
+		return id;
+	}
+
 	/**
 	 * Get the top translation of a lemma
 	 * DON'T USE

@@ -40,7 +40,9 @@ public class AnnotatorFactory {
 			return new MOSESIXALemmatiser();
 		} else if (language.equalsIgnoreCase("ar")) {
 			return new MADALemmatiser();
-		} 
+		} else if (language.equalsIgnoreCase("tr")) {
+			return new MOSESturkishLemmatiser();
+		}	
 		return null;
 	}
 }

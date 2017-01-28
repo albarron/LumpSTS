@@ -3,6 +3,8 @@ package cat.lump.sts2017.babelNet;
 import java.util.HashSet;
 import java.util.Set;
 
+import it.uniroma1.lcl.babelnet.data.BabelPOS;
+
 
 /**
  * Subset of PoS tags for Arabic, English and Spanish for which we extract the 
@@ -98,6 +100,34 @@ public class PoSAccept {
 	    	add("vs");
 	    	add("zm");  //Currency
 	    	add("zu");  //unitats
+		}
+	};
+
+	/**
+	 * PoS tags from the Trukish tag set for which we want the BabelNet ID.
+	 */
+	static final Set<String> POS_TR_ACC= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864033L;
+	    {
+	    	add("Verb");
+	    	add("Noun");
+	    	add("Adj");
+	    	add("Adv");
+	    	add("Num"); //think determiner?       //	Number
+	    	add("bor");	//	Borrowed
+		}
+	};
+
+	/**
+	 * Negations in Turkish. (from google translate!)
+	 */
+	static final Set<String> NEG_TR= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864041L;
+	    {
+	    	add("hayır");
+	    	add("yok");
+	    	add("değil");  
+	    	add("hiçbir"); 
 		}
 	};
 

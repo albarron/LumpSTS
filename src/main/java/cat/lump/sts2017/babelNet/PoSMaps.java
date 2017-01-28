@@ -200,6 +200,39 @@ public class PoSMaps {
 		}
 	};
 
+	
+	/**
+	 * Mapping TS Wikipedia Data Set for Turkish which is the one used by the TS tagget
+	 */
+	static final Map<String, BabelPOS> BN_POS_TR= new HashMap<String, BabelPOS>(){
+		private static final long serialVersionUID = 1652098132934864033L;
+	    {
+	    	put("Verb", BabelPOS.VERB);
+	    	put("Noun", BabelPOS.NOUN);
+	    	put("Adj", BabelPOS.ADJECTIVE);
+	    	put("Adv", BabelPOS.ADVERB);
+	    	put("Det", BabelPOS.DETERMINER);
+	    	put("Conj", BabelPOS.CONJUNCTION);
+	    	put("Postp", BabelPOS.PREPOSITION);         // Postposition
+	    	put("Interj", BabelPOS.INTERJECTION); 		// Interjection
+	    	put("Pron", BabelPOS.PRONOUN);
+	    	put("Dup", null);  	       // Duplication
+	    	put("Num", BabelPOS.NOUN); //think determiner?       //	Number
+	    	put("Punc", null);
+	    	put("UnDef", BabelPOS.ARTICLE);	 // Undefinite
+	    	put("Ques", null);     //Question
+	    	put("YY", null);       //	Misspell
+	    	put("Abbr", BabelPOS.NOUN);     //	Abbreviation
+	    	put("intEmphasis", null);   //	Internet Emphasis
+	    	put("intAbbrEng", null);    //	Internet English Abbreviation
+	    	put("tinglish", null); 	    //	Tinglish
+	    	put("bor", BabelPOS.NOUN);	//	Borrowed
+	    	put("intSlang", null); 
+	    	put("joker", BabelPOS.NOUN); //artificially added
+		}
+	};
+		
+	
 }
 
 
@@ -352,6 +385,100 @@ z0	Numeral	547.000, 04, 52,52
 zm	Numeral qualifier (currency)	dólares, euros
 zu	Numeral qualifier (other units)	km, cc
 
+
+
+TURKISH
+
+TS Wikipedia Data Set PosTag List
+#
+POSTag
+TAG
+Tag Used in Data Set
+1
+Verb
+Verb
+_Verb
+2
+Noun
+Noun
+_Noun
+3
+Adj
+Adjective
+_Adj
+4
+Adv
+Adverb
+_Adverb
+5
+Det
+Determiner
+_Det
+6
+Conj
+Conjunction
+_Conj
+7
+Postp
+Postposition
+_Postp
+8
+Interj
+Interjection
+_Interj
+9
+Pron
+Pronoun
+_Pron
+10
+Dup
+Duplication
+_Dup
+11
+Num
+Number
+_Num
+12
+Punc
+Punctuation
+_Punc
+13
+UnDef
+Undefinite
+_UnDef
+14
+Ques
+Question
+_Ques
+15
+YY
+Misspell
+_YY
+16
+Abbr
+Abbreviation
+_Abbr
+17
+intEmphasis
+Internet Emphasis
+_intEmphasis
+18
+intAbbrEng
+Internet English Abbreviation
+_intAbbrEnglish
+19
+tinglish
+Tinglish
+_tinglish
+20
+bor
+Borrowed
+_bor
+21
+intSlang
+Internet Slang
+_intSlang
+The tags “YY, Abbr, intEmphasis, intAbbrEng, tinglish, bor and intSlang” are processed by 
 *
 *
 */

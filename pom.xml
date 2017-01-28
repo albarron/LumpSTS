@@ -45,7 +45,7 @@
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>	
+   <dependency>	
       <groupId>edu.columbia.ccls.madamira</groupId>
       <artifactId>MADAMIRA-release</artifactId>
       <version>20160516-2.1</version>
@@ -105,10 +105,10 @@
         <version>1.8.3</version>
     </dependency>
     <dependency>
-	    <groupId>edu.stanford.nlp</groupId>
-	    <artifactId>stanford-parser</artifactId>
-	    <version>3.7.0</version>
-	</dependency>
+	<groupId>edu.stanford.nlp</groupId>
+        <artifactId>stanford-parser</artifactId>
+	<version>3.7.0</version>
+    </dependency>
     <dependency>
     	<groupId>asm</groupId>
     	<artifactId>asm</artifactId>
@@ -164,6 +164,11 @@
     	<version>4.2.1</version>
     </dependency>
     <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.10.2</version>
+	</dependency>
+    <dependency>
     	<groupId>isorelax</groupId>
     	<artifactId>isorelax</artifactId>
     	<version>20030108</version>
@@ -189,10 +194,10 @@
     	<version>1.2.14</version>
     </dependency> 
     <dependency>
-		<groupId>org.apache.logging.log4j</groupId>
-		<artifactId>log4j-core</artifactId>
-		<version>2.0-rc1</version>
-	</dependency>	
+	<groupId>org.apache.logging.log4j</groupId>
+	<artifactId>log4j-core</artifactId>
+	<version>2.0-rc1</version>
+    </dependency>	
     <dependency>
     	<groupId>oro</groupId>
     	<artifactId>oro</artifactId>
@@ -284,8 +289,8 @@
         <groupId>org.apache.servicemix.bundles</groupId>
         <artifactId>org.apache.servicemix.bundles.lucene</artifactId>
         <version>4.1.0_2</version>
-	</dependency>
-	<dependency>
+    </dependency>
+    <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
         <version>4.9.0</version>
@@ -296,9 +301,9 @@
     	<version>4.9.0</version>
     </dependency>
     <dependency>
-		<groupId>org.apache.lucene</groupId>
-		<artifactId>lucene-queryparser</artifactId>
-		<version>4.9.0</version>
+	<groupId>org.apache.lucene</groupId>
+	<artifactId>lucene-queryparser</artifactId>
+	<version>4.9.0</version>
     </dependency>
     <!-- For Machine Learning-->
     <dependency>
@@ -322,9 +327,9 @@
        <version>0.7</version>
     </dependency>
    <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>commons-csv</artifactId>
-           <version>1.4</version>
+       <groupId>org.apache.commons</groupId>
+       <artifactId>commons-csv</artifactId>
+       <version>1.4</version>
    </dependency> 
   </dependencies>
   <build>

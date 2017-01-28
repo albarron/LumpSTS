@@ -2,6 +2,7 @@ package cat.lump.sts2017.babelNet;
 
 import java.util.Map;
 
+import cat.lump.aq.basics.log.LumpLogger;
 import it.uniroma1.lcl.babelnet.data.BabelPOS;
 
 /**
@@ -13,6 +14,11 @@ import it.uniroma1.lcl.babelnet.data.BabelPOS;
  */
 
 public class PoSFactory {
+
+	/** Logger */
+	private static LumpLogger logger = 
+			new LumpLogger (PoSFactory.class.getSimpleName());
+
 
 	/**
 	 * Returns the adequate set of tag converter according to the input language
@@ -27,7 +33,11 @@ public class PoSFactory {
 			return PoSMaps.BN_POS_ES;
 		} else if (language.equalsIgnoreCase("ar")) {
 			return PoSMaps.BN_POS_AR;
-		} 
+		} else if (language.equalsIgnoreCase("tr")) {
+			return PoSMaps.BN_POS_TR;
+		} else {
+			logger.error("There is no PoS mapping implemented for language "+language+".");
+		}
 		return null;
 	}
 

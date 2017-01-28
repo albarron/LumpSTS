@@ -15,7 +15,7 @@ If you need to annotate corpora: <br />
 
 If you need to work with BabelNet indices: <br />
 
-3. Download and install the BabelNet API and its dependencies <br />
+4. Download and install the BabelNet API and its dependencies <br />
 [API download] (http://babelnet.org/data/3.7/BabelNet-API-3.7.zip) <br />
 `unzip BabelNet-API-3.7.zip` <br />
 `mvn install:install-file -Dfile=lib/jltutils-2.2.jar -DgroupId=it.uniroma1.lcl.jlt -DartifactId=jltutils -Dversion=2.2 -Dpackaging=jar` <br />
@@ -23,7 +23,7 @@ If you need to work with BabelNet indices: <br />
 (consider using homebrew's ggrep if on OsX)<br />
 `mvn install:install-file -Dfile=babelnet-api-3.7.jar -DpomFile=babelnet-api-3.7.pom` <br />
 
-4. Download BabelNet indices and make the API aware of them <br />
+5. Download BabelNet indices and make the API aware of them <br />
 [Indices download] (http://babelnet.org/login) <br />
 `tar xjvf babelnet-3.7-index.tar.bz2` <br />
 - In `./BabelNet-API-3.7/config/babelnet.var.properties` include the path to the index:  <br />
@@ -34,21 +34,19 @@ If you need to work with BabelNet indices: <br />
 
 If you need to use the machine learning module: <br />
 
-5. Download and install xgboost <br />
+6. Download and install xgboost <br />
 `git clone https://github.com/dmlc/xgboost.git` <br />
-
 which requires the dmlc-core and rabit packages. Download them into xgboost corresponding folders and `make` both of them <br />
-
 `git clone https://github.com/dmlc/dmlc-core.git` <br />
 `git clone https://github.com/dmlc/rabit.git` <br />
-
 Now you are ready to compile in folder `./xgboost/jvm-packages`  <br />
 `mvn package` <br />
+`mvn install` <br />
 
 
 Finally: <br />
 
-5. Download and install this repository <br />
+7. Download and install this repository <br />
 `git clone https://github.com/albarron/LumpSTS.git` <br />
 `mvn clean dependency:copy-dependencies package` <br />
 

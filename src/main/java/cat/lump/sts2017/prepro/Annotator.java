@@ -73,7 +73,7 @@ public class Annotator {
 		CommandLineParser parser = new BasicParser();
 
 		options.addOption("l", "language", true, 
-					"Language of the input text (ar/en/es)");		
+					"Language of the input text (ar/en/es/tr)");		
 		options.addOption("a", "annotation", true, 
 					"Annotation layer (tok, lem)");		
 		options.addOption("i", "input", true, 
