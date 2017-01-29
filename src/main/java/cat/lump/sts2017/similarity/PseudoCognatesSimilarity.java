@@ -20,21 +20,18 @@ import com.ibm.icu.text.Transliterator;
 
 import cat.lump.aq.basics.check.CHK;
 import cat.lump.aq.basics.log.LumpLogger;
-import cat.lump.ie.textprocessing.Decomposition;
-import cat.lump.ie.textprocessing.ngram.CharacterNgrams;
+import cat.lump.ir.retrievalmodels.document.Dictionary;
+import cat.lump.ir.retrievalmodels.document.PseudoCognates;
 import cat.lump.sts2017.dataset.FeatureDumper;
 import cat.lump.sts2017.dataset.StsBufferedReader;
 import cat.lump.sts2017.dataset.StsInstance;
 import edu.stanford.nlp.international.arabic.Buckwalter;
 
-public class CharNgramsSimilarity {
+public class PseudoCognatesSimilarity {
   
   private static final int FEATURE_NUMBER = 2;
-  private static final String FEATURE_NAME = "grm";
+  private static final String FEATURE_NAME = "cog";
 
-  private static final int N_DEFAULT = 3;
-  
-  private final int N;
   
   private final File FILE;
   private final Locale LAN1;
@@ -48,15 +45,14 @@ public class CharNgramsSimilarity {
   private final Buckwalter BUCKWALTER = new Buckwalter(true);
     
   private static LumpLogger logger = 
-      new LumpLogger(CharNgramsSimilarity.class.getSimpleName());
+      new LumpLogger(PseudoCognatesSimilarity.class.getSimpleName());
   
-  public CharNgramsSimilarity(String input, int n, Locale lan) {
-    this(input, n, lan, lan);
+  public PseudoCognatesSimilarity(String input,  Locale lan) {
+    this(input, lan, lan);
   }
   
-  public CharNgramsSimilarity(String input, int n, Locale lan1, Locale lan2) {
+  public PseudoCognatesSimilarity(String input,  Locale lan1, Locale lan2) {
     FILE = setFile(input);
-    N = getN(n);
     LAN1 = lan1;
     LAN2 = lan2;
     if (LAN2.equals(LAN1)) {
@@ -68,32 +64,45 @@ public class CharNgramsSimilarity {
           ? true
           : false;
     }
+
+    
   }
   
   public double computeSimilarity(String str1, String str2) {
+    
+    PseudoCognates cognLan1;
+    PseudoCognates cognLan2;
 //    System.out.println(str2);
     if (ONE_IS_ARABIC) {
       if (LAN1.equals("ar")) {
-        //TODO I THINK THIS IS REDUNDANT WRT normalize()
         str1 = BUCKWALTER.apply(str1);
       } else {
         str2 = BUCKWALTER.apply(str2);
       }
       str1 = removeVowels(str1);
       str2 = removeVowels(str2);
+      
+      cognLan1 = new PseudoCognates(new Dictionary(), LAN1, 3);
+      cognLan2 = new PseudoCognates(new Dictionary(), LAN2, 3);
+    } else {
+      cognLan1 = new PseudoCognates(new Dictionary(), LAN1);
+      cognLan2 = new PseudoCognates(new Dictionary(), LAN2);
     }
+
+    cognLan1.setText(str1);
+    cognLan2.setText(str2);
+    Map<String, Double> pseudoCogs1 = cognLan1.getNormalizedRepresentation();
+    Map<String, Double> pseudoCogs2 = cognLan2.getNormalizedRepresentation();
+    
     str1 = normalize(str1, LAN1);
     str2 = normalize(str2, LAN2);
     
 //    System.out.println(str1);
 //    System.out.println("k: " +str2);
     
-    Decomposition cNgrams = new CharacterNgrams(N, true);
-    Map<String, Integer> ngrams1 = getFreqs(cNgrams.getStrings(str1));
-    Map<String, Integer> ngrams2 = getFreqs(cNgrams.getStrings(str2));
     double sim = 
-        dotproduct(ngrams1, ngrams2) / 
-        (magnitude(ngrams1) * magnitude(ngrams2));
+        dotproduct(pseudoCogs1, pseudoCogs2) / 
+        (magnitude(pseudoCogs1) * magnitude(pseudoCogs1));
     
     return sim;
   }
@@ -109,7 +118,7 @@ public class CharNgramsSimilarity {
     return ngr;
   }
 
-  private double dotproduct(Map<String, Integer> grams1, Map<String, Integer> grams2) {
+  private double dotproduct(Map<String, Double> grams1, Map<String, Double> grams2) {
     double d = 0;
     Set<String> common = new HashSet<String>();
     common.addAll(grams1.keySet());
@@ -120,17 +129,12 @@ public class CharNgramsSimilarity {
     return d;
   }
   
-  private double magnitude(Map<String, Integer> grams) {
+  private double magnitude(Map<String, Double> grams) {
     double m = 0;
-    for (Integer value : grams.values()) {
+    for (Double value : grams.values()) {
       m += value * value;
     }
     return Math.sqrt(m);
-  }
-  
-  private int getN(int n) {
-    CHK.CHECK(n > 0 && n <= 5, "I expect a value in (1,5] for n");
-    return n;
   }
   
   private String removeVowels(String str) {
@@ -173,8 +177,8 @@ public class CharNgramsSimilarity {
         "language (en, es, ar)");
     options.addOption("m", "lan2", true,
         "second language (en, es, ar; optional)");
-    options.addOption("n", "ngram", true,
-        String.format("[1,5] (default: %d)", N_DEFAULT));
+//    options.addOption("n", "ngram", true,
+//        String.format("[1,5] (default: %d)", N_DEFAULT));
     
     HelpFormatter formatter = new HelpFormatter();
     int widthFormatter = 88;
@@ -204,21 +208,21 @@ public class CharNgramsSimilarity {
     String ouFile = cLine.getOptionValue("o");
     String lan1 = cLine.getOptionValue("l");
     
-    int n = (cLine.hasOption("n")) 
-        ? Integer.valueOf(cLine.getOptionValue("n"))
-        : N_DEFAULT;
-    
+//    int n = (cLine.hasOption("n")) 
+//        ? Integer.valueOf(cLine.getOptionValue("n"))
+//        : N_DEFAULT;
+//    
     
     String lan2;
-    CharNgramsSimilarity cns;
+    PseudoCognatesSimilarity cns;
 
     if (cLine.hasOption("m")) {
       lan2 = cLine.getOptionValue("m");
-      cns = new CharNgramsSimilarity(inFile, n, new Locale(lan1), new Locale(lan2));
+      cns = new PseudoCognatesSimilarity(inFile, new Locale(lan1), new Locale(lan2));
     } else {
-      cns = new CharNgramsSimilarity(inFile, n, new Locale(lan1));
+      cns = new PseudoCognatesSimilarity(inFile, new Locale(lan1));
     }
-    FeatureDumper fd = new FeatureDumper(ouFile, FEATURE_NUMBER, n + FEATURE_NAME);
+    FeatureDumper fd = new FeatureDumper(ouFile, FEATURE_NUMBER, FEATURE_NAME);
     StsBufferedReader cr = new StsBufferedReader(inFile);
 
     double sim;
