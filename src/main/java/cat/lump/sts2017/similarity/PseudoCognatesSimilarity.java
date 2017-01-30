@@ -30,7 +30,7 @@ import edu.stanford.nlp.international.arabic.Buckwalter;
 public class PseudoCognatesSimilarity {
   
   private static final int FEATURE_NUMBER = 2;
-  private static final String FEATURE_NAME = "cog";
+  private static final String FEATURE_NAME = "cog.cosine";
 
   
   private final File FILE;

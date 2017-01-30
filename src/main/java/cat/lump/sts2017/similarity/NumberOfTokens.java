@@ -2,7 +2,6 @@ package cat.lump.sts2017.similarity;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -13,55 +12,36 @@ import org.apache.commons.cli.ParseException;
 
 import cat.lump.aq.basics.check.CHK;
 import cat.lump.aq.basics.log.LumpLogger;
-import cat.lump.ir.sim.cl.len.LengthFactors;
-import cat.lump.ir.sim.cl.len.LengthModelEstimate;
 import cat.lump.sts2017.dataset.FeatureDumper;
 import cat.lump.sts2017.dataset.StsBufferedReader;
 import cat.lump.sts2017.dataset.StsInstance;
 
-public class LenFactorSimilarity {
+/**
+ * Produces a comma-separated file with the length of the left and right
+ * strings in number of tokens. No sophisticated pre-processor is applied. 
+ * Just space-based splitting.
+ * @author albarron
+ *
+ */
+public class NumberOfTokens {
   
   private static final int FEATURE_NUMBER = 1;
-  private static final String FEATURE_NAME = "len";
+  private static final String FEATURE_NAME = "tokens";
   
   private static LumpLogger logger = 
-      new LumpLogger(LenFactorSimilarity.class.getSimpleName());
+      new LumpLogger(NumberOfTokens.class.getSimpleName());
   
   
   private final File FILE;
   
-  private final LengthModelEstimate LE;
-  
-  public LenFactorSimilarity(String input, Locale lan) {
-    this(input, lan, lan);
-  }
-  
-  public LenFactorSimilarity(String input, Locale lan1, Locale lan2) {
+  public NumberOfTokens(String input) {
     FILE = setFile(input);
-//    LAN1 = lan1;
-//    LAN2 = lan2;
-    LE= new LengthModelEstimate();
-    String pair = getLanguagePair(lan1, lan2);
-    LE.setMuSigma(
-        LengthFactors.getMean(pair),
-        LengthFactors.getSD(pair)
-    );
-    logger.info(String.format("Length model for pair %s loaded", pair));
+//    this(input);
   }
   
-  private String getLanguagePair(Locale lan1, Locale lan2) {
-    return String.format("%s-%s", lan1.toString(), lan2.toString());
-  }
-  
-  public double computeSimilarity(String str1, String str2) {
-    str1 = normalize(str1);
-    str2 = normalize(str2);
-    
-//    System.out.println(str1);
-//    System.out.println(str2);
-
-    double sim = LE.lengthFactor(str1.length(), str2.length());
-    return sim;
+  public int getLength(String str) {
+    str = normalize(str);
+    return str.split("\\s").length;
   }
   
   /**
@@ -90,10 +70,6 @@ public class LenFactorSimilarity {
         "Input file");
     options.addOption("o", "output", true, 
         "Output File");
-    options.addOption("l", "lan1", true, 
-        "language (en, es, ar)");
-    options.addOption("m", "lan2", true,
-        "second language (en, es, ar; optional)");
     
     HelpFormatter formatter = new HelpFormatter();
     int widthFormatter = 88;
@@ -106,8 +82,8 @@ public class LenFactorSimilarity {
       logger.error( "Unexpected exception: " + exp.getMessage() );      
     } 
     
-    if(!cLine.hasOption("f") || !cLine.hasOption("o") || !cLine.hasOption("l")) {
-      logger.warn("Please, provide input/output file and at least one language");
+    if(!cLine.hasOption("f")) {
+      logger.warn("Please, provide (at least the input file");
     formatter.printHelp("x", options);
 //    widthFormatter, command, header, options, footer, true);
       System.exit(1);
@@ -121,26 +97,23 @@ public class LenFactorSimilarity {
     CommandLine cLine = loadOptions(args);
     String inFile = cLine.getOptionValue("f");
     String ouFile = cLine.getOptionValue("o");
-
-    String lan1 = cLine.getOptionValue("l");
-        
+    
     String lan2;
-    LenFactorSimilarity cns;
-
-    if (cLine.hasOption("m")) {
-      lan2 = cLine.getOptionValue("m");
-      cns = new LenFactorSimilarity(inFile, new Locale(lan1), new Locale(lan2));
-    } else {
-      cns = new LenFactorSimilarity(inFile, new Locale(lan1));
-    }
+    NumberOfTokens cns;
+    
+    cns = new NumberOfTokens(inFile);
+    
     FeatureDumper fd = new FeatureDumper(ouFile, FEATURE_NUMBER, FEATURE_NAME);
     StsBufferedReader cr = new StsBufferedReader(inFile);
 
-    double sim;
+    String toks;
+    int len1;
+    int len2;
     for (StsInstance instance = cr.readInstance(); instance != null; instance = cr.readInstance()) {
-      sim = cns.computeSimilarity(instance.getText1(), instance.getText2());
-//      System.out.println(sim);
-      fd.writeLine(String.valueOf(sim));
+      len1 = cns.getLength(instance.getText1());
+      len2 = cns.getLength(instance.getText2());
+//      System.out.format("%d,%d%n", len1, len2);
+      fd.writeLine(String.format("%d,%d", len1, len2));
        
     }
     fd.close();
