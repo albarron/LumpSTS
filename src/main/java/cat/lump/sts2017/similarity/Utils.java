@@ -29,7 +29,9 @@ public class Utils {
 	    	// Kullback-Leibler and Jensen-Shannon need probabilities as inputs.
 	    	// We make a softmax on the input vectors, but not sure that a softmax on each vector
 	    	// independently make any sense
-	    	sim = Functions.KLDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
+	    	double simTemp1 = Functions.KLDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
+	    	double simTemp2 = Functions.KLDiv(VectorSTS.softmax(v2), VectorSTS.softmax(v1));
+	    	sim = (simTemp1+simTemp2)/2.f;
 	    } else if (measure.equalsIgnoreCase("JS")){
 	    	sim = Functions.JSDiv(VectorSTS.softmax(v1), VectorSTS.softmax(v2));
 	    } 

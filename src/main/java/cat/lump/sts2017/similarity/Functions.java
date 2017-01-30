@@ -88,7 +88,9 @@ public class Functions {
 		float [] componentsV2 = v2.get();
 		double result = 0;
 		for (int i=0; i<componentsV1.length ; i++) {	
-			result = result + componentsV1[i]*Math.log10(componentsV1[i]/componentsV2[i]);
+			if (componentsV2[i]!=0){
+				result = result + componentsV1[i]*Math.log10(componentsV1[i]/componentsV2[i]);
+			}
 		}
 		
 		return result;
