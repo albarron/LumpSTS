@@ -29,11 +29,14 @@ public class Utils {
 	 * Generates a file in libsvm format from a csv input file
 	 * 
 	 * @param csvFileName
+	 * @return
+	 *         the name of the resulting libsvm file
 	 */
-	 public static void csv2libsvm (String csvFileName){
+	 public static String csv2libsvm (String csvFileName){
 		  
+	   String o = csvFileName+".libsvm";
 		File fIn = new File(csvFileName);  
-		File fOut = new File(csvFileName+".libsvm"); 
+		File fOut = new File(o); 
 		
 		// Initilise the writer
 		FileIO.deleteFile(fOut);
@@ -100,6 +103,7 @@ public class Utils {
 				}
 			}
 		}
+		return o;
 	  }
 	
 	  // For H2O
