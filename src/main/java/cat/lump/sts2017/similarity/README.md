@@ -28,7 +28,7 @@ java -cp target/LumpSTS-0.0.1-SNAPSHOT-jar-with-dependencies.jar cat.lump.sts201
 
 ## Similarity among sentence-level word (BabelNet IDs) vector representations 
 
-Given the embeddings calculated on a corpus of text made of BabelNet IDs, calculate the similarity for pairs of aligned sentences in two different files using using the cat.lump.sts2017.similarity.SentenceW2VSimCalculator class as follows:
+Given the embeddings calculated on a corpus of text made of BabelNet IDs, calculate the similarity for pairs of aligned sentences in two different files using the cat.lump.sts2017.similarity.SentenceW2VSimCalculator class as follows:
 
 ```
 java -cp target/LumpSTS-0.0.1-SNAPSHOT-jar-with-dependencies.jar cat.lump.sts2017.similarity.SentenceW2VSimCalculator -h 
