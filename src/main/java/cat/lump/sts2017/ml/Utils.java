@@ -95,7 +95,7 @@ public class Utils {
 			if (sc != null) {
 				sc.close();
 				try {
-					bw.newLine();
+//					bw.newLine();
 					bw.close();
 					fw.close();
 				} catch (IOException e) {
