@@ -1,5 +1,7 @@
 # LumpSTS
-### Lump participation at SemEval 2017 STS
+### Lump efforts on assessing Semantic Texiual Similarity
+
+In this project we includo to process, compute features, and learn models for the different STS tasks
 ___
 ### Set-up and installation
 
