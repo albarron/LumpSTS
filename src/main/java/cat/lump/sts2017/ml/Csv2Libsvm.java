@@ -28,17 +28,20 @@ public class Csv2Libsvm {
     cli.parseArguments(args);
     
     String training = null;
- 
+    String test = null; 
 
     training = cli.getTraining();
+    test = cli.getTest();
     
     // To be sure decimals will be points and no commas:
     Locale.setDefault(new Locale("en"));
 //        
     if (training!=null){
-      String trainLibsvm = Utils.csv2libsvm(training);
+      String trainLibsvm = Utils.csv2libsvm(training, false);
       logger.info(String.format("File %s saved", trainLibsvm));
-
+    } else if (test!=null){
+        String testLibsvm = Utils.csv2libsvm(test, true);
+        logger.info(String.format("File %s saved", testLibsvm));
     }
     
     

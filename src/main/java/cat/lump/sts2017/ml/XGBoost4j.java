@@ -63,7 +63,10 @@ public class XGBoost4j {
 	    params.put("silent", 1);   //non-verbose
 	    params.put("objective", "reg:linear");
 	    params.put("gamma", gamma);
-
+	    params.put("subsample", 0.9);
+		params.put("colsample_bytree", 0.9);
+		params.put("nthread", 50);
+	    
 	    //set additional eval_metrics
 	    String[] metrics = null;
 	    String[] evalHist = null;
@@ -77,6 +80,9 @@ public class XGBoost4j {
 		if (evalHist.equals(null)){
 			return MAX_SCORE;
 		}
+		//for (String hist : evalHist){
+			//System.out.println(hist);
+		//}
 		String lastEv = evalHist[evalHist.length-1];
 
 		// we extract the score on test
@@ -109,21 +115,21 @@ public class XGBoost4j {
 		// Trains a model
 		// Fixed parameters
 		int nfold = 10;
-		int iters = 1100;
+		int iters = 1500;
 		//iters = 110;
 		
 		// Grid intervals
-		float learningRateMin = 0.04f;
-		float learningRateMax = 0.30f;
-		float learningDelta = 0.02f;
+		float learningRateMin = 0.02f;
+		float learningRateMax = 0.10f;
+		float learningDelta = 0.01f;
 		int learningInt = (int) ((learningRateMax-learningRateMin)/learningDelta);
-		float gammaMin =  0.0f;
+		float gammaMin =  0.1f;
 		float gammaMax =  0.5f;
 		float gammaDelta = 0.1f;
 		int gammaInt = (int) ((gammaMax-gammaMin)/gammaDelta);
-		int max_depthMin = 3;
-		int max_depthMax = 8;
-		int min_child_weightMin = 1;
+		int max_depthMin = 8;
+		int max_depthMax = 14;
+		int min_child_weightMin = 2;
 		int min_child_weightMax = 6;
 		// 'max_depth':range(3,10,2),
 		// 'min_child_weight':range(1,6,2)
@@ -224,7 +230,8 @@ public class XGBoost4j {
 	    if (!file.exists()) {
 	      file.mkdirs();
 	    }
-	    String modelPath = "./models/xgb."+"LR"+learningRate+"G"+gamma+"MD"+max_depth+"CW"+min_child_weight+".model";
+	    String modelPath = "./models/xgb."+training+".LR"+learningRate+"G"+gamma+"MD"+max_depth+"CW"+min_child_weight+".model";
+	    //String modelPath = "xgb."+training+".LR"+learningRate+"G"+gamma+"MD"+max_depth+"CW"+min_child_weight+".model";
 	    booster.saveModel(modelPath);
 
 	    //dump model with feature map
@@ -330,13 +337,24 @@ public class XGBoost4j {
 		
 		if (training!=null && test==null && model==null){
 			// Convert input into the input xgboost format
-			Utils.csv2libsvm(training);
+			Utils.csv2libsvm(training, false);
 			// Begins the training
 			trainWithGridSearch(training);
+			/*try {
+				int itersBest=550;
+				trainSingleModel(training, itersBest, 0.03f, 0.1f, 13, 4);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (XGBoostError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+
 		}
 		if (training==null && test!=null && model!=null){
 			// Convert input into the input xgboost format
-			Utils.csv2libsvm(test);
+			Utils.csv2libsvm(test, true);
 			predictor(test, model);
 		}
 

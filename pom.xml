@@ -331,7 +331,46 @@
        <artifactId>commons-csv</artifactId>
        <version>1.4</version>
    </dependency> 
+   <dependency>
+       <groupId>it.uniroma2.sag.kelp</groupId>
+       <artifactId>kelp-full</artifactId>
+       <version>2.1.0</version>
+   </dependency>
   </dependencies>
+
+  <repositories>
+    <repository>
+            <id>kelp_repo_snap</id>
+            <name>KeLP Snapshots repository</name>
+            <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <url>http://sag.art.uniroma2.it:8081/artifactory/kelp-snapshot/</url>
+        </repository>
+        <repository>
+            <id>kelp_repo_release</id>
+            <name>KeLP Stable repository</name>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <url>http://sag.art.uniroma2.it:8081/artifactory/kelp-release/</url>
+        </repository>
+    </repositories>
+
   <build>
    	<resources>
 		<!-- Where do we put them? Asymetry between IXA and MIRA-->

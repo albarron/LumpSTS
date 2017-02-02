@@ -32,7 +32,7 @@ public class Utils {
 	 * @return
 	 *         the name of the resulting libsvm file
 	 */
-	 public static String csv2libsvm (String csvFileName){
+	 public static String csv2libsvm (String csvFileName, boolean test){
 		  
 	   String o = csvFileName+".libsvm";
 		File fIn = new File(csvFileName);  
@@ -62,7 +62,7 @@ public class Utils {
                 String[] elements = line.split(",");
                 int j = 0;
                 for (String feature : elements){
-                	if (j==0){
+                	if ( !test && j==0){
                         bw.append(feature+" ");               		
                 	} else {
                 		bw.append(j+":"+feature+" "); 
