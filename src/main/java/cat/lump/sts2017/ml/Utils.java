@@ -64,7 +64,9 @@ public class Utils {
                 for (String feature : elements){
                 	if ( !test && j==0){
                         bw.append(feature+" ");               		
-                	} else {
+                	} else if ( test && j==0){
+                        bw.append("999" + feature+" ");               		
+                	} else{
                 		bw.append(j+":"+feature+" "); 
                 	}
                 	j++;
