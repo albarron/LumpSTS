@@ -65,7 +65,8 @@ public class Utils {
                 	if ( !test && j==0){
                         bw.append(feature+" ");               		
                 	} else if ( test && j==0){
-                        bw.append("999 " + feature+" ");               		
+                		j++;
+                        bw.append("999 "+j+":"+feature+" ");               		
                 	} else{
                 		bw.append(j+":"+feature+" "); 
                 	}
