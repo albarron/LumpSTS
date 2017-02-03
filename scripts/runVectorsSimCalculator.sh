@@ -3,8 +3,8 @@ target=$2
 path='/home/cristinae/pln/LumpSTS/task1/'
 
 simPath=${source%cris/*}
-#simPath=${simPath}'sim/en-en.0.6-'
-simPath=${simPath}'sim/'$3'.0.6-'
+#simPath=${simPath}'sim/en-en.0.4-'
+simPath=${simPath}'sim/'$3'.0.4-'
 #tmp=${a#*_}   # remove prefix ending in "_"
 #b=${tmp%_*}   # remove suffix starting with "_"
 
