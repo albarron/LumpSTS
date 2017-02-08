@@ -18,6 +18,7 @@ public class CliGBM extends CliMinimum {
 
 	private int crossvalidation;
 	private int gridsearch;
+	private float learningrate;
 	
 	public CliGBM(){
 		super();
@@ -32,6 +33,8 @@ public class CliGBM extends CliMinimum {
 				"number of cross-validation folds [0,...]");		
 		options.addOption("g", "gridsearch", true, 
 				"Grid search parameter optimisation [0/1]");		
+		options.addOption("l", "learningrate", true, 
+				"learning rate");		
 		options.addOption("h", "help", false, "This help");
 				
 	}
@@ -65,7 +68,9 @@ public class CliGBM extends CliMinimum {
 		if (cLine.hasOption("c"))	{
 			crossvalidation = Integer.valueOf((cLine.getOptionValue("c")));
 		} 
-
+		if (cLine.hasOption("l"))	{
+			learningrate = Float.valueOf((cLine.getOptionValue("l")));
+		} 
 		if (cLine.hasOption("g"))	{
 			gridsearch = Integer.valueOf((cLine.getOptionValue("g")));
 		} 
@@ -89,6 +94,14 @@ public class CliGBM extends CliMinimum {
 	 */
 	public int getGS(){
 		return gridsearch;		
+	}
+
+	/**
+	 * Get learning rate parameter
+	 * @return
+	 */
+	public float getLR(){
+		return learningrate;		
 	}
 
 }
