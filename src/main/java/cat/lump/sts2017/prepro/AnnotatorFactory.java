@@ -21,6 +21,10 @@ public class AnnotatorFactory {
 			return new MOSESTokeniser();
 		} else if (language.equalsIgnoreCase("es")) {
 			return new MOSESTokeniser();
+		} else if (language.equalsIgnoreCase("fr")) {
+			return new MOSESTokeniser();
+		} else if (language.equalsIgnoreCase("de")) {
+			return new MOSESTokeniser();
 		} else if (language.equalsIgnoreCase("ar")) {
 			return new MADATokeniser();
 		} 
@@ -37,6 +41,10 @@ public class AnnotatorFactory {
 		if (language.equalsIgnoreCase("en")) {
 			return new MOSESIXALemmatiser();
 		} else if (language.equalsIgnoreCase("es")) {
+			return new MOSESIXALemmatiser();
+		} else if (language.equalsIgnoreCase("fr")) {
+			return new MOSESIXALemmatiser();
+		} else if (language.equalsIgnoreCase("de")) {
 			return new MOSESIXALemmatiser();
 		} else if (language.equalsIgnoreCase("ar")) {
 			return new MADALemmatiser();

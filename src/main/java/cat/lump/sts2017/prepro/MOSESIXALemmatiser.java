@@ -59,9 +59,19 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
 			lemM = p.get("lemEn");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
+		} else if (lang.equalsIgnoreCase("fr")) {
+			posM = p.get("posFr");
+			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
+			lemM = p.get("lemFr");
+			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
+		} else if (lang.equalsIgnoreCase("de")) {
+			posM = p.get("posDe");
+			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
+			lemM = p.get("lemDe");
+			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else {
 			logger.error("Your language " + lang + 
-					"has not been detected and PoS and lemmatisation models cannot be loaded.");
+					" has not been detected and PoS and lemmatisation models cannot be loaded.");
 		}
 
 		// Previous normalisation
@@ -198,9 +208,19 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
 			lemM = p.get("lemEn");
 			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
+		} else if (lang.equalsIgnoreCase("fr")) {
+			posM = p.get("posFr");
+			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
+			lemM = p.get("lemFr");
+			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
+		} else if (lang.equalsIgnoreCase("de")) {
+			posM = p.get("posDe");
+			Annotator.checkExists(posM, "The IXA models for PoS tagging cannot be found at ");
+			lemM = p.get("lemDe");
+			Annotator.checkExists(lemM, "The IXA models for lemmatising cannot be found at ");
 		} else {
 			logger.error("Your language " + lang + 
-					"has not been detected and PoS and lemmatisation models cannot be loaded.");
+					" has not been detected and PoS and lemmatisation models cannot be loaded.");
 		}
 		
 		// Previous normalisation
