@@ -20,7 +20,7 @@ use Time::HiRes;
 use Thread;
 
 #my $mydir = "$RealBin/../share/nonbreaking_prefixes";
-my $mydir = "/home/cristinae/adam/nonbreaking_prefixes";
+my $mydir = "/home/cristinae/pln/LumpSTS/scripts/nonbreaking_prefixes";
 
 my %NONBREAKING_PREFIX = ();
 my $language = "en";
@@ -253,7 +253,7 @@ sub tokenize
         #$text =~ s/([^\p{IsAlpha}])[']([\p{IsAlpha}])/$1 ' $2/g;
         #$text =~ s/([\p{IsAlpha}])[']([^\p{IsAlpha}])/$1 ' $2/g;
         #$text =~ s/([\p{IsAlpha}])[']([\p{IsAlpha}])/$1' $2/g;
-    } 
+    }
     else 
     {
         $text =~ s/\'/ \' /g;
