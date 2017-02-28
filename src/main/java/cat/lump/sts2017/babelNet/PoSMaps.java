@@ -232,7 +232,114 @@ public class PoSMaps {
 		}
 	};
 		
+
 	
+	
+	/**
+	 * Mapping from the French Penn TreeBank. In the original FTB, words are split into 13 main 
+	 * categories, themselves divided into 34 subcategories. The version of the treebank we used was 
+	 * obtained by converting subcategories into a tagset consisting of 28 tags, with a granularity 
+	 * that is intermediate between categories and subcategories. 
+	 * https://alpage.inria.fr/statgram/frdep/Publications/crabbecandi-taln2008-final.pdf
+	*/
+	static final Map<String, BabelPOS> BN_POS_FR= new HashMap<String, BabelPOS>(){
+		private static final long serialVersionUID = 1652098132934864034L;
+	    {
+	    	put("V", BabelPOS.VERB);
+	    	put("VIMP", BabelPOS.VERB);
+	    	put("VINF", BabelPOS.VERB);
+	    	put("VS", BabelPOS.VERB);
+	    	put("VPP", BabelPOS.VERB);
+	    	put("VPR", BabelPOS.VERB);
+	    	put("NPP", BabelPOS.NOUN);
+	    	put("NC", BabelPOS.NOUN);
+	    	put("CS", BabelPOS.CONJUNCTION);
+	    	put("CC", BabelPOS.CONJUNCTION);		
+	    	put("CLS", BabelPOS.PRONOUN);
+	    	put("CLO", BabelPOS.PRONOUN);
+	    	put("CLR", BabelPOS.PRONOUN);
+	    	put("P", BabelPOS.PREPOSITION);
+	    	put("P+D", BabelPOS.PREPOSITION);
+	    	put("P+PRO", BabelPOS.PREPOSITION);	
+	    	put("I", BabelPOS.INTERJECTION); 
+	    	put("PONCT", null);	
+	    	put("ET", BabelPOS.NOUN);	//	Borrowed
+	    	put("ADJWH", BabelPOS.ADJECTIVE);	
+	    	put("ADJ", BabelPOS.ADJECTIVE);
+	    	put("ADVWH", BabelPOS.ADVERB);	
+	    	put("ADV", BabelPOS.ADVERB);
+	    	put("PROWH", BabelPOS.PRONOUN);	
+	    	put("PRORE", BabelPOS.PRONOUN);	
+	    	put("PRO", BabelPOS.PRONOUN);
+	    	put("DETWH", BabelPOS.DETERMINER);	
+	    	put("DET", BabelPOS.DETERMINER);
+	    }
+	};
+		
+	
+	/**
+	 * Mapping from the STTS Stuttgart Tübingen POS tagset for German 
+	 * http://paula.petcu.tm.ro/init/default/post/opennlp-part-of-speech-tags
+	 */
+	static final Map<String, BabelPOS> BN_POS_DE= new HashMap<String, BabelPOS>(){
+		private static final long serialVersionUID = 1652098132934864035L;
+	    {
+	    	put("ADJA", BabelPOS.ADJECTIVE); 	// attributive adjective
+	    	put("ADJD", BabelPOS.ADJECTIVE); 	// adverbial or predicative adjective
+	    	put("ADV", BabelPOS.ADVERB); 	// Adverb
+	    	put("APPR", BabelPOS.PREPOSITION); 	// Preposition
+	    	put("APPRART", BabelPOS.PREPOSITION); // Preposition with article folded in
+	    	put("APPO", BabelPOS.PREPOSITION); 	// Postposition
+	    	put("APZR", null);  			// Right part of circumposition
+	    	put("ART", BabelPOS.DETERMINER); 	// definite or indefinite article
+	    	put("CARD", BabelPOS.NOUN); 		// cardinal number
+	    	put("FM", BabelPOS.NOUN); 		// foreign word
+	    	put("ITJ", BabelPOS.INTERJECTION); 	// interjection
+	    	put("KOUI", BabelPOS.CONJUNCTION); 	// subordinating conjunction with 'zu' and infinitive
+	    	put("KOUS", BabelPOS.CONJUNCTION); 	// subordinating conjunction with sentence
+	    	put("KON", BabelPOS.CONJUNCTION); 	// coordinating conjunction
+	    	put("KOKOM", BabelPOS.CONJUNCTION); 	// comparative conjunction
+	    	put("NN", BabelPOS.NOUN); 		// common noun
+	    	put("NE", BabelPOS.NOUN); 		// proper noun
+	    	put("PDS", BabelPOS.PRONOUN); 	// substituting demonstrative pronoun
+	    	put("PDAT", BabelPOS.PRONOUN); 	// attributive demonstrative pronoun
+	    	put("PIS", BabelPOS.PRONOUN); 	// substituting indefinite pronoun
+	    	put("PIAT", BabelPOS.PRONOUN); 	// attributive indefinite pronoun
+	    	put("PIDAT", BabelPOS.PRONOUN); 	// attributive indefinite pronoun with a determiner
+	    	put("PPER", BabelPOS.PRONOUN); 	// non-reflexive personal pronoun
+	    	put("PPOSS", BabelPOS.PRONOUN); 	// substituting possessive pronoun
+	    	put("PPOSAT", BabelPOS.PRONOUN); 	// attribute adding posessive pronoun
+	    	put("PRELS", BabelPOS.PRONOUN); 	// substituting relative pronoun
+	    	put("PRELAT", BabelPOS.PRONOUN); 	// attribute adding relative pronoun
+	    	put("PRF", BabelPOS.PRONOUN); 	// reflexive personal pronoun
+	    	put("PWS", BabelPOS.PRONOUN); 	// substituting interrogative pronoun
+	    	put("PWAT", BabelPOS.PRONOUN); 	// attribute adding interrogative pronoun
+	    	put("PWAV", BabelPOS.PRONOUN); 	// adverbial interrogative or relative pronoun
+	    	put("PAV", BabelPOS.ADVERB);  	// pronominal adverb
+	    	put("PTKZU", null); 			// 'zu' before infinitive
+	    	put("PTKNEG", null); 		// Negation particle
+	    	put("PTKVZ", null); 			// particle part of separable verb
+	    	put("PTKANT", null); 		// answer particle
+	    	put("PTKA", null); 			// particle associated with adverb or adjective
+	    	put("TRUNC", BabelPOS.NOUN); 	// first member of compound noun
+	    	put("VVFIN", BabelPOS.VERB); 	// full finite verb
+	    	put("VVIMP", BabelPOS.VERB); 	// full imperative
+	    	put("VVINF", BabelPOS.VERB); 	// full infinitive
+	    	put("VVIZU", BabelPOS.VERB); 	// full infinitive with "zu"
+	    	put("VVPP", BabelPOS.VERB); 		// full past participle
+	    	put("VAFIN", BabelPOS.VERB);		// auxilliary finite verb
+	    	put("VAIMP", BabelPOS.VERB); 	// auxilliary imperative
+	    	put("VAINF", BabelPOS.VERB); 	// auxilliary infinitive
+	    	put("VAPP", BabelPOS.VERB); 		// auxilliary past participle
+	    	put("VMFIN", BabelPOS.VERB); 	// modal finite verb
+	    	put("VMINF", BabelPOS.VERB); 	// modal infinitive
+	    	put("VMPP", BabelPOS.VERB); 		// modal past participle
+	    	put("XY", null); 			// Non word with special characters
+	    	put("$,", null); 			// comma
+	    	put("$.", null); 			// sentence ending punctuation
+	    	put("$(", null); 			// other sentence internal punctuation		
+	    }
+	};
 }
 
 
@@ -479,6 +586,109 @@ intSlang
 Internet Slang
 _intSlang
 The tags “YY, Abbr, intEmphasis, intAbbrEng, tinglish, bor and intSlang” are processed by 
-*
-*
+
+
+
+
+* FRENCH
+* http://www.llf.cnrs.fr/Gens/Abeille/French-Treebank-fr.php
+* 
+* The tagset with the 28 tags is on page 8 of this paper:
+ http://alpage.inria.fr/statgram/frdep/Publications/crabbecandi-taln2008-final.pdf
+* 
+
+TAG	CAT	SOUS MODE
+V	V	-	indicatif		
+VIMP	V	-	impératif		
+VINF	V	-	infinitif		
+VS	V	-	subjonctif		
+VPP	V	-	participe passé		
+VPR	V	-	participe présent	
+NPP	N	P	-			
+NC	N	C	-			
+CS	C	S	-			
+CC	C	C	-					
+CLS	CL	suj	-	
+CLO	CL	obj	-	
+CLR	CL	refl	-	
+P	P	-	-	
+P+D	voir texte		
+P+PRO	voir texte		
+I	I	-	-	
+PONCT	PONCT	-	-	
+ET	ET	-	-
+ADJWH	A	int	-
+ADJ	A	¬int	-
+ADVWH	ADV	int	-
+ADV	ADV	¬int	-
+PROWH	PRO	int	-
+PROREL	PRO	rel	-
+PRO	PRO	¬(int | rel)	-
+DETWH	D	int	-
+DET	D	¬int	-
+
+
+*  GERMAN
+*  http://paula.petcu.tm.ro/init/default/post/opennlp-part-of-speech-tags
+*  
+*  Table 3. Supposed POS tagset for German (the STTS Stuttgart Tübingen tag set)
+Number
+	
+Tag
+	
+Description
+1. 	ADJA 	attributive adjective
+2. 	ADJD 	adverbial or predicative adjective
+3. 	ADV 	Adverb
+4. 	APPR 	Preposition
+5. 	APPRART 	Preposition with article folded in
+6. 	APPO 	Postposition
+7. 	APZR 	Right part of circumposition
+8. 	ART 	definite or indefinite article
+9. 	CARD 	cardinal number
+10. 	FM 	foreign word
+11. 	ITJ 	interjection
+12. 	KOUI 	subordinating conjunction with 'zu' and infinitive
+13. 	KOUS 	subordinating conjunction with sentence
+14. 	KON 	coordinating conjunction
+15. 	KOKOM 	comparative conjunction
+16. 	NN 	common noun
+17. 	NE 	proper noun
+18. 	PDS 	substituting demonstrative pronoun
+19. 	PDAT 	attributive demonstrative pronoun
+20. 	PIS 	substituting indefinite pronoun
+21. 	PIAT 	attributive indefinite pronoun
+22. 	PIDAT 	attributive indefinite pronoun with a determiner
+23. 	PPER 	non-reflexive personal pronoun
+24. 	PPOSS 	substituting possessive pronoun
+25. 	PPOSAT 	attribute adding posessive pronoun
+26. 	PRELS 	substituting relative pronoun
+27. 	PRELAT 	attribute adding relative pronoun
+28. 	PRF 	reflexive personal pronoun
+29. 	PWS 	substituting interrogative pronoun
+30. 	PWAT 	attribute adding interrogative pronoun
+31. 	PWAV 	adverbial interrogative or relative pronoun
+32. 	PAV 	pronominal adverb
+33. 	PTKZU 	'zu' before infinitive
+34. 	PTKNEG 	Negation particle
+35. 	PTKVZ 	particle part of separable verb
+36. 	PTKANT 	answer particle
+37. 	PTKA 	particle associated with adverb or adjective
+38. 	TRUNC 	first member of compound noun
+39. 	VVFIN 	full finite verb
+40. 	VVIMP 	full imperative
+41. 	VVINF 	full infinitive
+42. 	VVIZU 	full infinitive with "zu"
+43. 	VVPP 	full past participle
+44. 	VAFIN 	auxilliary finite verb
+45. 	VAIMP 	auxilliary imperative
+46. 	VAINF 	auxilliary infinitive
+47. 	VAPP 	auxilliary past participle
+48. 	VMFIN 	modal finite verb
+49. 	VMINF 	modal infinitive
+50. 	VMPP 	modal past participle
+51. 	XY 	Non word with special characters
+52. 	$, 	comma
+53. 	$. 	sentence ending punctuation
+54. 	$( 	other sentence internal punctuation
 */

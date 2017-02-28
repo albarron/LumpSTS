@@ -187,8 +187,12 @@ public class DataIDAnnotator {
 		    		} else if (language.equalsIgnoreCase("ar")) {
 		    		    id = getBNID_ar(bn, lemma, pos);	
 		    		} else if (language.equalsIgnoreCase("tr")) {
-		    		    id = getBNID_tr(bn, lemma, pos);	
-		    		} 
+		    		    id = getBNID_tr(bn, lemma, pos);	 
+	    			} else if (language.equalsIgnoreCase("fr")) {
+	    				id = getBNID_fr(bn, lemma, pos);	
+	    			} else if (language.equalsIgnoreCase("de")) {
+	    				id = getBNID_de(bn, lemma, pos);	
+	    			}  
 	        		bw.append(word+"|"+pos+"|"+lemma+"|"+id+" ");
 		        }
 	        	bw.newLine();
@@ -381,6 +385,74 @@ public class DataIDAnnotator {
     	}
 		return id;
 	}
+
+	
+	/**
+	 * Given a lemma and a PoS the method retrieves the BN id for a subset of selected PoS
+	 * in French
+	 * 
+	 * @param lemma
+	 * @param pos
+	 * @return
+	 */
+	private String getBNID_fr(BabelNet bn, String lemma, String pos) {
+ 
+		String id = "-";
+		boolean ne = false;
+		String NEG = "NEG";
+		Language lang = Language.FR;
+
+		if(PoSAccept.NEG_FR.contains(lemma)){                     	//Negation      		
+    		return NEG;
+    	} else if(!PoSAccept.POS_FR_ACC.contains(pos.toUpperCase())) {          //Non-content PoS
+    		return id;
+    	}
+    		    	
+		BabelPOS bnPos = posMapping.get(pos.toUpperCase()); 
+    	if (bnPos == null){
+    		return id;
+    	} else {
+     	    // NE are adding too much noise
+     	    //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang);
+    	}
+		return id;
+	}
+
+	/**
+	 * Given a lemma and a PoS the method retrieves the BN id for a subset of selected PoS
+	 * in German
+	 * 
+	 * @param lemma
+	 * @param pos
+	 * @return
+	 */
+	private String getBNID_de(BabelNet bn, String lemma, String pos) {
+ 
+		String id = "-";
+		boolean ne = false;
+		String NEG = "NEG";
+		Language lang = Language.DE;
+
+		if(pos.equalsIgnoreCase("PTKNEG")){         //Negation
+    		return NEG;
+    	} else if(!PoSAccept.POS_DE_ACC.contains(pos.toUpperCase())) {          //Non-content PoS
+    		return id;
+    	}
+		
+		BabelPOS bnPos = posMapping.get(pos.toUpperCase()); 
+    	if (bnPos == null){
+    		return id;
+    	} else {
+     	    // NE are adding too much noise
+     	    //id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang, ne);
+    	    id = BabelNetQuerier.retrieveID(bn, bnPos, lemma, lang);
+    	}
+		return id;
+	}
+
+
+
 
 	/**
 	 * Get the top translation of a lemma
