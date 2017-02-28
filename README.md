@@ -1,5 +1,5 @@
 # LumpSTS
-### Lump efforts on assessing Semantic Texiual Similarity
+### Lump efforts on assessing Semantic Textual Similarity
 
 In this project we includo to process, compute features, and learn models for the different STS tasks
 ___
@@ -57,7 +57,7 @@ Finally: <br />
 [Download page](http://ixa2.si.ehu.es/ixa-pipes/download.html)<br />
 Include their path in the configuration file lumpSTS.ini<br />
 
-2. Download Moses tokeniser (or better, ask me for a modified version)<br />
+2. Use the Moses tokeniser included in the ./scripts folder<br />
 Include its path in the configuration file lumpSTS.ini<br /><br />
 
 
