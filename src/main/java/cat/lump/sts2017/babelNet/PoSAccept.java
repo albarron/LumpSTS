@@ -130,6 +130,77 @@ public class PoSAccept {
 	    	add("hiçbir"); 
 		}
 	};
+	
+	
+	/**
+	 * PoS tags from the French tag set for which we want the BabelNet ID.
+	 */
+	static final Set<String> POS_FR_ACC= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864034L;
+	    {
+	    	//add("ADJWH", BabelPOS.ADJECTIVE);	
+	    	add("ADJ");
+	    	//add("ADVWH", BabelPOS.ADVERB);	
+	    	add("ADV");
+	    	add("NPP");
+	    	add("NC");
+	    	add("ET");
+	    	add("V");
+	    	add("VIMP");
+	    	add("VINF");
+	    	add("VS");
+	    	add("VPP");
+	    	add("VPR");
 
+		}
+	};
+
+
+	/**
+	 * Negations in French. 
+	 */
+	static final Set<String> NEG_FR= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864042L;
+	    {
+	    	add("non");
+	    	add("ne");
+	    	add("pas");  
+	    	add("n'"); 
+		}
+	};
+
+	
+	/**
+	 * PoS tags from the German tag set for which we want the BabelNet ID.
+	 */
+	static final Set<String> POS_DE_ACC= new HashSet<String>(){
+		private static final long serialVersionUID = 2652098132934864035L;
+	    {
+	    	
+	    	add("ADJA"); 	// attributive adjective
+	    	add("ADJD"); 	// adverbial or predicative adjective
+	    	add("ADV"); 	// Adverb
+	    	//add("CARD", BabelPOS.NOUN); 		// cardinal number
+	    	add("FM"); 		// foreign word
+	    	add("NN"); 		// common noun
+	    	add("NE"); 		// proper noun
+	    	add("TRUNC"); 	// first member of compound noun
+	    	add("VVFIN"); 	// full finite verb
+	    	add("VVIMP"); 	// full imperative
+	    	add("VVINF"); 	// full infinitive
+	    	add("VVIZU"); 	// full infinitive with "zu"
+	    	add("VVPP"); 		// full past participle
+	    	//add("VAFIN", BabelPOS.VERB);		// auxilliary finite verb
+	    	//add("VAIMP", BabelPOS.VERB); 	// auxilliary imperative
+	    	//add("VAINF", BabelPOS.VERB); 	// auxilliary infinitive
+	    	//add("VAPP", BabelPOS.VERB); 		// auxilliary past participle
+	    	//add("VMFIN", BabelPOS.VERB); 	// modal finite verb
+	    	//add("VMINF", BabelPOS.VERB); 	// modal infinitive
+	    	//add("VMPP", BabelPOS.VERB); 	// modal past participle
+		}
+	};
+
+	
+	
 }
 
