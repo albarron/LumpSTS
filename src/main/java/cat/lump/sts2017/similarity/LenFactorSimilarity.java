@@ -21,8 +21,8 @@ import cat.lump.sts2017.dataset.StsInstance;
 
 public class LenFactorSimilarity {
   
-  private static final int FEATURE_NUMBER = 1;
-  private static final String FEATURE_NAME = "len";
+  protected static final int FEATURE_NUMBER = 1;
+  protected static final String FEATURE_NAME = "len";
   
   private static LumpLogger logger = 
       new LumpLogger(LenFactorSimilarity.class.getSimpleName());
@@ -30,7 +30,7 @@ public class LenFactorSimilarity {
   
   private final File FILE;
   
-  private final LengthModelEstimate LE;
+  protected final LengthModelEstimate LE;
   
   public LenFactorSimilarity(String input, Locale lan) {
     this(input, lan, lan);
@@ -54,15 +54,24 @@ public class LenFactorSimilarity {
   }
   
   public double computeSimilarity(String str1, String str2) {
-    str1 = normalize(str1);
-    str2 = normalize(str2);
+//    str1 = normalize(str1);
+//    str2 = normalize(str2);
     
 //    System.out.println(str1);
 //    System.out.println(str2);
 
-    double sim = LE.lengthFactor(str1.length(), str2.length());
+    double sim = LE.lengthFactor(
+        getLength(str1), 
+        getLength(str2)
+     );
     return sim;
   }
+  
+  protected int getLength(String str) {
+    str = normalize(str);
+    return str.length();
+  }
+  
   
   /**
    * The pre-processing for this similarity consists of space normalisation
@@ -71,7 +80,7 @@ public class LenFactorSimilarity {
    * @return
    *        str with spaces normalised.
    */
-  private String normalize(String str) {
+  protected String normalize(String str) {
     return str.replaceAll("\\s+", " ").trim();    
   }
   
