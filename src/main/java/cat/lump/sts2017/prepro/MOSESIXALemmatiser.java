@@ -113,7 +113,6 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 
 		if (waitFlag == 0) {
 			logger.info("Tokenisation done.");
-			//fileTMP.delete();
 			
             // Convert to KAF format, needed for lemmatisation
 			logger.info("Converting output to KAF format...");
@@ -125,6 +124,7 @@ public class MOSESIXALemmatiser implements Lemmatiser {
 			    KAFDocument kaf = new KAFDocument(lang, kafVersion);
 				FormatConverter.tokensToKAF(noTokReader, kaf);
 			    kafString = kaf.toString();
+			    //System.out.println(kafString);
 				noTokReader.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block

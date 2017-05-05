@@ -11,7 +11,7 @@ package cat.lump.sts2017.prepro;
 public class AnnotatorFactory {
 
 	/**
-	 * Returns the correct tokeniser acoording to the input language
+	 * Returns the correct tokeniser according to the input language
 	 * 
 	 * @param language
 	 * @return
@@ -32,7 +32,7 @@ public class AnnotatorFactory {
 	}
 
 	/**
-	 * Returns the correct lemmatiser acoording to the input language
+	 * Returns the correct lemmatiser according to the input language
 	 * 
 	 * @param language
 	 * @return
