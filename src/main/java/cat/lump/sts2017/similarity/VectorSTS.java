@@ -99,5 +99,22 @@ public class VectorSTS extends Vector {
 		return new Vector(componentsV);		
 	}
 	
+	/**
+	 * Converts a Vector into a printable String
+	 * 
+	 * @param v
+	 * @return
+	 */
+	public static String Vector2String(Vector v){
+		
+		float [] componentsV = v.get();
+		String representation = "";
+		for (int i=0; i<componentsV.length; i++) {	
+			representation = representation + " " + componentsV[i];
+		}
+		
+		return representation;		
+	}
+
 	
 }

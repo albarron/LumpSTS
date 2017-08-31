@@ -20,30 +20,21 @@ import cat.lump.aq.basics.log.LumpLogger;
 
 
 /**
- * Calculates the similarity between two sentences according to a selected measure.
- * Sentences are converted into a vector representation with w2v embeddings. 
- * A sentence is the sum of the embeddings of its words. 
- * //In this project is applied to BabelNet embeddings so, all tokens are considered.
- * Non-relevant tokens have already been eliminated by the BabelNetID annotation. 
  * 
  * @author cristina
- * @since Jan 24, 2017
+ * @since Feb 2, 2017
  */
-public class SentenceW2VSimCalculator {
+public class Sentence2W2Vrepresentation {
 
 	/** Logger */
 	private static LumpLogger logger = 
-			new LumpLogger (SentenceW2VSimCalculator.class.getSimpleName());
-
-	/** Similarity measure to be calculated	 */
-	private String measure;
+			new LumpLogger (Sentence2W2Vrepresentation.class.getSimpleName());
 	
 	/** Control token added to the word embeddings*/
 	public static final String CONTROL = "4sizeEmb";
 
 	/** Constructor	 */
-	public SentenceW2VSimCalculator(String measure) {
-		setMeasure(measure);
+	public Sentence2W2Vrepresentation() {
 	}
 		  
 	/**
@@ -55,17 +46,15 @@ public class SentenceW2VSimCalculator {
 	 * @param embeddings
 	 * @param output
 	 */
-	public void sentence2representation(File sourceFile, File targetFile, String embeddings, String output) {
+	public void sentence2representation(File sourceFile, String embeddings, String output) {
 		
 		logger.info("Loading the embeddings...");
         Map<String, String> embeddingsMap = new HashMap<String, String>();
         embeddingsMap = loadW2Vembeddings(embeddings);
         
 		BufferedReader sources = null;
-		BufferedReader targets = null;
 		try {
 			sources = new BufferedReader(new FileReader(sourceFile));
-			targets = new BufferedReader(new FileReader(targetFile));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -80,15 +69,12 @@ public class SentenceW2VSimCalculator {
 
 		    logger.info("Reading the first sentence...");
 		    String sentence1 = sources.readLine();
-		    String sentence2 = targets.readLine();
 		    int i=0;
 			while (sentence1 != null) {
 				Vector v1 = getSentenceVector(sentence1, embeddingsMap);
-			    Vector v2 = getSentenceVector(sentence2, embeddingsMap);
-			    double sim = Utils.calculateMeasure(v1, v2, measure);
+				String sim = VectorSTS.Vector2String(v1);
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();
-			    sentence2 = targets.readLine();
 			    i++;
 			}
 			//writerSource.close();
@@ -177,13 +163,9 @@ public class SentenceW2VSimCalculator {
 		CommandLineParser parser = new BasicParser();
 
 		options.addOption("s", "source", true, 
-				"File with the source sentences");		
-		options.addOption("t", "target", true, 
-				"File with the target sentences");		
+				"File with the vectors for the source sentences");		
 		options.addOption("e", "embeddings", true, 
 				"File with the word embeddings in w2v format");		
-		options.addOption("m", "measure", true, 
-				"Similarity measure to use [cosine(default)/jaccard/KL/JS]");		
 		options.addOption("o", "output", true, 
 				"Output file to store the similarities");		
 		options.addOption("h", "help", false, "This help");
@@ -195,15 +177,14 @@ public class SentenceW2VSimCalculator {
 		}	
 		
 		if (cLine.hasOption("h")) {
-			formatter.printHelp(SentenceW2VSimCalculator.class.getSimpleName(),options);
+			formatter.printHelp(Sentence2W2Vrepresentation.class.getSimpleName(),options);
 			System.exit(0);
 		}
 
-		if (!cLine.hasOption("t") || !cLine.hasOption("s") ) {
-			logger.error("Please, specify a file with the source sentences, "
-					+ "a file with the target sentences and the embeddings. "
-					+ "Source and target must be aligned.\n");
-			formatter.printHelp(SentenceW2VSimCalculator.class.getSimpleName(),options);
+		if (!cLine.hasOption("s") ) {
+			logger.error("Please, specify a file with the source sentences "
+					+ " and the embeddings.\n");
+			formatter.printHelp(Sentence2W2Vrepresentation.class.getSimpleName(),options);
 			System.exit(1);
 		}		
 
@@ -226,32 +207,15 @@ public class SentenceW2VSimCalculator {
 		CommandLine cLine = parseArguments(args);
 		// Input files
 		File sourceFile = new File(cLine.getOptionValue("s"));
-		File targetFile = new File(cLine.getOptionValue("t"));
 		String embeddings = cLine.getOptionValue("e");
 		// Output file
 		String outputFile = cLine.getOptionValue("o");
-		String measure;
-		if (cLine.hasOption("m")){
-			measure = cLine.getOptionValue("m");			
-		} else{
-			measure = "cosine";
-		}
 
-		SentenceW2VSimCalculator w2vSC = new SentenceW2VSimCalculator(measure); 
-		w2vSC.sentence2representation(sourceFile, targetFile, embeddings, outputFile);
+		Sentence2W2Vrepresentation w2vSC = new Sentence2W2Vrepresentation(); 
+		w2vSC.sentence2representation(sourceFile, embeddings, outputFile);
 	}
 
 
 
-
-	/* getters and setters*/
-	
-	public  String getMeasure() {
-		return measure;
-	}
-
-	public void setMeasure(String measure) {
-		this.measure = measure;
-	}
 
 }
