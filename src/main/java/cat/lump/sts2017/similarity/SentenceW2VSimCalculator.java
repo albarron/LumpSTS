@@ -2,10 +2,15 @@ package cat.lump.sts2017.similarity;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.cli.BasicParser;
@@ -85,6 +90,7 @@ public class SentenceW2VSimCalculator {
 			while (sentence1 != null) {
 				Vector v1 = getSentenceVector(sentence1, embeddingsMap);
 			    Vector v2 = getSentenceVector(sentence2, embeddingsMap);
+
 			    double sim = Utils.calculateMeasure(v1, v2, measure);
 			    writer.print(sim +"\n");
 			    sentence1 = sources.readLine();
@@ -111,13 +117,15 @@ public class SentenceW2VSimCalculator {
 	 */
 	private Vector getSentenceVector(String sentence, Map<String, String> embeddingsMap) {
 	    String[] words = sentence.split("\\s+");
-	    
+	 
 	    // We use the control element to know the size of the embeddings (300 dim, 500 dim etc)
 	    Vector vtmp = VectorSTS.readVector(embeddingsMap.get(CONTROL));
 	    Vector v = new Vector(new float[vtmp.length()]); //ja s'inicialitza a 0 per default
-	    
+
 	    for (String word : words){
-	    	String vectorconcatenated = embeddingsMap.get(word);
+		    // Arabic needs cleaning because of the direction invisible chars
+            word=word.replaceAll("\\p{C}", "");
+	    	String vectorconcatenated = embeddingsMap.get(word);	
 	    	if (vectorconcatenated == null){
 	    		continue;
 	    	}
@@ -139,6 +147,7 @@ public class SentenceW2VSimCalculator {
 	    BufferedReader in = null;
 		try {
 			in = new BufferedReader(new FileReader(embeddings));
+
 		} catch (FileNotFoundException e) {
 			logger.error("The embedding's file "+embeddings+" is not available.");
 			e.printStackTrace();
@@ -148,6 +157,9 @@ public class SentenceW2VSimCalculator {
 		    String line = in.readLine(); // first line is discarded because it is just a description in w2v files
 	    	while ((line = in.readLine()) != null) {
 			      parts = line.split("\\s+",2);
+			      // Arabic needs cleaning because of the direction invisible chars
+			      parts[0]=parts[0].replaceAll("\\p{C}", "");
+			      parts[1]=parts[1].replaceAll("\\p{C}", "");
 			      embeddingsMap.put(parts[0], parts[1]);
 			}
 			in.close();
